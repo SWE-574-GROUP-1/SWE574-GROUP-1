@@ -1,2 +1,2 @@
 # SWE573_Term_Project
-Term Project of SWE573
+This Repository contains the Term Project of SWE573.
