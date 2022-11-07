@@ -35,7 +35,7 @@ def signup(request):
                 # Create profile object for the new user
                 new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
                 new_profile.save()
-                return redirect("core:signup") # TODO: CHANGE TO SIGNIN
+                return redirect("core:signin")
         else:
             messages.info(request, "Passwords do not match!")
             return redirect(to='core:signup')
@@ -43,4 +43,16 @@ def signup(request):
         return render(request, "homepage.html")
     
 def signin(request):
-    pass
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return redirect("core:homepage")
+        else:
+            messages.info(request, "Username or Password is invalid.")
+            return redirect("core:signin")
+    else:
+        return render(request, "signin.html")
