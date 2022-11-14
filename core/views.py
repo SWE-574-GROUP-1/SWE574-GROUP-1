@@ -63,3 +63,7 @@ def signin(request):
 def logout(request):
     auth.logout(request)
     return redirect("core:signin")
+
+def deneme(request):
+    if request.method == "GET":
+        return render(request, "deneme.html")
