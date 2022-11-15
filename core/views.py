@@ -43,7 +43,7 @@ def signup(request):
             return redirect(to='core:signup')
     else:
         return render(request, "homepage.html")
-    
+
 def signin(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -64,6 +64,6 @@ def logout(request):
     auth.logout(request)
     return redirect("core:signin")
 
-def deneme(request):
+def root(request):
     if request.method == "GET":
-        return render(request, "deneme.html")
+        return render(request, "root.html")

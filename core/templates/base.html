@@ -1,0 +1,48 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="en">
+<!-- Head -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LinkMe</title>
+    <!-- Stylesheets -->
+    <link href="{% static 'core/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/custom.css' %}" rel="stylesheet">
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;" id="navbar">
+      <div class="container-fluid">
+        <!-- Navbar Brand -->
+        <a class="navbar-brand mb-0 h1 font-weight-normal " href="">
+          <img src="{%static 'assets/images/logo/svg/logo-no-background.svg'%}" width="100" class="d-inline-block align-top" alt="">
+          </a>
+        <!-- Button for collapsed navbar -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Collapsed navbar content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto h5">
+            <li class="nav-item"><a href="/signup" class="nav-link text-white">Sign Up</a></li> 
+            <li class="nav-item"><a href="/signin" class="nav-link text-white">Sign In</a></li>
+          </ul>
+        </div>
+      </div> 
+    </nav>
+    <!-- End of Navbar -->
+    <style>
+      body {
+        background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+        background-size: cover;
+      }
+    </style>
+    {% block head %}
+    {% endblock %}
+  </head>
+  <!-- Body -->
+  <body>
+    <div id="content">{% block content %}{% endblock %}</div>
+  </body>
+</html>
