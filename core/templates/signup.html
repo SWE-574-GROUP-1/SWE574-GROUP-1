@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="login">
+  <div>
+    <style>
+        h5{
+            color: rgb(0, 9, 94);
+        }
+    </style>
+    {% for message in messages %}
+    <h5>{{message}}</h5>
+    {% endfor %}
+  </div>
+  <h1 class="text-center mb-0">Good to have you here!</h1>
+  <!-- <form action="" method="POST"> -->
+    {% csrf_token %}
+    <form class="needs-validation" action="" method="POST">
+      <div class="form-group was-validated mb-0" >
+          <!-- <label class="form-label" for="username">Username</label> -->
+          <input class="form-control" type="text" name="username" placeholder="Username" id="username" required>
+      </div>
+      <div class="form-group was-validated mb-2"  style="padding-bottom: 10px; padding-top: 10px;">
+          <!-- <label class="form-label" for="email">Email</label> -->
+          <input class="form-control" type="email" name="email" placeholder="Email" id="email" required>
+      <div class="form-group was-validated mb-2" style="padding-bottom: 10px; padding-top: 10px;">
+          <!-- <label class="form-label" for="password">Password</label> -->
+          <input class="form-control" type="password" name="password" placeholder="Password" id="password" required>
+      <div class="form-group was-validated mb-2" style="padding-bottom: 10px; padding-top: 10px;">
+          <!-- <label class="form-label" for="password">Password</label> -->
+          <input class="form-control" type="password" name="password2" placeholder="Password" id="password" required>
+      </div>
+
+
+      <input class="btn btn-success w-100" type="submit" value="SIGN UP">
+      <!-- <button type="submit" class="bg-gradient-to-br from-pink-500 py-3 rounded-md text-white text-xl to-red-400 w-full">Login</button> -->
+      <div class="text">
+        <p class="text-base"></p>
+      </div>
+      <div class="text-center mt-1">
+        <p class="text-base"> Do you have an account? <a href="/signin"> Login </a></p>
+    </div>
+    </form>
+  <!-- </form> -->
+</div>
+{% endblock %}
