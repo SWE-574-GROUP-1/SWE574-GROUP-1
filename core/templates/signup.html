@@ -1,47 +1,55 @@
 {% extends 'base.html' %}
 {% block head %}
 {% endblock %}
-{% block content %}
-<div class="login">
-  <div>
-    <style>
-        h5{
-            color: rgb(0, 9, 94);
-        }
-    </style>
-    {% for message in messages %}
-    <h5>{{message}}</h5>
-    {% endfor %}
-  </div>
-  <h1 class="text-center mb-0">Good to have you here!</h1>
-  <!-- <form action="" method="POST"> -->
-    {% csrf_token %}
-    <form class="needs-validation" action="" method="POST">
-      <div class="form-group was-validated mb-0" >
-          <!-- <label class="form-label" for="username">Username</label> -->
-          <input class="form-control" type="text" name="username" placeholder="Username" id="username" required>
-      </div>
-      <div class="form-group was-validated mb-2"  style="padding-bottom: 10px; padding-top: 10px;">
-          <!-- <label class="form-label" for="email">Email</label> -->
-          <input class="form-control" type="email" name="email" placeholder="Email" id="email" required>
-      <div class="form-group was-validated mb-2" style="padding-bottom: 10px; padding-top: 10px;">
-          <!-- <label class="form-label" for="password">Password</label> -->
-          <input class="form-control" type="password" name="password" placeholder="Password" id="password" required>
-      <div class="form-group was-validated mb-2" style="padding-bottom: 10px; padding-top: 10px;">
-          <!-- <label class="form-label" for="password">Password</label> -->
-          <input class="form-control" type="password" name="password2" placeholder="Password" id="password" required>
-      </div>
-
-
-      <input class="btn btn-success w-100" type="submit" value="SIGN UP">
-      <!-- <button type="submit" class="bg-gradient-to-br from-pink-500 py-3 rounded-md text-white text-xl to-red-400 w-full">Login</button> -->
-      <div class="text">
-        <p class="text-base"></p>
-      </div>
-      <div class="text-center mt-1">
-        <p class="text-base"> Do you have an account? <a href="/signin"> Login </a></p>
-    </div>
-    </form>
-  <!-- </form> -->
+{% block _navbar %}
+<div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
+  <br>
+  <form type="search">
+      <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+  </form>
+  <ul class="navbar-nav position-relative ms-0 me-auto">
+        <li class="nav-item">
+          <a href="" class="nav-link px-3 text-white">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link px-3 text-white">FAQs</a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link px-3 text-white">About</a>
+        </li>
+  </ul>
+  <ul class="navbar-nav position-relative me-0">
+    <li class="nav-item">
+      <a class="nav-link px-3 text-gray disabled" aria-current="page" href="/signup">Sign Up</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link px-3 text-white" aria-current="page" href="/signin">Sign In</a>
+    </li>  
+  </ul>
 </div>
+{% endblock %}
+<br><br>
+{% block content %}
+<div class="login mt-4">
+  <h1 class="text-center mb-0 mt-auto">
+    Good to have you here!
+  </h1>
+  <!-- <form action="" method="POST"> -->
+  <form action="" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <input class="form-control mb-1" type="text" name="username" placeholder="Username" id="username" required autofocus>
+      <input class="form-control mb-1" type="email" name="email" placeholder="Email" id="email" required autofocus>
+      <input class="form-control mb-1" type="password" name="password" placeholder="Password" id="password" required autofocus>
+      <input class="form-control mb-1" type="password" name="password2" placeholder="Repeat Password" id="password" required autofocus>
+    </div>
+    <input class="btn btn-success w-100" type="submit" value="SIGN UP">
+    <div class="text-center mt-2 " style="font-size: 1rem;">
+      <a href="/signin" style="color: gray;">
+        Do you have an account?
+      </a>
+    </div>
+  </form>
+</div>
+<p class="text-center mt-1 mb-0" style="font-size: 0.6rem;color:black;font-weight: bold;">© SWE573 Fall'22</p>
 {% endblock %}

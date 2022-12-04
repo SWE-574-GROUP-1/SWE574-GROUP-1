@@ -23,11 +23,10 @@ def signup(request):
         password = request.POST["password"]
         password2 = request.POST["password2"]
         if password == password2:
-            if User.objects.filter(email=email).exists():
-                messages.info(request, "Email is already exists.")
-                return redirect("core:signup")
-            elif User.objects.filter(username=username).exists():
+            if User.objects.filter(username=username).exists():
                 messages.info(request, "Username is already exist.")
+            elif User.objects.filter(email=email).exists():
+                messages.info(request, "Email is already exists.")
                 return redirect("core:signup")
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
