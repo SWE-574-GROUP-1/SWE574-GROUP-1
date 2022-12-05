@@ -57,3 +57,9 @@ body {
     font-size: 20px;
     /* margin-top: 15px; */
 }
+
+.vert-center {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile
+from .models import Profile, Post
 
 
 # Models to be displayed within admin panel
@@ -7,3 +7,4 @@ from .models import Profile
 # Register your models here.
 
 admin.site.register(Profile)
+admin.site.register(Post)

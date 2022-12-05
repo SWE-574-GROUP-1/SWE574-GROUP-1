@@ -1,0 +1,159 @@
+{% extends 'base_inside.html' %}
+{% block head %}
+{% endblock %}  
+{% block _navbar %}
+<div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
+  <br>
+  <form type="search">
+      <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+  </form>
+  <ul class="navbar-nav position-relative ms-0 me-auto">
+        <li class="nav-item">
+          <a href="/feed" class="nav-link px-3 text-white">Feed</a>
+        </li>
+        <!-- # TODO: Implement Discover -->
+        <li class="nav-item">
+          <a href="#" class="nav-link px-3 text-white">Discover</a>
+        </li>
+        <!-- # TODO: Implement Spaces -->
+        <li class="nav-item">
+          <a href="" class="nav-link px-3 text-white">Spaces</a>
+        </li>
+  </ul>
+</div>
+<ul class="navbar-nav mr-auto">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img width="30" height="30" src="{{user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown">
+      </a>
+      <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
+        <a class="dropdown-item text-white" href="/profile">Profile</a>
+        <a class="dropdown-item text-white" href="/settings">Settings</a>
+        <a class="dropdown-item text-white" href="#">About</a>
+        <a class="dropdown-item text-white" href="logout">Logout</a>
+      </div>
+    </li>
+</ul>
+{% endblock %}
+{% block content %}
+<!-- Content Here -->
+<div class="container-md pt-5">
+<!-- https://www.bootdey.com/snippets/view/Profile-settings#html -->
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="main-breadcrumb pt-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/profile">{{user.username}}</a></li>
+        <!-- <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li> -->
+        <li class="breadcrumb-item active" aria-current="page">Settings</li>
+      </ol>
+    </nav>
+    <!-- /Breadcrumb -->
+    <div class="row gutters-sm">
+      <!-- LHS Card -->
+      <div class="col-md-4 d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <nav class="nav flex-column nav-pills nav-gap-y-1">
+              <a href="#profile" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Profile Information
+              </a>
+              <a href="#user_settings" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings mr-2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Account Settings
+              </a>
+              <a href="#privacy" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield mr-2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Privacy
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <!-- RHS Card -->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header border-bottom mb-3 d-flex d-md-none">
+            <ul class="nav nav-tabs card-header-tabs nav-gap-x-1" role="tablist">
+              <li class="nav-item">
+                <a href="#profile" data-bs-toggle="tab" class="nav-link has-icon active"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+              </li>
+              <li class="nav-item">
+                <a href="#account" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></a>
+              </li>
+              <li class="nav-item">
+                <a href="#security" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></a>
+              </li>
+              <li class="nav-item">
+                <a href="#notification" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></a>
+              </li>
+              <li class="nav-item">
+                <a href="#billing" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body tab-content">
+            <div class="tab-pane active" id="profile">
+              <h6>PROFILE SETTINGS</h6>
+              <hr>
+              <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label class="text-secondary" for="fullName"><strong>Profile Picture</strong></label>
+                <div class="form-group">
+                    <img width="70" height="70" src="{{user_profile.profile_image.url}}" />
+                    <input type="file" name="image" value="" class="shadow-none bg-gray-100">
+                    <!-- <input type="text" class="form-control" id="fullName" aria-describedby="fullNameHelp" placeholder="Enter your fullname" value="Kenneth Valdez"> -->
+                </div>
+                <hr>
+                <div class="form-group">
+                  <label class="text-secondary" for="bio"><strong>Bio</strong></label>
+                  <textarea class="form-control autosize" name="bio" id="bio" placeholder="{{user_profile.bio}}" style="overflow: hidden; overflow-wrap: break-word; resize: none; height: 62px;"></textarea>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+                <button type="reset" class="btn btn-light">Reset Changes</button>
+              </form>
+            </div>
+            <div class="tab-pane" id="user_settings">
+                <h6>ACCOUNT SETTINGS</h6>
+                <form action="" method="POST">
+                  {% csrf_token %}
+                  <hr>
+                  <div class="form-group text-secondary">
+                    <label for="username"><strong>Username</strong></label>
+                    <input type="text" class="form-control" name="username" id="username" aria-describedby="usernameHelp" placeholder="{{user.username}}">
+                    <small id="usernameHelp" class="form-text text-muted">Your username may appear around here where you are mentioned. You can change or remove it at any time.</small>
+                  </div>
+                  <div class="form-group text-secondary">
+                    <label for="email"><strong>Email</strong></label>
+                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="{{user.email}}">
+                    <small id="emailHelp" class="form-text text-muted">Notifications will be sent to this email address.</small>
+                  </div>
+                  <hr>
+                  <div class="form-group">
+                    <label class="d-block text-secondary"><strong>Change Password</strong></label>
+                    <input type="password" name="old_password" class="form-control" placeholder="Enter your old password">
+                    <input type="password" name="new_password" class="form-control mt-1" placeholder="New password">
+                    <input type="password" name="new_password_2" class="form-control mt-1" placeholder="Confirm new password">
+                  </div>
+                  <hr>
+                  <button type="submit" class="btn btn-primary">Update Settings</button>
+                  <button type="reset" class="btn btn-light">Reset Changes</button>
+                </form>
+            </div>
+            <div class="tab-pane" id="privacy">
+                <h6>PRIVACY</h6>
+                <hr>
+                <form>
+                  <div class="form-group">
+                    <label class="d-block text-secondary"><strong>Delete Account</strong></label>
+                    <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
+                  </div>
+                  <!-- TODO: Create Delete Account Function -->
+                  <button class="btn btn-danger" type="button"><a href="delete_account" class="text-white">Delete Account</a></button>
+                </form>
+            </div>             
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  <!-- </div> -->
+{% endblock %}

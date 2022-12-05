@@ -1,0 +1,60 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="en">
+<!-- Head -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LinkMe</title>
+    <!-- CSS Stylesheets -->
+    <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/custom.css' %}" rel="stylesheet">
+    <!-- Background Image -->
+    <style>
+    body {
+        background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    </style>
+    <!-- Overwrite Head Block -->
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body>
+  <!-- Body -->
+    <!-- <div class="container">
+      <div class="row"> -->
+        <nav class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;" aria-label="Fifth navbar example">
+          <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="#">
+              <img src="{%static 'assets/images/logo/svg/logo-no-background.svg'%}" width="100" class="d-inline-block align-top" alt="">
+            </a>
+            <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            {% block _navbar %}
+            {% endblock %}
+          </div>
+        </nav>
+      <!-- </div>
+    </div> -->
+    <!-- <main> -->
+      <!-- <div class="container-xxl d-flex"> -->
+        <!-- <div class="jumbotron p-3 p-md-auto text-white rounded" style="background-color: #FCAF3C;"> -->
+          <!-- <div class="col-3"></div> -->
+          <!-- <div class="col-6" id="content"> -->
+            {% block content %}
+            {% endblock %}
+          <!-- </div> -->
+          <!-- <div class="col-3"></div> -->
+        <!-- </div> -->
+      <!-- </div> -->
+    <!-- </main> -->
+    <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
+  </body>
+</html>
+

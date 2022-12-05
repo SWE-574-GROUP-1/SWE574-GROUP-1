@@ -25,14 +25,13 @@
     {% endblock %}
   </head>
   <!-- Body -->
-  <body>
     <main>
         <nav class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;" aria-label="Fifth navbar example">
           <div class="container-fluid">
             <a class="navbar-brand mb-0 h1" href="#">
               <img src="{%static 'assets/images/logo/svg/logo-no-background.svg'%}" width="100" class="d-inline-block align-top" alt="">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+            <button class="navbar-toggler ms-auto me-3 type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             {% block _navbar %}
@@ -40,10 +39,17 @@
           </div>
         </nav>
         <div id="content">
+            <div>
+              {% for message in messages %}
+              <div class="alert alert-danger" role="alert">
+                <h5 class="text-center">{{message}}</h5>
+              </div>
+              {% endfor %}
+            </div>
             {% block content %}
             {% endblock %}
         </div>
-      </main>
+    </main>
     <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
   </body>
 </html>
