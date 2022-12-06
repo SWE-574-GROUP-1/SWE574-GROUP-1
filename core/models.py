@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
 from uuid import uuid4
+from random import randint
 # Create your models here.
 
 User = get_user_model()
@@ -12,14 +13,14 @@ class Profile(models.Model):
     id_user = models.IntegerField(unique=True)
     bio = models.TextField(default="Write something here")
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
-    
+    background_image = models.ImageField(upload_to="background_images", default=f"background_images/bg-image-{randint(1,4)}.jpg")
     def __str__(self):
         return self.user.username
     
 class Post(models.Model):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    owner_username = models.CharField(max_length=100)
+    owner_username = models.TextField(max_length=100)
     created_at = models.DateTimeField(default=datetime.now)
     # Fields that are filled by owner user
     link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :) 
@@ -30,6 +31,6 @@ class Post(models.Model):
     bookmarked_by = ArrayField(models.IntegerField(), default=list, blank=True,)
     # bookmarked_by = models.ForeignKey(Profile.id_user, on_delete=models.CASCADE)
     num_of_bookmarks = models.IntegerField(default=0)
-
+    
     def __str__(self):
         return self.owner_username

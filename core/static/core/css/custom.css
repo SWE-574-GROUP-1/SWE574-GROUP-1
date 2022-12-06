@@ -1,20 +1,7 @@
-.masthead {
-    background-size: cover;
-    min-height: 100vh;
-    /* position: relative; */
-    color: white;
-    /* text-shadow: 2px 2px 2px rgba(0, 0, 0, 2); */
-}
-
 .navbar-nav {
     font-weight: 500;
     font-style: italic;
     font-size: 1.5rem;
-}
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
 }
 
 body {

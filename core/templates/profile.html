@@ -1,0 +1,291 @@
+{% load static %}
+<!-- https://www.bootdey.com/snippets/view/bs4-profile-with-timeline-posts -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkMe</title>
+    <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;" aria-label="Fifth navbar example">
+    <div class="container-fluid">
+      <a class="navbar-brand mb-0 h1" href="#">
+        <img src="{%static 'assets/images/logo/svg/logo-no-background.svg'%}" width="100" class="d-inline-block align-top" alt="">
+      </a>
+      <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
+  <br>
+  <form type="search">
+      <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+  </form>
+  <ul class="navbar-nav position-relative ms-0 me-auto">
+        <li class="nav-item">
+          <a href="/feed" class="nav-link px-3 text-white">Feed</a>
+        </li>
+        <!-- # TODO: Implement Discover -->
+        <li class="nav-item">
+          <a href="#" class="nav-link px-3 text-white">Discover</a>
+        </li>
+        <!-- # TODO: Implement Spaces -->
+        <li class="nav-item">
+          <a href="" class="nav-link px-3 text-white">Spaces</a>
+        </li>
+  </ul>
+</div>
+<ul class="navbar-nav mr-auto">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <!-- <img width="35" height="35" src="{{user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
+      </a>
+      <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
+        <a class="dropdown-item text-white" href="/profile">Profile</a>
+        <a class="dropdown-item text-white" href="/settings">Settings</a>
+        <a class="dropdown-item text-white" href="#">About</a>
+        <a class="dropdown-item text-white" href="logout">Logout</a>
+      </div>
+    </li>
+</ul>
+<ul class="navbar-nav position-relative ms-auto me-0">
+   <li class="nav-item">
+      <a href="/profile" class="nav-link px-3 text-white">
+         <img width="40" height="40" src="{{user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown">      
+      </a>
+    </li>
+</ul>
+</div>
+</header>
+body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
+<div class="container-sm bd-gutter mt-3 my-md-4 bd-layout">
+   <div class="row">
+      <div class="col-md-12">
+         <div id="content" class="content content-full-width">
+            <!-- begin profile -->
+            <div class="profile">
+               <div class="profile-header">
+                  <!-- BEGIN profile-header-cover -->
+                  <div class="profile-header-cover">
+                    <img src="{{user_profile.background_image.url}}" alt="">
+                  </div>
+                  <!-- END profile-header-cover -->
+                  <!-- BEGIN profile-header-content -->
+                  <div class="profile-header-content">
+                     <!-- BEGIN profile-header-img -->
+                     <div class="profile-header-img">
+                        <img src="{{user_profile.profile_image.url}}" alt="">
+                     </div>
+                     <!-- END profile-header-img -->
+                     <!-- BEGIN profile-header-info -->
+                     <div class="profile-header-info">
+                        <h4 class="m-t-10 m-b-5">@{{user.username}}</h4>
+                        <p class="m-b-10">{{user_profile.bio}}</p>
+                        <a href="#" class="btn btn-sm btn-info mb-2 disabled" style="visibility: hidden;">Edit Profile</a>
+                     </div>
+                     <!-- END profile-header-info -->
+                  </div>
+                  <!-- END profile-header-content -->
+                  <!-- BEGIN profile-header-tab -->
+                  <ul class="profile-header-tab nav nav-tabs">
+                     <li class="nav-item"><a href="#profile-post" target="__blank" class="nav-link_">POSTS</a></li>
+                     <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a></li>
+                     <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a></li>
+                  </ul>
+                  <!-- END profile-header-tab -->
+               </div>
+            </div>
+            <!-- end profile -->
+            <!-- begin profile-content -->
+            <div class="profile-content">
+               <!-- begin tab-content -->
+               <div class="tab-content p-0">
+                  <!-- begin #profile-post tab -->
+                  <div class="tab-pane active" id="profile-post">
+                     <!-- begin timeline -->
+                     <ul class="timeline">
+                        {% for post in posts reversed %}
+                        <li>
+                           <!-- begin timeline-time -->
+                           <div class="timeline-time">
+                              <span class="date">{{post.created_at.date}}</span>
+                              <span class="time">{{post.created_at.time}}</span>
+                           </div>
+                           <!-- end timeline-time -->
+                           <!-- begin timeline-icon -->
+                           <div class="timeline-icon">
+                              <a href="javascript:;">&nbsp;</a>
+                           </div>
+                           <!-- end timeline-icon -->
+                           <!-- begin timeline-body -->
+                           <div class="timeline-body">
+                              <div class="timeline-header">
+                                 <span class="userimage"><img src="{{user_profile.profile_image.url}}" alt=""></span>
+                                 <span class="username"><a href="/profile">{{user.username}}</a> <small></small></span>
+                                 <span class="pull-right text-muted"> {{post.num_of_bookmarks}}</span>
+                                 <span class="pull-right text-muted">
+                                    <img src="{%static 'assets/images/logo/svg/bookmarks.svg'%}" alt="Bootstrap" width="30" height="30">
+                                    &nbsp                                     
+                                 </span>
+                              </div>
+                              <div class="timeline-content">
+                                 <p>
+                                    {{post.link}}
+                                 </p>
+                              </div>
+                              <hr>
+                              <div class="timeline-likes">
+                                 <!-- <div class="stats-right">
+                                    <span class="stats-total text-muted">{{post.num_of_bookmarks}}</span>
+                                    <span class="pull-right text-muted">
+                                       <img src="{%static 'assets/images/logo/svg/bookmarks.svg'%}" alt="Bootstrap">                                       
+                                    </span>
+                                 </div> -->
+                                 <div class="stats">
+                                    <p style="font-size: 15px;">
+                                       <strong>{{post.caption}}</strong>
+                                    </p>
+                                 </div>
+                                 <!-- <div class="stats">
+                                    <span class="fa-stack fa-fw stats-icon">
+                                    <i class="fa fa-circle fa-stack-2x text-danger"></i>
+                                    <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
+                                    </span>
+                                    <span class="fa-stack fa-fw stats-icon">
+                                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                    <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <span class="stats-total">4.3k</span>
+                                 </div> -->
+                              </div>
+                           </div>
+                           <!-- end timeline-body -->
+                        </li>
+                        {% endfor %}
+
+                        <li>
+                           <!-- begin timeline-icon -->
+                           <div class="timeline-icon">
+                              <a href="javascript:;">&nbsp;</a>
+                           </div>
+                           <!-- end timeline-icon -->
+                           <!-- begin timeline-body -->
+                           <div class="timeline-body">
+                              Loading...
+                           </div>
+                        </li>
+                     </ul>
+                     <!-- end timeline -->
+                  </div>
+                  <!-- end #profile-post tab -->
+               </div>
+               <!-- end tab-content -->
+            </div>
+            <!-- end profile-content -->
+         </div>
+      </div>
+   </div>
+   <button type="button" class="btn btn-light post-button" value="Post" role="img" data-bs-toggle="modal" data-bs-target="#postModal">
+      <img src="{%static 'assets/images/logo/svg/pencil-square.svg'%}" alt="Bootstrap" width="32" height="32">
+      <figcaption> <strong>Post Something</strong> </figcaption>
+   </button>
+   <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create New Post</h5>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST" id="post_form">
+              {% csrf_token %}
+              <input name="form_name" type="hidden" id="form-name" value="post-form">
+              <div class="form-group text-secondary">
+                <label for="link" class="col-form-label"><strong>Link</strong></label>
+                <input name="link" type="text" class="form-control" id="link" placeholder="Enter the link">
+                <hr>
+                <label for="caption" class="col-form-label"><strong>Caption</strong></label>
+                <textarea name="caption" class="form-control" id="caption" placeholder="Enter the caption"></textarea>
+               <hr>
+              </div>
+              <div class="form-group">
+               <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <!-- TODO: Import tags and list them -->
+                  Tags
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                     <li>
+                         <a class="dropdown-item" href="#">
+                             <div class="form-check">
+                                 <input class="form-check-input" type="checkbox" value="" id="Checkme1" />
+                                 <label class="form-check-label" for="Checkme1">Check me</label>
+                             </div>
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item" href="#">
+                             <div class="form-check">
+                                 <input class="form-check-input" type="checkbox" value="" id="Checkme2" checked />
+                                 <label class="form-check-label" for="Checkme2">Check me</label>
+                             </div>
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item" href="#">
+                             <div class="form-check">
+                                 <input class="form-check-input" type="checkbox" value="" id="Checkme3" />
+                                 <label class="form-check-label" for="Checkme3">Check me</label>
+                             </div>
+                         </a>
+                     </li>
+                     <li><hr class="dropdown-divider" /></li>
+                     <li>
+                         <a class="dropdown-item" href="#">
+                             <div class="form-check">
+                                 <input class="form-check-input" type="checkbox" value="" id="Checkme4" checked />
+                                 <label class="form-check-label" for="Checkme4">Check me</label>
+                             </div>
+                         </a>
+                     </li>
+                 </ul>
+               </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="cancel" class="btn btn-secondary" form="post_form" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="post_form" class="btn btn-primary" onclick="return checkform();">Create Post</button>
+          </div>
+          <!-- Prevents posting empty form -->
+          <script type='text/javascript'>
+            function checkform() {
+                if(document.forms.post_form.link.value == "" && document.forms.post_form.caption.value == "") {
+                    alert("Please enter at least 1 of the fields");
+                    return false;
+                } else {
+                    console.log(document.forms.post_form.link.value)
+                    document.post_form.submit();
+                    document.post_form.reset();
+                }
+            }
+         </script>
+        </div>
+      </div>
+    </div>
+</div>
+<script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
+</body>
+</html>

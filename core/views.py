@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login
 from django.contrib import messages
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User, auth 
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+
+from .models import Profile, Post
 from .forms import NewUserForm
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
@@ -40,7 +41,7 @@ def signup(request):
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
                 new_profile.save()
-                return redirect("core:feed")
+                return redirect("core:profile")
         else:
             messages.info(request, "Passwords do not match!")
             return redirect(to='core:signup')
@@ -55,7 +56,7 @@ def signin(request):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return redirect("core:feed")
+            return redirect("core:profile")
         else:
             messages.info(request, "Username or Password is invalid.")
             return redirect("core:signin")
@@ -66,6 +67,7 @@ def signin(request):
 def settings(request):
     # TODO: Better implementation of this method
     user_profile = Profile.objects.get(user=request.user)
+    user = User.objects.get(username=request.user.username)
     if request.method == 'POST':
         # Set the image
         if request.FILES.get('image'):
@@ -124,7 +126,7 @@ def settings(request):
         user_profile.save()
         # TODO: Think of this redirect you may use flags to logout user or refresh page
         return redirect('core:settings')
-    return render(request, 'settings_1.html', {'user_profile': user_profile})
+    return render(request, 'settings.html', {'user_profile': user_profile})
 
 
 @login_required(login_url="core:signin")
@@ -132,9 +134,6 @@ def logout(request):
     auth.logout(request)
     return redirect("core:signin")
 
-def root(request):
-    if request.method == "GET":
-        return render(request, "root.html")
     
 @login_required(login_url="core:signin")
 def delete_account(request):
@@ -157,3 +156,25 @@ def change_password(request):
     # if password == password2:
     # user_profile = Profile.objects.get(user=user_object)
     pass
+
+@login_required(login_url="core:signin")
+def upload_post(request):
+    pass
+
+
+@login_required(login_url="core:signin")
+def profile(request):
+    user_profile = Profile.objects.get(user=request.user)
+    posts = Post.objects.filter(owner_username=request.user.username)
+    print(request.POST)
+    if request.method == "POST":
+        owner_username = request.user.username
+        if request.POST.get("form_name") == "post-form":
+            
+            new_post = Post.objects.create(owner_username=owner_username,
+                                           link=request.POST.get("link"),
+                                           caption=request.POST.get("caption"))
+            new_post.save()
+            return HttpResponseRedirect("/profile")
+            # return render(request, "profile.html", {'user_profile': user_profile, 'posts': posts})
+    return render(request, "profile.html", {'user_profile': user_profile, 'posts': posts})
