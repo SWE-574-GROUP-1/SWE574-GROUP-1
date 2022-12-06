@@ -1,2 +1,6 @@
 docker build --tag swe573_term_project .
 docker run --publish 8000:8000 swe573_term_project
+
+
+docker-compose build
+docker-compose run --rm app django-admin startproject core .
