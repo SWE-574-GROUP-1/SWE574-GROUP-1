@@ -89,9 +89,20 @@ DATABASES = {
 
         'PORT': '5432',
     },
-    'docker': {
+    # 'Container': {
         
-    }
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+    #     'NAME': 'postgres',
+
+    #     'USER': 'postgres',
+
+    #     'PASSWORD': 'postgres',
+
+    #     'HOST': 'db',  # For containers
+
+    #     'PORT': '5432',
+    # },
 }
 
 

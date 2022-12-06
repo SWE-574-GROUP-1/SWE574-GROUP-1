@@ -52,13 +52,15 @@ def signin(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        
-        user = auth.authenticate(username=username, password=password)
-        if user is not None:
+        if not User.objects.filter(username=username).exists():
+            messages.info(request, "Username does not exist.")
+            return HttpResponseRedirect("/signin")
+        try:
+            user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
             return redirect("core:profile")
-        else:
-            messages.info(request, "Username or Password is invalid.")
+        except Exception as e:
+            messages.info(request, "Username or Password is invalid. Error: {e}")
             return redirect("core:signin")
     else:
         return render(request, "signin.html")
