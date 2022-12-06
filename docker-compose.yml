@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    build: .  # build from Dockerfile in current directory
+    volumes:
+      - .:/app  # mount current directory to /app in container
+    ports:
+      - 8000:8000  # map port 8000 on host to port 8000 in container
+    image: app:latest  # tag the image as app:latest
+    container_name: swe573_term_project  # name the container as swe573_term_project
+    command: python manage.py runserver 0.0.0.0:8000  # run the command to start the server
+    depends_on:
+      - db  # start the db container before starting the app container
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=postgre_django
