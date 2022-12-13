@@ -89,7 +89,7 @@ DATABASES = {
 
         'PORT': '5432',
     },
-    # 'Container': {
+    # 'default': {
         
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
@@ -130,11 +130,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Istanbul'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
-USE_TZ = True
+# Set this to False to solve timezone problem
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

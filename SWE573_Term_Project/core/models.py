@@ -1,36 +1,49 @@
+# Import from django module
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
+from django.utils import timezone
+# Import from external packages
 from uuid import uuid4
 from random import randint
+# Import from relative modules
+from .src.utils.generate_preview import generate_preview_
 # Create your models here.
 
 User = get_user_model()
 
+
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_user = models.IntegerField(unique=True)
     bio = models.TextField(default="Write something here")
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
-    background_image = models.ImageField(upload_to="background_images", default=f"background_images/bg-image-{randint(1,4)}.jpg")
+    background_image = models.ImageField(upload_to="background_images",
+                                         default="background_images/bg-image-1.jpg")
+
     def __str__(self):
         return self.user.username
-    
+
+
 class Post(models.Model):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
     owner_username = models.TextField(max_length=100)
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
     # Fields that are filled by owner user
-    link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :) 
-    caption = models.TextField(blank=True)  # Captio can be empty
+    link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :)
+    caption = models.TextField(blank=True)  # Caption can be empty
     # Fields that are filled by other users
-    # TODO: Learn more about posting a link, and having a preview in python
     # TODO: Learn more about using a foreign key as attribute
-    bookmarked_by = ArrayField(models.IntegerField(), default=list, blank=True,)
-    # bookmarked_by = models.ForeignKey(Profile.id_user, on_delete=models.CASCADE)
+    bookmarked_by = ArrayField(models.TextField(), default=list, blank=True, )
     num_of_bookmarks = models.IntegerField(default=0)
-    
+
     def __str__(self):
         return self.owner_username
+
+
+class Preview(models.Model):
+    post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
+    title = models.TextField(max_length=100)
+    description = models.TextField(max_length=200)
+    preview_image = models.ImageField(upload_to="preview_images", default="preview/no_preview.jpg")

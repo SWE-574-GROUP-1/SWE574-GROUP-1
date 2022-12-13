@@ -14,7 +14,7 @@ RUN pip install ez_setup
 
 RUN pip install -r requirements.txt
 
-COPY . /app/
+# COPY SWE573_Term_Project/* /app/
 # COPY . .
 
 # CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
