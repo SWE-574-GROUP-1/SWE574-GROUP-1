@@ -9,18 +9,20 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import environ
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-aeijp&ejbr^^5w6k@8g&l)p&9#a3k=z2yo&1$0-vbu3bv6i6i&'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,15 +81,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'postgres',
+        'NAME': env("DATABASE_NAME"),
 
-        'USER': 'django',
+        'USER': env('DATABASE_USER'),
 
-        'PASSWORD': 'postgre_django',
+        'PASSWORD': env('DATABASE_PASSWORD'),
 
-        'HOST': '127.0.0.1',
+        'HOST': env('DATABASE_HOST'),
 
-        'PORT': '5432',
+        'PORT': env('DATABASE_PORT'),
     },
     # 'default': {
         
