@@ -135,4 +135,6 @@ dmypy.json
 profile_images/
 !blank-profile-picture.png
 commands.txt
+scripts/
 activate.sh
+ssh_ec2.sh
