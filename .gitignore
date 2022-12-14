@@ -4,6 +4,12 @@ __pycache__/
 *$py.class
 
 data
+SWE573_Term_Project/LinkMe/.env
+*.pem
+.env
+.env.aws
+
+
 
 migrations/
 !__init__.py
@@ -101,7 +107,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -126,3 +131,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+#/SWE573_Term_Project/images/profile_images/
+profile_images/
+!blank-profile-picture.png
+commands.txt
+activate.sh

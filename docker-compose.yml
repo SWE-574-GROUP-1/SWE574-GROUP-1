@@ -3,7 +3,7 @@ services:
   app:
     build: .  # build from Dockerfile in current directory
     volumes:
-      - ./swe573_term_project/:/app  #  
+      - ./SWE573_Term_Project/:/app  #
     ports:
       - "8000:8000"  # map port 8000 on host to port 8000 in container
     image: app:latest  # tag the image as app:latest
@@ -13,12 +13,12 @@ services:
       - db  # start the db container before starting the app container
   db:
     image: postgres:latest  # use the latest postgres image
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+#    volumes:
+#      - ./data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=postgre_django
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"  # map port 8000 on host to port 8000 in container
     container_name: postgres_db
