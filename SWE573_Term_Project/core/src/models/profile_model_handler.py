@@ -2,7 +2,6 @@
 from ...models import Profile
 from django.contrib.auth.models import User
 
-
 def create_profile(request: object) -> None:
     """
     Implementation of creating a Profile model.

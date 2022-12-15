@@ -2,7 +2,7 @@
 import string
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from . import user_model_handler, profile_model_handler
+from ..models import profile_model_handler, user_model_handler
 
 
 def signup_page_handler_main(request: object) -> redirect:

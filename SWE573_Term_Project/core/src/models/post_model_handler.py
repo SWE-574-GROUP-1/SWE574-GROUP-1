@@ -12,6 +12,7 @@ def create_post(request: object) -> None:
     """
     # Get the username of the user that requests to create a post
     owner_username = request.user.username
+
     # Creating new post
     new_post = Post.objects.create(owner_username=owner_username,
                                    link=request.POST.get("link"),
@@ -28,11 +29,15 @@ def update_post(request: object) -> None:
     """
     # Get the existing post
     current_post = Post.objects.get(post_id=request.POST.get("post_id"))
+    # Extract fields from request
+    link = request.POST.get('link')
+    caption = request.POST.get("caption")
     # Modify existing post
-    current_post.link = request.POST.get("link")
-    current_post.caption = request.POST.get("caption")
+    if link:
+        current_post.link = link
+    if caption:
+        current_post.caption = caption
     current_post.save()
-    pass
 
 
 def __book_post__(request: object) -> HttpResponseRedirect:

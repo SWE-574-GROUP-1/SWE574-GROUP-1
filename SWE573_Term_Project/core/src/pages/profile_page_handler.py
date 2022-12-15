@@ -2,7 +2,8 @@
 from django.http import HttpResponseRedirect
 from ...models import Profile, Post
 from django.shortcuts import render
-from . import post_model_handler
+from ..models import post_model_handler
+
 
 def profile_page_handler_main(request: object) -> HttpResponseRedirect:
     """

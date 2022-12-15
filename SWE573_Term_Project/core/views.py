@@ -1,11 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from .src.utils.profile_page_handler import profile_page_handler_main
-from .src.utils.post_model_handler import __delete_post__, __book_post__
-from .src.utils.signup_page_handler import signup_page_handler_main
-from .src.utils.signin_page_handler import signin_page_handler_main
-from .src.utils.user_model_handler import *
-from .src.utils.settings_page_handler import settings_page_handler_main
-
+from .src.pages.profile_page_handler import profile_page_handler_main
+from .src.models.post_model_handler import __delete_post__, __book_post__
+from .src.pages.signup_page_handler import signup_page_handler_main
+from .src.pages.signin_page_handler import signin_page_handler_main
+from .src.models.user_model_handler import *
+from .src.pages.settings_page_handler import settings_page_handler_main
 @login_required(login_url="core:signin")
 def feed(request: object):
     return render(request, 'test.html')

@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from ...models import Profile
 from django.contrib import messages
 from django.contrib.auth.models import User
-from . import user_model_handler
+from ..models import user_model_handler
 from .signup_page_handler import validate_password_format
 
 

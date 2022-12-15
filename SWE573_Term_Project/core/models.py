@@ -1,13 +1,10 @@
-# Import from django module
+# Import from django modules
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 # Import from external packages
 from uuid import uuid4
-from random import randint
-# Import from relative modules
-from .src.utils.generate_preview import generate_preview_
 # Create your models here.
 
 User = get_user_model()

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.models import auth
-from . import user_model_handler
+from ..models import user_model_handler
 
 
 def signin_page_handler_main(request: object) -> redirect:
