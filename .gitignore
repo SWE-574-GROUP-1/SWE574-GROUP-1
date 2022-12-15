@@ -134,7 +134,7 @@ dmypy.json
 #/SWE573_Term_Project/images/profile_images/
 profile_images/
 !blank-profile-picture.png
-commands.txt
+scripts/commands.txt
 scripts/
 activate.sh
 ssh_ec2.sh
