@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-aeijp&ejbr^^5w6k@8g&l)p&9#a3k=z2yo&1$0-vbu3bv6i6i&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,33 +78,33 @@ WSGI_APPLICATION = 'LinkMe.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #
-    #     'NAME': env("DATABASE_NAME"),
-    #
-    #     'USER': env('DATABASE_USER'),
-    #
-    #     'PASSWORD': env('DATABASE_PASSWORD'),
-    #
-    #     'HOST': env('DATABASE_HOST'),
-    #
-    #     'PORT': env('DATABASE_PORT'),
-    # },
     'default': {
-        
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'postgres',
+        'NAME': env("DATABASE_NAME"),
 
-        'USER': 'postgres',
+        'USER': env('DATABASE_USER'),
 
-        'PASSWORD': 'postgres',
+        'PASSWORD': env('DATABASE_PASSWORD'),
 
-        'HOST': 'db',  # For containers
+        'HOST': env('DATABASE_HOST'),
 
-        'PORT': '5432',
+        'PORT': env('DATABASE_PORT'),
     },
+    # 'default': {
+    #
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #
+    #     'NAME': 'postgres',
+    #
+    #     'USER': 'postgres',
+    #
+    #     'PASSWORD': 'postgres',
+    #
+    #     'HOST': 'db',  # For containers
+    #
+    #     'PORT': '5432',
+    # },
 }
 
 

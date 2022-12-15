@@ -59,7 +59,7 @@ def generate_preview(request):
     }
 
     url = request.GET.get('link')
-    print(url)
+    print("url is:", url)
     req = requests.get(url, headers)
     html = BeautifulSoup(req.content, 'html.parser')
     meta_data = {

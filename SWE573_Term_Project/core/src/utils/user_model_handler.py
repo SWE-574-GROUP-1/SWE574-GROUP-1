@@ -1,9 +1,15 @@
+"""Contains utility methods for User model"""
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
-def create_user(request):
+def create_user(request: object) -> None:
+    """
+    Implementation of creating a user model and saving it to database
+    @param request: HttpRequest object that contains metadata about request passed from frontend
+    @return: None
+    """
     username = request.POST.get("username")
     email = request.POST.get("email")
     password = request.POST.get("password")
@@ -12,7 +18,12 @@ def create_user(request):
     pass
 
 
-def login_user(request):
+def login_user(request: object) -> [redirect, HttpResponseRedirect] :
+    """
+    Implementation of authorizing the user to log in
+    @param request: HttpRequest object that contains metadata about request passed from frontend
+    @return: Redirect to user to profile if authorized, otherwise refreshes the current page
+    """
     username = request.POST.get("username")
     password = request.POST.get("password")
     redirect_path = request.META.get('HTTP_REFERER')
@@ -26,7 +37,12 @@ def login_user(request):
         return HttpResponseRedirect(redirect_path)
 
 
-def delete_user(request):
+def delete_user(request: object) -> render:
+    """
+    Implementation of deleting a user from database. Checks whether user exist, if so deletes the user
+    @param request: HttpRequest object that contains metadata about request passed from frontend
+    @return: renders a html page
+    """
     username = request.user.username
     try:
         # Delete the User
@@ -43,6 +59,12 @@ def delete_user(request):
     return render(request, 'signup.html')
 
 def username_setter(old_username: str, new_username: str) -> None:
+    """
+    Implementation of setter method for username attribute of the user
+    @param old_username: a string, that corresponds to the old username
+    @param new_username: a string, that corresponds to the new username
+    @return: None
+    """
     # Get the user
     user = User.objects.get(username=old_username)
     # Set the username
@@ -50,22 +72,38 @@ def username_setter(old_username: str, new_username: str) -> None:
     # Save the user with new username
     user.save()
 
-def email_setter(username: str, new_email: str):
-    # Get the user
+def email_setter(username: str, new_email: str) -> None:
+    """
+    Implementation of setter method for email attribute of the user
+    @param username: a string, that corresponds to the username attribute of the User model
+    @param new_email: a string, that corresponds to the new email address to be set
+    @return: None
+    """
+    # Get the usr
     user = User.objects.get(username=username)
     # Set the email
     user.email = new_email
     # Save the user with new username
     user.save()
 
-def validate_username(username: str) -> bool:
+def validate_availability_username(username: str) -> bool:
+    """
+    Implementation of validation of Username of User model
+    @param username: a string that corresponds to username attribute of User object
+    @return: True if username not exist, False if username already exist
+    """
     if User.objects.filter(username=username).exists():
         return False
     else:
         return True
 
 
-def validate_email(email: str) -> bool:
+def validate_availability_email(email: str) -> bool:
+    """
+    Implementation of validation of email attribute of User model
+    @param email: a string that corresponds to email attribute of User object
+    @return: True if username not exist, False if username already exist
+    """
     if User.objects.filter(email=email).exists():
         return False
     else:
