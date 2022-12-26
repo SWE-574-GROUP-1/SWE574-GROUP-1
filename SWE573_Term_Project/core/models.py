@@ -17,10 +17,11 @@ class Profile(models.Model):
     bio = models.TextField(default="Write something here")
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
-                                         default="background_images/bg-image-1.jpg")
+                                         default="background_images/bg-image-5.jpg")
     followers = ArrayField(models.IntegerField(), default=list, blank=True)
     following = ArrayField(models.IntegerField(), default=list, blank=True)
     joined_at = models.DateTimeField(default=timezone.now)
+
     def __str__(self):
         return self.user.username
 
@@ -40,6 +41,12 @@ class Post(models.Model):
     title = models.TextField(max_length=100, blank=True)
     description = models.TextField(max_length=500, blank=True)
     preview_image = models.TextField(max_length=200, blank=True)
+    # Many-to-many field for tags
+    tags = models.ManyToManyField('Tag', related_name='posts', default=None)
 
     def __str__(self):
         return self.owner_username
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=25, unique=True)

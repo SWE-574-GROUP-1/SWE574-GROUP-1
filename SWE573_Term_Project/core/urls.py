@@ -16,7 +16,8 @@ urlpatterns = [
     path("book_post", views.book_post, name="book_post"),
     path("preview/", generate_preview.generate_preview, name="generate"),
     path("search", views.search, name="search"),
-    path("follow", views.follow, name="follow")
+    path("follow", views.follow, name="follow"),
+    path("tags/<str:tag_name>", views.tags, name="tags")
     # path("feed", views.feed, name="logout"),
     # path("profile", views.profile, name="logout"),
 ]

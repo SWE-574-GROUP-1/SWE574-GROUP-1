@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post, Profile
+from ...models import Post, Profile, Tag
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -32,7 +32,22 @@ def create_post(request: object) -> None:
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
+    print(['tag' in key for key in list(request.POST.keys())], type(request.POST.keys()), )
+    for key in list(request.POST.keys()):
+        if 'tag' in key:
+            # Get the tag name
+            print(key)
+            tag_name = request.POST.get(key)
+            print(tag_name)
+            # Get the Tag object
+            tag = Tag.objects.get(name=tag_name)
+            new_post.tags.add(tag)
+
+    print(request.POST)
     new_post.save()
+    # Print the tags
+    for tag in new_post.tags.all():
+        print(tag.name)
     pass
 
 

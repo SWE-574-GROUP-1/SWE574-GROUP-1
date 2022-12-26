@@ -6,7 +6,7 @@ from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
 # TODO: Improve modularity
-from .models import Profile
+from .models import Profile, Tag
 from django.http import HttpResponseRedirect
 
 @login_required(login_url="core:signin")
@@ -74,7 +74,7 @@ def search(request: object):
                 profile_object = Profile.objects.get(user=user)
                 search_result_user_profiles.append(profile_object)
                 print(profile_object.user.username)
-            # TODO: Implement search for tags and spaces too
+            # TODO: Implement search for posts, tags and spaces too
             # search_tag_objects =
             # searched_spaces_objects =
             print(f"{len(search_result_user_profiles)} users are found")
@@ -118,3 +118,12 @@ def follow(request: object):
     print("Followers of profile owner", profile_owner_user_profile.followers)
     print(path)
     return HttpResponseRedirect(path)
+
+
+def tags(request, tag_name):
+    # Get the Tag object for given tag name
+    tag = Tag.objects.get(name=tag_name)
+    # Get all posts with specific tag name
+    posts = tag.posts.all()
+    context = {"posts": posts,}
+    return render(request, "tags.html", context=context)

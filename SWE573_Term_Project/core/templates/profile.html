@@ -54,7 +54,7 @@
                 </li>
                 <!-- # TODO: Implement Discover -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link px-3 text-white">Discover</a>
+                    <a href="#" class="nav-link px-3 text-white">Tags</a>
                 </li>
                 <!-- # TODO: Implement Spaces -->
                 <li class="nav-item">
@@ -69,7 +69,8 @@
                     <!-- <img width="35" height="35" src="{{request_owner_user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
                 </a>
                 <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
-                    <a class="dropdown-item text-white" href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}">Profile</a>
+                    <a class="dropdown-item text-white"
+                       href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}">Profile</a>
                     <a class="dropdown-item text-white" href="/settings">Settings</a>
                     <a class="dropdown-item text-white" href="#">About</a>
                     <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
@@ -118,12 +119,15 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                     <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
                                 {% else %}
                                     {% if request_owner_user_profile.id_user in profile_owner_user_profile.followers %}
-                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}" class="btn btn-sm btn-info mb-2">Unfollow</a>
+                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
+                                           class="btn btn-sm btn-info mb-2">Unfollow</a>
                                     {% else %}
-                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}" class="btn btn-sm btn-info mb-2">Follow</a>
+                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
+                                           class="btn btn-sm btn-info mb-2">Follow</a>
                                     {% endif %}
                                 {% endif %}
-                                <p class="m-b-5 pull-right">{{ num_followers }} Followers {{ num_following }} Following {{ num_posts }} Posts</p>
+                                <p class="m-b-5 pull-right">{{ num_followers }} Followers {{ num_following }}
+                                    Following {{ num_posts }} Posts</p>
                             </div>
                             <!-- END profile-header-info -->
                         </div>
@@ -134,8 +138,10 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                             </li>
                             <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a>
                             </li>
-                            <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a>
-                            </li>
+                            {% if profile_owner_user.username == request_owner_user.username %}
+                                <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a>
+                                </li>
+                            {% endif %}
                         </ul>
                         <!-- END profile-header-tab -->
                     </div>
@@ -220,7 +226,12 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                 </div>
                                             </div>
                                             <div class="timeline-footer">
-                                                {#                                            TODO-Dağlar : ADD TAGS HERE#}
+                                                {% for tag in post.tags.all %}
+                                                    <a href="{% url 'core:tags' tag_name=tag.name %}"
+                                                       class="m-r-15 text-inverse-lighter pull-left"><i
+                                                            class="bi bi-tags-fill"></i>{{ tag.name }} </a>
+                                                    <a>&nbsp;</a>
+                                                {% endfor %}
                                                 {% if profile_owner_user.username == request_owner_user.username %}
                                                     <a href="/delete_post?post_id={{ post.post_id }}"
                                                        class="m-r-15 text-inverse-lighter pull-right"><i
@@ -324,7 +335,22 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                             <textarea name="caption" class="form-control" id="caption"
                                       placeholder="Enter the caption"></textarea>
                             <hr>
-                        </div>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true" aria-label="Default select example">
+                                    <span id="usernamelabel">Select username</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu ml-2">
+                                    {% for tag in available_tags %}
+                                        <li>
+                                            <input type="checkbox" id="{{ tag.name }}" name="tag-{{ forloop.counter0 }}"
+                                                   value="{{ tag.name }}">
+                                            <label for="{{ tag.name }}">{{ tag.name }}</label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
 
                     </form>
                 </div>
@@ -355,8 +381,8 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
 {#Prevents posting empty post-update-form#}
 <script type='text/javascript'>
     function checkform_validity() {
-        if (document.forms.post_update_form.link.value == "" || document.forms.post_update_form.caption.value == "") {
-            alert("Please fill all fields");
+        if (document.forms.post_update_form.link.value == "" & document.forms.post_update_form.caption.value == "") {
+            alert("Please fill at least 1 field");
             return false;
         } else {
             console.log(document.forms.post_update_form.link.value)
