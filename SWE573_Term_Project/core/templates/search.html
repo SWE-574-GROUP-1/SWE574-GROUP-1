@@ -137,17 +137,30 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                             <div class="row">
                                 <div class="col-sm-9">
                                     <h4 class="search-result-item-heading"><a
-                                            href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">{{ search_result_profile.user.username }}</a>
+                                            href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
                                     </h4>
-                                    <p class="info">New York, NY 20188</p>
+                                    <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
                                     <p class="description">{{ search_result_profile.bio }}</p>
                                 </div>
                                 <div class="col-sm-3 text-align-center">
-                                    <p class="fs-mini text-muted">Followers here</p>
-                                    <p class="fs-mini text-muted">Following here</p>
-                                    <p class="fs-mini text-muted">Posts here</p>
-                                    {# TODO: Make an if elif for follow #}
-                                    <a class="btn btn-primary btn-info btn-sm" href="#">Follow</a>
+                                    <p class="fs-mini text-muted">{{ search_result_profile.followers|length }}
+                                        Follower</p>
+                                    <p class="fs-mini text-muted">{{ search_result_profile.following|length }}
+                                        Following</p>
+{#                                    <a class="btn btn-primary btn-info btn-sm" href="#">Follow</a>#}
+                                    {% if search_result_profile.user.username == request_owner_user.username %}
+                                        <a href="#" class="btn btn-sm btn-info mb-2"
+                                           style="visibility: hidden;">Follow</a>
+                                    {% else %}
+{#                                        TODO: Follow buttons are disabled since it does not redirect to the homepage#}
+{#                                        {% if request_owner_user_profile.id_user in search_result_profile.followers %}#}
+{#                                            <a href="/follow?profile_owner_id_user={{ search_result_profile.id_user }}"#}
+{#                                               class="btn btn-primary btn-info btn-sm">Unfollow</a>#}
+{#                                        {% else %}#}
+{#                                            <a href="/follow?profile_owner_id_user={{ search_result_profile.id_user }}"#}
+{#                                               class="btn btn-primary btn-info btn-sm">Follow</a>#}
+{#                                        {% endif %}#}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

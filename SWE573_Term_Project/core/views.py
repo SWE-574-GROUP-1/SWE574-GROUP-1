@@ -116,4 +116,5 @@ def follow(request: object):
         request_owner_user_profile.save()
         print("followed")
     print("Followers of profile owner", profile_owner_user_profile.followers)
+    print(path)
     return HttpResponseRedirect(path)

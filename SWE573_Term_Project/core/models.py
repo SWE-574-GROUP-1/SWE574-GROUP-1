@@ -20,7 +20,7 @@ class Profile(models.Model):
                                          default="background_images/bg-image-1.jpg")
     followers = ArrayField(models.IntegerField(), default=list, blank=True)
     following = ArrayField(models.IntegerField(), default=list, blank=True)
-
+    joined_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.user.username
 

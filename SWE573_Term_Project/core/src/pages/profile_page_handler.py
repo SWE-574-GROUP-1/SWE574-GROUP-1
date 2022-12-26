@@ -41,7 +41,11 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
                'request_owner_user_profile': request_owner_user_profile,
                'profile_owner_user': profile_owner_user_object,
                'profile_owner_user_profile': profile_owner_user_profile,
-               'posts': profile_owner_posts, }
+               'posts': profile_owner_posts,
+               'num_followers': len(profile_owner_user_profile.followers),
+               'num_following': len(profile_owner_user_profile.following),
+               'num_posts': len(Post.objects.filter(owner_username=profile_owner_user_profile.user.username)),
+    }
     print(f"profile_owner_username is: {profile_owner_user_object.username}")
     print(f"request_owner_username is: {request_owner_user_object.username}")
     return render(request, "profile.html", context=context)
