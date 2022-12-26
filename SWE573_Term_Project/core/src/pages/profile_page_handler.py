@@ -29,9 +29,10 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     @param profile_owner_username: username of the profile object to be displayed
     @return: Renders the profile page with Profile and Post data
     """
-    # TODO - Dağlar: Do I need to change this function to dynamically rendering another page
+    # Get the profile owner user object and profile
     profile_owner_user_object = User.objects.get(username=profile_owner_username)
     profile_owner_user_profile = Profile.objects.get(user=profile_owner_user_object)
+    # Get the request owner user object and profile
     request_owner_user_object = User.objects.get(username=request.user.username)
     request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
     profile_owner_posts = Post.objects.filter(owner_username=profile_owner_user_object).order_by('-created_at')

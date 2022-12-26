@@ -15,6 +15,7 @@ urlpatterns = [
     path("delete_post", views.delete_post, name="delete_post"),
     path("book_post", views.book_post, name="book_post"),
     path("preview/", generate_preview.generate_preview, name="generate"),
+    path("search", views.search, name="search")
     # path("feed", views.feed, name="logout"),
     # path("profile", views.profile, name="logout"),
 ]

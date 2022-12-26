@@ -40,9 +40,14 @@
         </button>
         <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
             <br>
-            <form type="search">
-                <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+            <form type="search" method="POST" id="search-form" action="{% url 'core:search' %}">
+                {% csrf_token %}
+                <input class="form-control me-0 input" type="search" placeholder="Search" aria-label="Search"
+                       name="keyword">
             </form>
+            <button type="submit" form="search-form" class="btn btn-primary button" id="search-button">
+                <i class="fas fa-search"></i>
+            </button>
             <ul class="navbar-nav position-relative ms-0 me-auto">
                 <li class="nav-item">
                     <a href="/feed" class="nav-link px-3 text-white">Feed</a>
@@ -67,15 +72,17 @@
                     <a class="dropdown-item text-white" href="/profile">Profile</a>
                     <a class="dropdown-item text-white" href="/settings">Settings</a>
                     <a class="dropdown-item text-white" href="#">About</a>
-                    <a class="dropdown-item text-white" href="{%  url 'core:logout' %}">Logout</a>
+                    <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
                 </div>
             </li>
         </ul>
         <ul class="navbar-nav position-relative ms-auto me-0">
             <li class="nav-item">
-{#                <a href="profile?profile_owner_username={{ request_owner_user_profile.username }}" class="nav-link px-3 text-white">#}
-                <a href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}" class="nav-link px-3 text-white">
-                    <img width="40" height="40" src="{{ request_owner_user_profile.profile_image.url }}" class="header-avatar"
+                {#                <a href="profile?profile_owner_username={{ request_owner_user_profile.username }}" class="nav-link px-3 text-white">#}
+                <a href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}"
+                   class="nav-link px-3 text-white">
+                    <img width="40" height="40" src="{{ request_owner_user_profile.profile_image.url }}"
+                         class="header-avatar"
                          alt="Dropdown">
                 </a>
             </li>
@@ -106,7 +113,9 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                             <div class="profile-header-info">
                                 <h4 class="m-t-10 m-b-5">@{{ profile_owner_user.username }}</h4>
                                 <p class="m-b-10">{{ profile_owner_user_profile.bio }}</p>
-                                <a href="#" class="btn btn-sm btn-info mb-2 disabled" style="visibility: hidden;">Edit
+                                {# TODO: Make an if else loop for button changes and visibility for visitors#}
+                                <a href="#" class="btn btn-sm btn-info mb-2">Follow</a>
+                                <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow
                                     Profile</a>
                             </div>
                             <!-- END profile-header-info -->
@@ -149,8 +158,9 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                         <!-- begin timeline-body -->
                                         <div class="timeline-body">
                                             <div class="timeline-header">
-                                                <span class="userimage"><img src="{{ profile_owner_user_profile.profile_image.url }}"
-                                                                             alt=""></span>
+                                                <span class="userimage"><img
+                                                        src="{{ profile_owner_user_profile.profile_image.url }}"
+                                                        alt=""></span>
                                                 <span class="username"><a
                                                         href="{% url 'core:profile' profile_owner_username=post.owner_username %}">{{ post.owner_username }}</a> <small></small></span>
                                                 <span class="pull-right text-muted"> {{ post.num_of_bookmarks }}</span>
@@ -345,6 +355,23 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
             console.log(document.forms.post_update_form.link.value)
             document.post_update_form.submit();
             document.post_update_form.reset();
+        }
+    }
+</script>
+{#//Program to disable or enable a button using javascript https://flexiple.com/javascript/disable-button-javascript/#}
+<script>
+    let input = document.querySelector(".input");
+    let button = document.querySelector(".button");
+
+    button.disabled = true; //setting button state to disabled
+
+    input.addEventListener("change", stateHandle);
+
+    function stateHandle() {
+        if (document.querySelector(".input").value === "") {
+            button.disabled = true; //button remains disabled
+        } else {
+            button.disabled = false; //button is enabled
         }
     }
 </script>
