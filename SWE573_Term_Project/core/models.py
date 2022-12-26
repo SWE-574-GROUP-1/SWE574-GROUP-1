@@ -18,8 +18,9 @@ class Profile(models.Model):
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
                                          default="background_images/bg-image-1.jpg")
-    followers = ArrayField(models.TextField(), default=list, blank=True)
-    following = ArrayField(models.TextField(), default=list, blank=True)
+    followers = ArrayField(models.IntegerField(), default=list, blank=True)
+    following = ArrayField(models.IntegerField(), default=list, blank=True)
+
     def __str__(self):
         return self.user.username
 
@@ -33,8 +34,7 @@ class Post(models.Model):
     link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :)
     caption = models.TextField(blank=True)  # Caption can be empty
     # Fields that are filled by other users
-    # TODO: Learn more about using a foreign key as attribute
-    bookmarked_by = ArrayField(models.TextField(), default=list, blank=True, )
+    bookmarked_by = ArrayField(models.IntegerField(), default=list, blank=True, )
     num_of_bookmarks = models.IntegerField(default=0)
     # Preview attributes
     title = models.TextField(max_length=100, blank=True)

@@ -5,11 +5,13 @@ from .src.pages.signup_page_handler import signup_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
+# TODO: Improve modularity
 from .models import Profile
-
+from django.http import HttpResponseRedirect
 
 @login_required(login_url="core:signin")
 def feed(request: object):
+    # TODO: Fix this
     return render(request, 'test.html')
 
 
@@ -81,3 +83,37 @@ def search(request: object):
     print("POST IS:")
     print(request.POST.get("keyword"))
     return render(request, "search.html", context=context)
+
+@login_required(login_url="core:signin")
+def follow(request: object):
+    path = request.META.get('HTTP_REFERER')
+    profile_owner_id_user = int(request.GET.get('profile_owner_id_user'))
+    print("id_user obtained from request:", profile_owner_id_user, type(profile_owner_id_user))
+    profile_owner_user_profile = Profile.objects.get(id_user=profile_owner_id_user)
+    request_owner_user_profile = Profile.objects.get(user=request.user)
+    print("profile_owner id_user is", profile_owner_user_profile.id_user, type(profile_owner_user_profile.id_user))
+    print("reqeust_owner id_user is", request_owner_user_profile.id_user, type(request_owner_user_profile.id_user))
+    print("Followers", profile_owner_user_profile.followers)
+    # Remove follower/following
+    if request_owner_user_profile.id_user in profile_owner_user_profile.followers:
+        # Remove follower
+        profile_owner_user_profile.followers.remove(request_owner_user_profile.id_user)
+        # Remove following
+        request_owner_user_profile.following.remove(profile_owner_user_profile.id_user)
+        # Save profiles
+        profile_owner_user_profile.save()
+        request_owner_user_profile.save()
+        print("unfollowed")
+
+    # Add follower/following
+    else:
+        # Add follower
+        profile_owner_user_profile.followers.append(request_owner_user_profile.id_user)
+        # Add following
+        request_owner_user_profile.following.append(profile_owner_user_profile.id_user)
+        # Save profiles
+        profile_owner_user_profile.save()
+        request_owner_user_profile.save()
+        print("followed")
+    print("Followers of profile owner", profile_owner_user_profile.followers)
+    return HttpResponseRedirect(path)

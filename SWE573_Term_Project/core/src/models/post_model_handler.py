@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post
+from ...models import Post, Profile
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -69,24 +69,25 @@ def __book_post__(request: object) -> HttpResponseRedirect:
     @return: Redirects the user to the current page
     """
     try:
-        username = request.user.username
-        print("Post created by username:", username)
+
+        id_user = Profile.objects.get(user=request.user).id_user
+        print("Post created by username:", id_user)
         # Get the Post model by post_id
         post_id = request.GET.get('post_id')
         post = Post.objects.get(post_id=post_id)
         print("post is", post)
         path = request.META.get('HTTP_REFERER')
         # Control whether bookmarked or not
-        if username in post.bookmarked_by:
-            return un_bookmark_post(path=path, post=post, username=username)
+        if id_user in post.bookmarked_by:
+            return un_bookmark_post(path=path, post=post, id_user=id_user)
         else:
-            return bookmark_post(path=path, post=post, username=username)
+            return bookmark_post(path=path, post=post, id_user=id_user)
     except Exception as e:
         print("Error is:", e)
         raise e
 
 
-def bookmark_post(path, post: Post, username: str) -> HttpResponseRedirect:
+def bookmark_post(path, post: Post, id_user: int) -> HttpResponseRedirect:
     """
     Implementation of bookmarking of a Post model. Appends the username to the bookmarked_by attribute of the post and
     increases num_of_bookmarks by 1
@@ -96,13 +97,13 @@ def bookmark_post(path, post: Post, username: str) -> HttpResponseRedirect:
     @return: Redirects the user to the current page
     """
     print("Bookmarked")
-    post.bookmarked_by.append(username)
+    post.bookmarked_by.append(id_user)
     post.num_of_bookmarks += 1
     post.save()
     return HttpResponseRedirect(path)
 
 
-def un_bookmark_post(path, post: Post, username: str):
+def un_bookmark_post(path, post: Post, id_user: int):
     """
     Implementation of un-bookmarking of a Post model. Removes the username to the bookmarked_by attribute of the post and
     decreases num_of_bookmarks by 1
@@ -112,7 +113,7 @@ def un_bookmark_post(path, post: Post, username: str):
     @return: Redirects the user to the current page
     """
     print("De-bookmarked")
-    post.bookmarked_by.remove(username)
+    post.bookmarked_by.remove(id_user)
     post.num_of_bookmarks -= 1
     post.save()
     return HttpResponseRedirect(path)

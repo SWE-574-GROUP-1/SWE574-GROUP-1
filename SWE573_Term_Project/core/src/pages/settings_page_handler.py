@@ -29,8 +29,12 @@ def settings_page_get_handler(request: object) -> render:
     @param request: HttpRequest object that contains metadata about request passed from frontend
     @return: Renders the profile page with Profile data
     """
-    user_profile = Profile.objects.get(user=request.user)
-    return render(request, 'settings.html', {'user_profile': user_profile})
+    user_object = User.objects.get(username=request.user.username)
+    profile_object = Profile.objects.get(user=user_object)
+    # Data to be passed
+    context = {'profile_object': profile_object}
+    return render(request, 'settings.html', context=context)
+
 
 def settings_page_post_handler(request: object) -> redirect:
     """
@@ -105,7 +109,7 @@ def account_settings_setter(request: object) -> redirect:
                 new_username = request.POST.get("username")
                 user = User.objects.get(username=new_username)
             # Check password format
-            if not  validate_password_format(request=request, password=request.POST.get("new_password")):
+            if not validate_password_format(request=request, password=request.POST.get("new_password")):
                 return redirect('core:settings')
             # Compare with current password
             elif user.check_password(request.POST.get("old_password")):
@@ -124,4 +128,3 @@ def account_settings_setter(request: object) -> redirect:
         else:
             messages.info(request, "Unknown error while setting new password, please try again.")
     return redirect('core:settings')
-
