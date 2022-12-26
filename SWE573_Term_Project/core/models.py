@@ -18,7 +18,8 @@ class Profile(models.Model):
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
                                          default="background_images/bg-image-1.jpg")
-
+    followers = ArrayField(models.TextField(), default=list, blank=True)
+    following = ArrayField(models.TextField(), default=list, blank=True)
     def __str__(self):
         return self.user.username
 

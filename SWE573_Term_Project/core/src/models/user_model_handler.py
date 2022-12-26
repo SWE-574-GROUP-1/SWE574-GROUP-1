@@ -31,7 +31,7 @@ def login_user(request: object) -> [redirect, HttpResponseRedirect] :
     # Log user in and redirect to feed
         user_login = auth.authenticate(username=username, password=password)
         auth.login(request, user_login)
-        return redirect("core:profile")
+        return redirect("core:profile", profile_owner_username=username)
     except Exception as e:
         messages.info(request, f"Username or Password is invalid. Error: {e}")
         return HttpResponseRedirect(redirect_path)
