@@ -52,6 +52,12 @@ def update_post(request: object) -> None:
         current_post.link = link
     if caption:
         current_post.caption = caption
+    preview = generate_preview_(url=link)
+    if preview:
+        current_post.title = preview.get('title')
+        current_post.description = preview.get('description')
+        current_post.preview_image = preview.get('image')
+    print("preview is:", preview)
     current_post.save()
 
 

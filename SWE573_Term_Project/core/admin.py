@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Post, Preview
+from .models import Profile, Post
 
 
 # Models to be displayed within admin panel
@@ -8,4 +8,3 @@ from .models import Profile, Post, Preview
 
 admin.site.register(Profile)
 admin.site.register(Post)
-admin.site.register(Preview)

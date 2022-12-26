@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 # Import from external packages
 from uuid import uuid4
+
 # Create your models here.
 
 User = get_user_model()
@@ -41,10 +42,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.owner_username
-
-
-class Preview(models.Model):
-    post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    title = models.TextField(max_length=100)
-    description = models.TextField(max_length=200)
-    preview_image = models.ImageField(upload_to="preview_images", default="preview/no_preview.jpg")

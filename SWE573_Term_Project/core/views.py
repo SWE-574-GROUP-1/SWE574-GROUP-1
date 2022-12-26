@@ -48,5 +48,5 @@ def book_post(request: object):
 
 
 @login_required(login_url="core:signin")
-def profile(request):
-    return profile_page_handler_main(request=request)
+def profile(request, profile_owner_username):
+    return profile_page_handler_main(request=request, profile_owner_username=profile_owner_username)

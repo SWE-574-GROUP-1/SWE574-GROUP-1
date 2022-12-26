@@ -39,7 +39,7 @@ def signin_post_method_handler(request: object) -> [redirect, HttpResponseRedire
 
     is_validated = validate_signin_form(request=request)
     if is_validated:
-        return redirect("core:profile")
+        return redirect("core:profile", profile_owner_username=request.user.username)
     else:
         return HttpResponseRedirect("/signin")
 
