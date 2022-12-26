@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-
+from requests.exceptions import MissingSchema
 
 def get_title(html):
     """Scrape page title."""
@@ -69,11 +69,16 @@ def generate_preview(request):
     }
 
     print(meta_data)
-
+    print(type(meta_data))
+    print(type(meta_data.get('image')))
     return JsonResponse(meta_data)
 
 
 def generate_preview_(url: str):
+    print("GENERATE_PREVIEW_ IS CALLED!")
+    if not url:
+        return dict()
+
     headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
@@ -82,16 +87,17 @@ def generate_preview_(url: str):
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
     }
 
-    url = url
-    print(url)
-    req = requests.get(url, headers)
+    print("URL is:", url)
+    try:
+        req = requests.get(url, headers)
+    except MissingSchema as e:
+        return dict()
     html = BeautifulSoup(req.content, 'html.parser')
     meta_data = {
         'title': get_title(html),
         'description': get_description(html),
         'image': get_image(html),
     }
-
-    print(meta_data)
+    print("META_DATA IS:")
+    print(meta_data.get('description'))
     return meta_data
-    return JsonResponse(meta_data)

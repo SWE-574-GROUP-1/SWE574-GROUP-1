@@ -93,7 +93,7 @@ def validate_password(request: object) -> bool:
         messages.info(request, "Password must contain at least 8 elements!")
         return False
     # Validate password format
-    elif not validate_password_format(request=request, password=password):
+    elif not validate_password_format(password=password):
         messages.info(request, "Password contains illegal characters!")
         return False
     else:

@@ -2,6 +2,7 @@
 from ...models import Post
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from ..utils.generate_preview import generate_preview_
 
 
 def create_post(request: object) -> None:
@@ -12,11 +13,25 @@ def create_post(request: object) -> None:
     """
     # Get the username of the user that requests to create a post
     owner_username = request.user.username
-
+    # Get preview details
+    preview = generate_preview_(url=request.POST.get('link'))
+    print(preview.get('description'))
+    print(type(preview.get('description')))
     # Creating new post
-    new_post = Post.objects.create(owner_username=owner_username,
-                                   link=request.POST.get("link"),
-                                   caption=request.POST.get("caption"))
+    if preview:
+        new_post = Post.objects.create(owner_username=owner_username,
+                                       link=request.POST.get("link"),
+                                       caption=request.POST.get("caption"),
+                                       title=preview.get('title'),
+                                       description=preview.get('description'),
+                                       preview_image=preview.get('image')
+                                       )
+    else:
+        print("HI FROM ELSE")
+        new_post = Post.objects.create(owner_username=owner_username,
+                                       link=request.POST.get("link"),
+                                       caption=request.POST.get("caption"),
+                                       )
     new_post.save()
     pass
 

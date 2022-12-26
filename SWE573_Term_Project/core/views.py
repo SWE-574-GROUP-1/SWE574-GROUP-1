@@ -5,6 +5,8 @@ from .src.pages.signup_page_handler import signup_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
+
+
 @login_required(login_url="core:signin")
 def feed(request: object):
     return render(request, 'test.html')
@@ -29,7 +31,7 @@ def logout(request: object):
     # TODO - Dağlar: Change this to homepage when created
     return redirect("core:signin")
 
-    
+
 @login_required(login_url="core:signin")
 def delete_account(request: object):
     return delete_user(request=request)
@@ -48,5 +50,3 @@ def book_post(request: object):
 @login_required(login_url="core:signin")
 def profile(request):
     return profile_page_handler_main(request=request)
-
-

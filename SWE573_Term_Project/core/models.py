@@ -34,6 +34,10 @@ class Post(models.Model):
     # TODO: Learn more about using a foreign key as attribute
     bookmarked_by = ArrayField(models.TextField(), default=list, blank=True, )
     num_of_bookmarks = models.IntegerField(default=0)
+    # Preview attributes
+    title = models.TextField(max_length=100, blank=True)
+    description = models.TextField(max_length=500, blank=True)
+    preview_image = models.TextField(max_length=200, blank=True)
 
     def __str__(self):
         return self.owner_username

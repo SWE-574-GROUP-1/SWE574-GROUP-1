@@ -19,11 +19,7 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<style>
-    .not-visible {
-        display: none;
-    }
-</style>
+
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css">
@@ -87,176 +83,179 @@
 </header>
 body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
 <div class="container-sm bd-gutter mt-3 my-md-4 bd-layout">
-   <div class="row">
-      <div class="col-md-12">
-         <div id="content" class="content content-full-width">
-            <!-- begin profile -->
-            <div class="profile">
-               <div class="profile-header">
-                  <!-- BEGIN profile-header-cover -->
-                  <div class="profile-header-cover">
-                    <img src="{{user_profile.background_image.url}}" alt="">
-                  </div>
-                  <!-- END profile-header-cover -->
-                  <!-- BEGIN profile-header-content -->
-                  <div class="profile-header-content">
-                     <!-- BEGIN profile-header-img -->
-                     <div class="profile-header-img">
-                        <img src="{{user_profile.profile_image.url}}" alt="">
-                     </div>
-                     <!-- END profile-header-img -->
-                     <!-- BEGIN profile-header-info -->
-                     <div class="profile-header-info">
-                        <h4 class="m-t-10 m-b-5">@{{user.username}}</h4>
-                        <p class="m-b-10">{{user_profile.bio}}</p>
-                        <a href="#" class="btn btn-sm btn-info mb-2 disabled" style="visibility: hidden;">Edit Profile</a>
-                     </div>
-                     <!-- END profile-header-info -->
-                  </div>
-                  <!-- END profile-header-content -->
-                  <!-- BEGIN profile-header-tab -->
-                  <ul class="profile-header-tab nav nav-tabs">
-                     <li class="nav-item"><a href="#profile-post" target="__blank" class="nav-link_">POSTS</a></li>
-                     <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a></li>
-                     <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a></li>
-                  </ul>
-                  <!-- END profile-header-tab -->
-               </div>
-            </div>
-            <!-- end profile -->
-            <!-- begin profile-content -->
-            <div class="profile-content">
-               <!-- begin tab-content -->
-               <div class="tab-content p-0">
-                  <!-- begin #profile-post tab -->
-                  <div class="tab-pane active" id="profile-post">
-                     <!-- begin timeline -->
-                     <ul class="timeline">
-                        {% for post in posts %}
-                            <li>
-                                <!-- begin timeline-time -->
-                                <div class="timeline-time">
-                                    <span class="date">{{ post.created_at.date }}</span>
-                                    <span class="time">{{ post.created_at.time }}</span>
-                                </div>
-                                <!-- end timeline-time -->
-                                <!-- begin timeline-icon -->
-                                <div class="timeline-icon">
-                                    <a href="javascript:;">&nbsp;</a>
-                                </div>
-                                <!-- end timeline-icon -->
-                                <!-- begin timeline-body -->
-                                <div class="timeline-body">
-                                    <div class="timeline-header">
-                                        <span class="userimage"><img src="{{ user_profile.profile_image.url }}" alt=""></span>
-                                        <span class="username"><a
-                                                href="/profile">{{ user.username }}</a> <small></small></span>
-                                        <span class="pull-right text-muted"> {{ post.num_of_bookmarks }}</span>
-                                        <span class="pull-right text-muted">
-                                    <img src="{% static 'assets/images/logo/svg/bookmarks.svg' %}" alt="Bootstrap"
-                                         width="30" height="30">
-                                    &nbsp
-                                 </span>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <div class="container">
-                                            <form action="" method="POST" id="url_preview_form">
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="id_link" name="link"
-                                                           aria-describedby="emailHelp"
-                                                           placeholder="Enter Url"
-                                                           value="{{ post.link }}">
-                                                </div>
-                                            </form>
-                                            {#        <button type="submit" form="url_preview_form" class="btn btn-primary">#}
-                                            <div class="spinner-border text-success not-visible" id="loader"
-                                                 role="status">
-                                                <span class="sr-only">Loading...</span>
-                                            </div>
-                                            <div class="card mt-4 text-success not-visible" style="width: 10rem;" id="card_div">
-                                                <img id="preview_image" class="card-img-top" src="" alt="Card">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" id="title"></h5>
-                                                    <p class="card-text" id="desc"></p>
-                                                    <a id="link_btn" href="#" class="btn btn-primary">Go To Website</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="timeline-likes">
-                                        <div class="stats">
-                                            <p style="font-size: 15px;">
-                                                <strong>{{ post.caption }}</strong>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-footer">
-                                        {#                                    https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#}
-                                        {% if user.username in post.bookmarked_by %}
-                                            <a href="book_post?post_id={{ post.post_id }}"
-                                               class="m-r-15 text-inverse-lighter"><i
-                                                    class="fa-solid fa-bookmark fa-fw fa-lg m-r-3"></i>
-                                                Booked</a>
-                                        {% else %}
-                                            <a href="book_post?post_id={{ post.post_id }}"
-                                               class="m-r-15 text-inverse-lighter"><i
-                                                    class="fa-regular fa-bookmark fa-fw fa-lg m-r-3"></i>
-                                                Book</a>
-                                        {% endif %}
-
-                                        <a href="delete_post?post_id={{ post.post_id }}"
-                                           class="m-r-15 text-inverse-lighter pull-right"><i
-                                                class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
-                                        <a>&nbsp;</a>
-                                        <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
-                                           data-bs-target="#postUpdateModal"><i
-                                                class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
-
-                                    </div>
-{#                                    Edit Modal in timeline footer#}
-                                    <div class="modal fade" id="postUpdateModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Update the
-                                                        Post</h5>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="" method="POST" id="post_update_form">
-                                                        {% csrf_token %}
-                                                        <input name="form_name" type="hidden" id="form-name"
-                                                               value="post-update-form">
-                                                        <input name="post_id" type="hidden" id="form-name"
-                                                               value="{{ post.post_id }}">
-                                                        <div class="form-group text-secondary">
-                                                            <label for="link"
-                                                                   class="col-form-label"><strong>Link</strong></label>
-                                                            <input name="link" type="text" class="form-control"
-                                                                   id="link" placeholder="{{ post.link }}">
-                                                            <hr>
-                                                            <label for="caption"
-                                                                   class="col-form-label"><strong>Caption</strong></label>
-                                                            <textarea name="caption" class="form-control" id="caption"
-                                                                      placeholder="{{ post.caption }}"></textarea>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="close" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancel
-                                                    </button>
-                                                    <button type="submit" form="post_update_form"
-                                                            class="btn btn-primary"
-                                                            onclick="return checkform_validity()">Update Post
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end timeline-body -->
+    <div class="row">
+        <div class="col-md-12">
+            <div id="content" class="content content-full-width">
+                <!-- begin profile -->
+                <div class="profile">
+                    <div class="profile-header">
+                        <!-- BEGIN profile-header-cover -->
+                        <div class="profile-header-cover">
+                            <img src="{{ user_profile.background_image.url }}" alt="">
+                        </div>
+                        <!-- END profile-header-cover -->
+                        <!-- BEGIN profile-header-content -->
+                        <div class="profile-header-content">
+                            <!-- BEGIN profile-header-img -->
+                            <div class="profile-header-img">
+                                <img src="{{ user_profile.profile_image.url }}" alt="">
+                            </div>
+                            <!-- END profile-header-img -->
+                            <!-- BEGIN profile-header-info -->
+                            <div class="profile-header-info">
+                                <h4 class="m-t-10 m-b-5">@{{ user.username }}</h4>
+                                <p class="m-b-10">{{ user_profile.bio }}</p>
+                                <a href="#" class="btn btn-sm btn-info mb-2 disabled" style="visibility: hidden;">Edit
+                                    Profile</a>
+                            </div>
+                            <!-- END profile-header-info -->
+                        </div>
+                        <!-- END profile-header-content -->
+                        <!-- BEGIN profile-header-tab -->
+                        <ul class="profile-header-tab nav nav-tabs">
+                            <li class="nav-item"><a href="#profile-post" target="__blank" class="nav-link_">POSTS</a>
                             </li>
+                            <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a>
+                            </li>
+                            <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a>
+                            </li>
+                        </ul>
+                        <!-- END profile-header-tab -->
+                    </div>
+                </div>
+                <!-- end profile -->
+                <!-- begin profile-content -->
+                <div class="profile-content">
+                    <!-- begin tab-content -->
+                    <div class="tab-content p-0">
+                        <!-- begin #profile-post tab -->
+                        <div class="tab-pane active" id="profile-post">
+                            <!-- begin timeline -->
+                            <ul class="timeline">
+                                {% for post in posts %}
+                                    <li>
+                                        <!-- begin timeline-time -->
+                                        <div class="timeline-time">
+                                            <span class="date">{{ post.created_at.date }}</span>
+                                            <span class="time">{{ post.created_at.time }}</span>
+                                        </div>
+                                        <!-- end timeline-time -->
+                                        <!-- begin timeline-icon -->
+                                        <div class="timeline-icon">
+                                            <a href="javascript:;">&nbsp;</a>
+                                        </div>
+                                        <!-- end timeline-icon -->
+                                        <!-- begin timeline-body -->
+                                        <div class="timeline-body">
+                                            <div class="timeline-header">
+                                                <span class="userimage"><img src="{{ user_profile.profile_image.url }}"
+                                                                             alt=""></span>
+                                                <span class="username"><a
+                                                        href="/profile">{{ user.username }}</a> <small></small></span>
+                                                <span class="pull-right text-muted"> {{ post.num_of_bookmarks }}</span>
+                                                <a href="book_post?post_id={{ post.post_id }}">
+                                                <span class="pull-right text-muted ">
+                                                    {% if user.username in post.bookmarked_by %}
+                                                        <img src="{% static 'assets/images/logo/svg/bookmarks-fill.svg' %}"
+                                                             alt="Bootstrap" width="30" height="30">
+                                                    {% else %}
+                                                        <img src="{% static 'assets/images/logo/svg/bookmarks.svg' %}"
+                                                             alt="Bootstrap" width="30" height="30">
+                                                    {% endif %}
+                                                    &nbsp
+                                                </span>
+                                                </a>
+                                            </div>
+                                            <div class="timeline-content">
+
+                                                <div class="container">
+                                                    {% if post.title %}
+                                                        <div class="card mb-3" style="width: 550px;">
+                                                            <div class="row no-gutters">
+                                                                <div class="col-sm-6">
+                                                                    <img src="{{ post.preview_image }}"
+                                                                         class="card-img-top img-fluid" alt="...">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-title">{{ post.title }}</h5>
+                                                                        <p class="card-text">{{ post.description }}</p>
+                                                                        <a id="link_btn" href="{{ post.link }}"
+                                                                           class="btn btn-primary">Go To Website</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <p>
+                                                            {{ post.link }}
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="timeline-likes">
+                                                <div class="stats">
+                                                    <p style="font-size: 15px;">
+                                                        <strong>{{ post.caption }}</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-footer">
+                                                <a href="delete_post?post_id={{ post.post_id }}"
+                                                   class="m-r-15 text-inverse-lighter pull-right"><i
+                                                        class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
+                                                <a>&nbsp;</a>
+                                                <a href="" class="m-r-15 text-inverse-lighter pull-right"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#postUpdateModal"><i
+                                                        class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
+
+                                            </div>
+                                            {#                                    Edit Modal in timeline footer#}
+                                            <div class="modal fade" id="postUpdateModal" tabindex="-1" role="dialog"
+                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Update the
+                                                                Post</h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form action="" method="POST" id="post_update_form">
+                                                                {% csrf_token %}
+                                                                <input name="form_name" type="hidden" id="form-name"
+                                                                       value="post-update-form">
+                                                                <input name="post_id" type="hidden" id="form-name"
+                                                                       value="{{ post.post_id }}">
+                                                                <div class="form-group text-secondary">
+                                                                    <label for="link"
+                                                                           class="col-form-label"><strong>Link</strong></label>
+                                                                    <input name="link" type="text" class="form-control"
+                                                                           id="link" placeholder="{{ post.link }}">
+                                                                    <hr>
+                                                                    <label for="caption"
+                                                                           class="col-form-label"><strong>Caption</strong></label>
+                                                                    <textarea name="caption" class="form-control"
+                                                                              id="caption"
+                                                                              placeholder="{{ post.caption }}"></textarea>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="close" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Cancel
+                                                            </button>
+                                                            <button type="submit" form="post_update_form"
+                                                                    class="btn btn-primary"
+                                                                    onclick="return checkform_validity()">Update Post
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end timeline-body -->
+                                    </li>
                                 {% endfor %}
 
                                 <li>
@@ -320,43 +319,6 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
     </div>
 </div>
 </body>
-{#URL Preview for Posts#}
-<script>
-    title = document.getElementById('title');
-    desc = document.getElementById('desc');
-    image = document.getElementById('preview_image');
-    link_btn = document.getElementById('link_btn');
-    card = document.getElementById('card_div');
-    loader = document.getElementById('loader');
-
-    {#$(this).read(function)#}
-    $("#id_link").ready(function () {
-        let link = $('#id_link').val();
-        console.log(link);
-        $.ajax({
-            url: '{% url 'core:generate' %}',
-            data: {
-                'link': link
-            },
-            dataType: 'json',
-            beforeSend: function () {
-                loader.classList.remove('not-visible');
-                card.classList.add('not-visible');
-            },
-            success: function (response) {
-                card.classList.remove('not-visible');
-                title.innerHTML = response.title
-                desc.innerHTML = response.description
-                image.src = response.image
-                link_btn.href = link
-                loader.classList.add('not-visible');
-            },
-            error: function (error) {
-                console.log(error);
-            },
-        });
-    });
-</script>
 {#<!-- Prevents posting empty post-creating-form -->#}
 <script type='text/javascript'>
     function checkform() {

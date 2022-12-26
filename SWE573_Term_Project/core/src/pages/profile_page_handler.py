@@ -19,6 +19,7 @@ def profile_page_handler_main(request: object) -> HttpResponseRedirect:
     else:
         raise "Invalid HTTP Method"
 
+
 def profile_get_method_handler(request: object) -> render:
     """
     Implementation of managing get requests from profile.html. Fetches the Profile and Post models of user and
@@ -29,7 +30,9 @@ def profile_get_method_handler(request: object) -> render:
     # TODO - Dağlar: Do I need to change this function to dynamically rendering another page
     user_profile = Profile.objects.get(user=request.user)
     posts = Post.objects.filter(owner_username=request.user.username).order_by('-created_at')
-    return render(request, "profile.html", {'user_profile': user_profile, 'posts': posts, })
+    context = {'user_profile': user_profile, 'posts': posts, }
+    return render(request, "profile.html", context=context)
+
 
 def profile_post_method_handler(request: object) -> HttpResponseRedirect:
     """
@@ -51,6 +54,3 @@ def profile_post_method_handler(request: object) -> HttpResponseRedirect:
     else:
         raise f"Invalid form-name: {request.POST.get('form-name')}"
     return HttpResponseRedirect(redirect_path)
-
-
-
