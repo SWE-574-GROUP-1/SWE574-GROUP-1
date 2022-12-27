@@ -9,7 +9,16 @@
     border: 1px transparent;
     
 }
-
+.tag-button {
+    position:fixed;
+    right: 0;
+    bottom: 125px;
+    background-color: transparent;
+    /* background:rgb(73, 72, 72); */
+    height: 125px;
+    width: 125px;
+    border: 1px transparent;
+}
 body{
     margin-top:20px;
     background:#eee;

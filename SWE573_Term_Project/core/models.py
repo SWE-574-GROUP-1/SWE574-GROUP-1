@@ -43,10 +43,15 @@ class Post(models.Model):
     preview_image = models.TextField(max_length=200, blank=True)
     # Many-to-many field for tags
     tags = models.ManyToManyField('Tag', related_name='posts', default=None)
+    spaces = models.ManyToManyField('Space', related_name='spaces', default=None)
 
     def __str__(self):
         return self.owner_username
 
 
 class Tag(models.Model):
+    name = models.CharField(max_length=25, unique=True)
+
+
+class Space(models.Model):
     name = models.CharField(max_length=25, unique=True)

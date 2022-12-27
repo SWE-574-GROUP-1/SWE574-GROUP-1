@@ -6,8 +6,10 @@ from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
 # TODO: Improve modularity
+from django.urls import reverse
 from .models import Profile, Tag
 from django.http import HttpResponseRedirect
+from .src.models import post_model_handler, tag_model_handler
 
 @login_required(login_url="core:signin")
 def feed(request: object):
@@ -84,6 +86,7 @@ def search(request: object):
     print(request.POST.get("keyword"))
     return render(request, "search.html", context=context)
 
+
 @login_required(login_url="core:signin")
 def follow(request: object):
     path = request.META.get('HTTP_REFERER')
@@ -121,9 +124,58 @@ def follow(request: object):
 
 
 def tags(request, tag_name):
+    print(f"TAG NAME IS: {tag_name}")
     # Get the Tag object for given tag name
-    tag = Tag.objects.get(name=tag_name)
+    try:
+        tag = Tag.objects.get(name=tag_name)
+    except Tag.DoesNotExist:
+        path = request.META.get('HTTP_REFERER')
+        # TODO: Add does not exist message here
+        return HttpResponseRedirect(path)
     # Get all posts with specific tag name
-    posts = tag.posts.all()
-    context = {"posts": posts,}
+    posts = tag.posts.all().order_by('-created_at')
+    if request.method == 'POST':
+        if request.POST.get('form_name') == 'tag-search-form':
+            print(request.POST)
+            tag_name = request.POST.get('tag_name_to_be_searched')
+    # Create list of post owners
+    post_owner_profile_list = list()
+    for post in posts:
+        user_obj = User.objects.get(username=post.owner_username)
+        profile_obj = Profile.objects.get(user=user_obj)
+        post_owner_profile_list.append(profile_obj)
+        print(profile_obj.profile_image.url)
+    request_owner_user_object = User.objects.get(username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
+    post_owner_profile_list_with_posts = zip(post_owner_profile_list, posts)
+    context = {"post_owner_profile_list_with_posts": post_owner_profile_list_with_posts,
+               "request_owner_user_profile": request_owner_user_profile,
+               'available_tags': Tag.objects.all(),
+               }
+    if request.method == 'POST':
+        redirect_path = request.META.get('HTTP_REFERER')
+        if request.POST.get('form_name') == 'tag-search-form':
+            print(request.POST)
+            tag_name = request.POST.get('tag_name_to_be_searched')
+            url = reverse('core:tags', kwargs={'tag_name': tag_name})
+            return redirect(url)
+        if request.POST.get("form_name") == "post-create-form":
+            print("post-create-form received")
+            post_model_handler.create_post(request=request)
+        if request.POST.get("form_name") == "post-update-form":
+            print("post-update-form received")
+            post_model_handler.update_post(request=request)
+        if request.POST.get("form_name") == "tag-create-form":
+            print("tag-create-form received")
+            is_tag_name_valid = tag_model_handler.validate_tag(request=request)
+            if is_tag_name_valid:
+                tag_model_handler.create_tag(request=request)
+            print(request.POST)
+        return HttpResponseRedirect(redirect_path)
     return render(request, "tags.html", context=context)
+
+
+@login_required(login_url="core:signin")
+def spaces(request, space_name):
+    context = {}
+    return render(request, "spaces.html", context=context)

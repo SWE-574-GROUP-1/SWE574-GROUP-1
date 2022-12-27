@@ -54,7 +54,7 @@
                 </li>
                 <!-- # TODO: Implement Discover -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link px-3 text-white">Tags</a>
+                    <a href="{% url 'core:tags' tag_name=" " %}" class="nav-link px-3 text-white">Tags</a>
                 </li>
                 <!-- # TODO: Implement Spaces -->
                 <li class="nav-item">
@@ -70,7 +70,7 @@
                 </a>
                 <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
                     <a class="dropdown-item text-white"
-                       href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}">Profile</a>
+                       href="{% url 'core:profile' profile_owner_username=request_owner_user_profile.user.username %}">Profile</a>
                     <a class="dropdown-item text-white" href="/settings">Settings</a>
                     <a class="dropdown-item text-white" href="#">About</a>
                     <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
@@ -80,7 +80,7 @@
         <ul class="navbar-nav position-relative ms-auto me-0">
             <li class="nav-item">
                 {#                <a href="profile?profile_owner_username={{ request_owner_user_profile.username }}" class="nav-link px-3 text-white">#}
-                <a href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}"
+                <a href="{% url 'core:profile' profile_owner_username=request_owner_user_profile.user.username %}"
                    class="nav-link px-3 text-white">
                     <img width="40" height="40" src="{{ request_owner_user_profile.profile_image.url }}"
                          class="header-avatar"
@@ -91,62 +91,30 @@
     </div>
 </header>
 body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
+body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
+
 <div class="container-sm bd-gutter mt-3 my-md-4 bd-layout">
+    <hr>
     <div class="row">
-        <div class="col-md-12">
-            <div id="content" class="content content-full-width">
-                <!-- begin profile -->
-                <div class="profile">
-                    <div class="profile-header">
-                        <!-- BEGIN profile-header-cover -->
-                        <div class="profile-header-cover">
-                            <img src="{{ profile_owner_user_profile.background_image.url }}" alt="">
-                        </div>
-                        <!-- END profile-header-cover -->
-                        <!-- BEGIN profile-header-content -->
-                        <div class="profile-header-content">
-                            <!-- BEGIN profile-header-img -->
-                            <div class="profile-header-img">
-                                <img src="{{ profile_owner_user_profile.profile_image.url }}" alt="">
-                            </div>
-                            <!-- END profile-header-img -->
-                            <!-- BEGIN profile-header-info -->
-                            <div class="profile-header-info">
-                                <h4 class="m-t-10 m-b-5">@{{ profile_owner_user.username }}</h4>
-                                <p class="m-b-10">{{ profile_owner_user_profile.bio }}</p>
-                                {# TODO: Make an if else loop for button changes and visibility for visitors#}
-                                {% if profile_owner_user.username == request_owner_user.username %}
-                                    <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
-                                {% else %}
-                                    {% if request_owner_user_profile.id_user in profile_owner_user_profile.followers %}
-                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
-                                           class="btn btn-sm btn-info mb-2">Unfollow</a>
-                                    {% else %}
-                                        <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
-                                           class="btn btn-sm btn-info mb-2">Follow</a>
-                                    {% endif %}
-                                {% endif %}
-                                <p class="m-b-5 pull-right">{{ num_followers }} Followers {{ num_following }}
-                                    Following {{ num_posts }} Posts</p>
-                            </div>
-                            <!-- END profile-header-info -->
-                        </div>
-                        <!-- END profile-header-content -->
-                        <!-- BEGIN profile-header-tab -->
-                        <ul class="profile-header-tab nav nav-tabs">
-                            <li class="nav-item"><a href="#profile-post" target="__blank" class="nav-link_">POSTS</a>
-                            </li>
-                            <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a>
-                            </li>
-                            {% if profile_owner_user.username == request_owner_user.username %}
-                                <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                        <!-- END profile-header-tab -->
+        {#        # TODO: Fix this form#}
+        <div class="col-md-6 mx-auto">
+            <form id="tag_search_form" method="POST" action="">
+                {% csrf_token %}
+                <div class="input-group input-group-sm">
+                    <input name="form_name" type="hidden" id="form-name" value="tag-search-form">
+                    <input type="text" name="tag_name_to_be_searched" class="form-control"
+                           placeholder="Search for Tags">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" form="tag_search_form"
+                                onclick="return checkform_tags()">Search
+                        </button>
                     </div>
                 </div>
-                <!-- end profile -->
+            </form>
+        </div>
+
+        <div class="col-md-12">
+            <div id="content" class="content content-full-width">
                 <!-- begin profile-content -->
                 <div class="profile-content">
                     <!-- begin tab-content -->
@@ -155,7 +123,7 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                         <div class="tab-pane active" id="profile-post">
                             <!-- begin timeline -->
                             <ul class="timeline">
-                                {% for post in posts %}
+                                {% for post_owner_profile, post in post_owner_profile_list_with_posts %}
                                     <li>
                                         <!-- begin timeline-time -->
                                         <div class="timeline-time">
@@ -172,7 +140,7 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                         <div class="timeline-body">
                                             <div class="timeline-header">
                                                 <span class="userimage"><img
-                                                        src="{{ profile_owner_user_profile.profile_image.url }}"
+                                                        src="{{ post_owner_profile.profile_image.url }}"
                                                         alt=""></span>
                                                 <span class="username"><a
                                                         href="{% url 'core:profile' profile_owner_username=post.owner_username %}">{{ post.owner_username }}</a> <small></small></span>
@@ -232,7 +200,7 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                             class="bi bi-tags-fill"></i>{{ tag.name }} </a>
                                                     <a>&nbsp;</a>
                                                 {% endfor %}
-                                                {% if profile_owner_user.username == request_owner_user.username %}
+                                                {% if post.owner_username == request_owner_user_profile.user.username %}
                                                     <a href="/delete_post?post_id={{ post.post_id }}"
                                                        class="m-r-15 text-inverse-lighter pull-right"><i
                                                             class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
@@ -313,18 +281,6 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                             <!-- end timeline-body -->
                                     </li>
                                 {% endfor %}
-
-                                <li>
-                                    <!-- begin timeline-icon -->
-                                    <div class="timeline-icon">
-                                        <a href="javascript:;">&nbsp;</a>
-                                    </div>
-                                    <!-- end timeline-icon -->
-                                    <!-- begin timeline-body -->
-                                    <div class="timeline-body">
-                                        Loading...
-                                    </div>
-                                </li>
                             </ul>
                             <!-- end timeline -->
                         </div>
@@ -336,10 +292,17 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
             </div>
         </div>
     </div>
+</div>
+<div class="col-12">
     <button type="button" class="btn btn-light post-button" value="Post" role="img" data-bs-toggle="modal"
             data-bs-target="#postModal">
         <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
-        <figcaption><strong>Post Something</strong></figcaption>
+        <figcaption><strong>Post bLink</strong></figcaption>
+    </button>
+    <button type="button" class="btn btn-light tag-button" value="Post" role="img" data-bs-toggle="modal"
+            data-bs-target="#tagModal">
+        <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
+        <figcaption><strong>Create Tag</strong></figcaption>
     </button>
     <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
@@ -376,7 +339,7 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                     {% endfor %}
                                 </ul>
                             </div>
-
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -388,7 +351,37 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
             </div>
         </div>
     </div>
+    <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create New Tag</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST" id="tag_create_form">
+                        {% csrf_token %}
+                        <input name="form_name" type="hidden" id="form-name" value="tag-create-form">
+                        <div class="form-group text-secondary">
+                            <label for="tag_name" class="col-form-label"><strong>Link</strong></label>
+                            <input name="tag_name" type="text" class="form-control" id="tag_name"
+                                   placeholder="Enter the Tag">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="tag_create_form" class="btn btn-primary"
+                            onclick="return checkform_create_tags();">
+                        Create Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 </body>
 {#<!-- Prevents posting empty post-creating-form -->#}
 <script type='text/javascript'>
@@ -413,6 +406,29 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
             console.log(document.forms.post_update_form.link.value)
             document.post_update_form.submit();
             document.post_update_form.reset();
+        }
+    }
+</script>
+{#<!-- Prevents posting empty post-creating-form -->#}
+<script type='text/javascript'>
+    function checkform_tags() {
+        if (document.forms.tag_search_form.tag_name_to_be_searched.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            document.tag_search_form.submit();
+            document.tag_search_form.reset();
+        }
+    }
+</script>
+<script type='text/javascript'>
+    function checkform_create_tags() {
+        if (document.forms.tag_create_form.tag_name.value == "") {
+            alert("Empty tag cannot be created!");
+            return false;
+        } else {
+            document.tag_search_form.submit();
+            document.tag_search_form.reset();
         }
     }
 </script>

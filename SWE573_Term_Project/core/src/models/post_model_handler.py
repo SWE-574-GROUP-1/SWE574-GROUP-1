@@ -72,7 +72,17 @@ def update_post(request: object) -> None:
         current_post.title = preview.get('title')
         current_post.description = preview.get('description')
         current_post.preview_image = preview.get('image')
-    print("preview is:", preview)
+
+    # Reset the tags
+    current_post.tags.clear()
+    # Reassign the keys
+    for key in list(request.POST.keys()):
+        if 'tag' in key:
+            # Get the tag name
+            tag_name = request.POST.get(key)
+            # Get the Tag object
+            tag = Tag.objects.get(name=tag_name)
+            current_post.tags.add(tag)
     current_post.save()
 
 
