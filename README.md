@@ -1,6 +1,9 @@
 # SWE573_Term_Project
 This Repository contains the Term Project of SWE573 class in Bogazici Univesity.
 ## Authors:  **Dağlar Berk Erdem**
+## Application
+The application can be accessed through http://52.211.173.214:8000
+Please be careful about links :)
 ## Introduction
 LinkMe is a web based note-taking and posting application. Users can share, categorize contents from social media or blogs and interact with other users
 through contents. Moreover, users can browse through spaces or tags to discover contents in a specific area.
