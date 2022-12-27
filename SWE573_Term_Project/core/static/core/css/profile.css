@@ -420,6 +420,9 @@ body.flat-black {
 .media>.media-left, .media>.pull-left {
     padding-right: 15px;
 }
+.media>.media-left, .media>.pull-mid {
+    padding-right: 30px;
+}
 .media-body, .media-left, .media-right {
     display: table-cell;
     vertical-align: top;

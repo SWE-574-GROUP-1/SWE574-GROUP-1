@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post, Profile, Tag
+from ...models import Post, Profile, Tag, Space
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -42,7 +42,10 @@ def create_post(request: object) -> None:
             # Get the Tag object
             tag = Tag.objects.get(name=tag_name)
             new_post.tags.add(tag)
-
+    space_name = request.POST.get('space')
+    if space_name:
+        space = Space.objects.get(name=space_name)
+        new_post.spaces.add(space)
     print(request.POST)
     new_post.save()
     # Print the tags
@@ -72,7 +75,6 @@ def update_post(request: object) -> None:
         current_post.title = preview.get('title')
         current_post.description = preview.get('description')
         current_post.preview_image = preview.get('image')
-
     # Reset the tags
     current_post.tags.clear()
     # Reassign the keys
@@ -83,6 +85,12 @@ def update_post(request: object) -> None:
             # Get the Tag object
             tag = Tag.objects.get(name=tag_name)
             current_post.tags.add(tag)
+    space_name = request.POST.get('space')
+    if space_name:
+        current_post.spaces.clear()
+        space = Space.objects.get(name=space_name)
+        current_post.spaces.add(space)
+    print(request.POST)
     current_post.save()
 
 

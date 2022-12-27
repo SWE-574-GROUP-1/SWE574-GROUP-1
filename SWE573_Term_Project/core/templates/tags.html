@@ -157,6 +157,17 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                     &nbsp
                                                 </span>
                                                 </a>
+                                                <span class="username">
+                                                    {% for space in post.spaces.all %}
+                                                        <a style="color: blue;"
+                                                           href="{% url 'core:spaces' space_name=space.name %}"
+                                                           class="m-r-15 text-inverse-lighter pull-right"><i
+                                                                class="bi bi-rocket-takeoff-fill">
+                                                            </i>{{ space.name }}
+                                                        </a>
+                                                        <a>&nbsp;</a>
+                                                    {% endfor %}
+                                                </span>
                                             </div>
                                             <div class="timeline-content">
 
@@ -239,30 +250,66 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                                               id="caption"
                                                                               placeholder="{{ post.caption }}"></textarea>
                                                                 </div>
-                                                                <div class="dropdown">
-                                                                    <button class="btn btn-default dropdown-toggle"
-                                                                            type="button" data-bs-toggle="dropdown"
-                                                                            aria-haspopup="true" aria-expanded="true"
-                                                                            aria-label="Default select example">
-                                                                        <span id="usernamelabel">Select username</span>
-                                                                        <span class="caret"></span>
-                                                                    </button>
-                                                                    <ul class="dropdown-menu ml-2">
-                                                                        {% for tag in available_tags %}
+                                                                <div style="display: flex;">
+                                                                    {# Implementation of Tags #}
+                                                                    <div class="dropdown"
+                                                                         style="display: inline-block;">
+                                                                        <button class="btn btn-default dropdown-toggle"
+                                                                                type="button" data-bs-toggle="dropdown"
+                                                                                aria-haspopup="true"
+                                                                                aria-expanded="true"
+                                                                                aria-label="Tag select">
+                                                                            <span id="tagLabel">Select Tags</span>
+                                                                            <span class="caret"></span>
+                                                                        </button>
+                                                                        <ul class="dropdown-menu ml-2">
+                                                                            {% for tag in available_tags %}
+                                                                                {% if tag.name != ' ' %}
+                                                                                    <li>
+                                                                                        <input type="checkbox"
+                                                                                               id="{{ tag.name }}"
+                                                                                               name="tag-{{ forloop.counter0 }}"
+                                                                                               value="{{ tag.name }}"
+                                                                                                {% if tag in post.tags.all %}
+                                                                                               checked
+                                                                                                {% endif %}
+                                                                                        >
+                                                                                        <label for="{{ tag.name }}">{{ tag.name }}</label>
+                                                                                    </li>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
 
-                                                                            <li>
-                                                                                <input type="checkbox"
-                                                                                       id="{{ tag.name }}"
-                                                                                       name="tag-{{ forloop.counter0 }}"
-                                                                                       value="{{ tag.name }}"
-                                                                                        {% if tag in post.tags.all %}
-                                                                                       checked
-                                                                                        {% endif %}
-                                                                                >
-                                                                                <label for="{{ tag.name }}">{{ tag.name }}</label>
-                                                                            </li>
-                                                                        {% endfor %}
-                                                                    </ul>
+                                                                    {# Implementation of Spaces #}
+                                                                    <div class="dropdown"
+                                                                         style="display: inline-block;">
+                                                                        <button class="btn btn-default dropdown-toggle"
+                                                                                type="button" data-bs-toggle="dropdown"
+                                                                                aria-haspopup="true"
+                                                                                aria-expanded="true"
+                                                                                aria-label="Space select">
+                                                                            <span id="spaceLabel">Select Space</span>
+                                                                            <span class="caret"></span>
+                                                                        </button>
+                                                                        <ul class="dropdown-menu ml-2">
+                                                                            {% for space in available_spaces %}
+                                                                                {% if space.name != " " %}
+                                                                                    <li>
+                                                                                        <input type="radio"
+                                                                                               id="space"
+                                                                                               name="space"
+                                                                                               value="{{ space.name }}"
+                                                                                                {% if space in post.spaces.all %}
+                                                                                               checked
+                                                                                                {% endif %}
+                                                                                        >
+                                                                                        <label for="space">{{ space.name }}</label>
+                                                                                    </li>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -281,6 +328,18 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                             <!-- end timeline-body -->
                                     </li>
                                 {% endfor %}
+
+                                <li>
+                                    <!-- begin timeline-icon -->
+                                    <div class="timeline-icon">
+                                        <a href="javascript:;">&nbsp;</a>
+                                    </div>
+                                    <!-- end timeline-icon -->
+                                    <!-- begin timeline-body -->
+                                    <div class="timeline-body">
+                                        Loading...
+                                    </div>
+                                </li>
                             </ul>
                             <!-- end timeline -->
                         </div>
@@ -316,28 +375,73 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                         {% csrf_token %}
                         <input name="form_name" type="hidden" id="form-name" value="post-create-form">
                         <div class="form-group text-secondary">
-                            <label for="link" class="col-form-label"><strong>Link</strong></label>
+                            <label for="link" class="col-form-label"><strong>Tag Name</strong></label>
                             <input name="link" type="text" class="form-control" id="link" placeholder="Enter the link">
                             <hr>
                             <label for="caption" class="col-form-label"><strong>Caption</strong></label>
                             <textarea name="caption" class="form-control" id="caption"
                                       placeholder="Enter the caption"></textarea>
                             <hr>
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="true" aria-label="Default select example">
-                                    <span id="usernamelabel">Select username</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu ml-2">
-                                    {% for tag in available_tags %}
-                                        <li>
-                                            <input type="checkbox" id="{{ tag.name }}" name="tag-{{ forloop.counter0 }}"
-                                                   value="{{ tag.name }}">
-                                            <label for="{{ tag.name }}">{{ tag.name }}</label>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
+                            <div style="display: flex;">
+                                {# Implementation of Tags #}
+                                <div class="dropdown"
+                                     style="display: inline-block;">
+                                    <button class="btn btn-default dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="true"
+                                            aria-label="Tag select">
+                                        <span id="tagLabel">Select Tags</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu ml-2">
+                                        {% for tag in available_tags %}
+                                            {% if tag.name != ' ' %}
+                                                <li>
+                                                    <input type="checkbox"
+                                                           id="{{ tag.name }}"
+                                                           name="tag-{{ forloop.counter0 }}"
+                                                           value="{{ tag.name }}"
+                                                            {% if tag in post.tags.all %}
+                                                           checked
+                                                            {% endif %}
+                                                    >
+                                                    <label for="{{ tag.name }}">{{ tag.name }}</label>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                {# Implementation of Spaces #}
+                                <div class="dropdown"
+                                     style="display: inline-block;">
+                                    <button class="btn btn-default dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="true"
+                                            aria-label="Space select">
+                                        <span id="spaceLabel">Select Space</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu ml-2">
+                                        {% for space in available_spaces %}
+                                            {% if space.name != " " %}
+                                                <li>
+                                                    <input type="radio"
+                                                           id="space"
+                                                           name="space"
+                                                           value="{{ space.name }}"
+                                                            {% if space in post.spaces.all %}
+                                                           checked
+                                                            {% endif %}
+                                                    >
+                                                    <label for="space">{{ space.name }}</label>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </form>
