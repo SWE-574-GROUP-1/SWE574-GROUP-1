@@ -7,10 +7,10 @@ from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
 # TODO: Improve modularity
 from django.urls import reverse
-from .models import Profile, Tag, Space
+from .models import Profile, Tag, Space, Post
 from django.http import HttpResponseRedirect
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
-
+from itertools import chain
 
 def signup(request: object):
     return signup_page_handler_main(request=request)
@@ -192,7 +192,6 @@ def spaces(request, space_name):
         user_obj = User.objects.get(username=post.owner_username)
         profile_obj = Profile.objects.get(user=user_obj)
         post_owner_profile_list.append(profile_obj)
-        print(profile_obj.profile_image.url)
     request_owner_user_object = User.objects.get(username=request.user.username)
     request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
     post_owner_profile_list_with_posts = zip(post_owner_profile_list, posts)
@@ -221,3 +220,55 @@ def spaces(request, space_name):
         print(request.POST)
         return HttpResponseRedirect(redirect_path)
     return render(request, "spaces.html", context=context)
+
+
+@login_required(login_url="core:signin")
+def feed(request: object):
+    # Get the profile owner user object and profile
+    request_owner_user_object = User.objects.get(username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
+    # Get all posts with specific tag name
+    followings_username = list()
+    # Get the posts in a list
+    for followed in request_owner_user_profile.following:
+        # following_profile = Profile.objects.get(id_user=followed)
+        # following_profiles_posts = Post.objects.filter(owner_username=following_profile.user.username)
+        # followings_posts.append(following_profiles_posts)
+        following_profile = Profile.objects.get(id_user=followed)
+        followings_username.append(following_profile.user.username)
+        # print(type(following_profiles_posts))
+    followings_posts = Post.objects.filter(owner_username__in=followings_username).order_by('-created_at')
+    print(followings_username)
+    followings_profiles = list()
+    for post in followings_posts:
+        post_owner_user_object = User.objects.get(username=post.owner_username)
+        post_owner_profile_object = Profile.objects.get(user=post_owner_user_object)
+        followings_profiles.append(post_owner_profile_object)
+    print(followings_profiles)
+    following_profile_list_with_posts = zip(followings_profiles, followings_posts)
+    context = {'following_profile_list_with_posts': following_profile_list_with_posts,
+               "request_owner_user_profile": request_owner_user_profile,
+               'available_tags': Tag.objects.all(),
+               'available_spaces': Space.objects.all(),
+               }
+    if request.method == 'POST':
+        redirect_path = request.META.get('HTTP_REFERER')
+        if request.POST.get("form_name") == "post-create-form":
+            print("post-create-form received")
+            post_model_handler.create_post(request=request)
+        if request.POST.get("form_name") == "post-update-form":
+            print("post-update-form received")
+            post_model_handler.update_post(request=request)
+        if request.POST.get("form_name") == "space-create-form":
+            print("space-create-form received")
+            is_space_name_valid = space_model_handler.validate_space(request=request)
+            if is_space_name_valid:
+                space_model_handler.create_space(request=request)
+        if request.POST.get("form_name") == "tag-create-form":
+            print("tag-create-form received")
+            is_tag_name_valid = tag_model_handler.validate_tag(request=request)
+            if is_tag_name_valid:
+                tag_model_handler.create_tag(request=request)
+        print(request.POST)
+        return HttpResponseRedirect(redirect_path)
+    return render(request, "feed.html", context=context)
