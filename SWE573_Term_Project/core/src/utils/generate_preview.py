@@ -6,46 +6,55 @@ from requests.exceptions import MissingSchema
 
 def get_title(html):
     """Scrape page title."""
-    title = None
-    if html.title.string:
-        title = html.title.string
-    elif html.find("meta", property="og:title"):
-        title = html.find("meta", property="og:title").get('content')
-    elif html.find("meta", property="twitter:title"):
-        title = html.find("meta", property="twitter:title").get('content')
-    elif html.find("h1"):
-        title = html.find("h1").string
-    return title
+    try:
+        title = None
+        if html.title.string:
+            title = html.title.string
+        elif html.find("meta", property="og:title"):
+            title = html.find("meta", property="og:title").get('content')
+        elif html.find("meta", property="twitter:title"):
+            title = html.find("meta", property="twitter:title").get('content')
+        elif html.find("h1"):
+            title = html.find("h1").string
+        return title
+    except Exception as e:
+        return None
 
 
 def get_description(html):
     """Scrape page description."""
-    description = None
-    if html.find("meta", property="description"):
-        description = html.find("meta", property="description").get('content')
-    elif html.find("meta", property="og:description"):
-        description = html.find(
-            "meta", property="og:description").get('content')
-    elif html.find("meta", property="twitter:description"):
-        description = html.find(
-            "meta", property="twitter:description").get('content')
-    elif html.find("p"):
-        description = html.find("p").contents
-    return description
+    try:
+        description = None
+        if html.find("meta", property="description"):
+            description = html.find("meta", property="description").get('content')
+        elif html.find("meta", property="og:description"):
+            description = html.find(
+                "meta", property="og:description").get('content')
+        elif html.find("meta", property="twitter:description"):
+            description = html.find(
+                "meta", property="twitter:description").get('content')
+        elif html.find("p"):
+            description = html.find("p").contents
+        return description
+    except Exception as e:
+        return None
 
 
 def get_image(html):
     """Scrape share image."""
-    image = None
-    if html.find("meta", property="image"):
-        image = html.find("meta", property="image").get('content')
-    elif html.find("meta", property="og:image"):
-        image = html.find("meta", property="og:image").get('content')
-    elif html.find("meta", property="twitter:image"):
-        image = html.find("meta", property="twitter:image").get('content')
-    elif html.find("img", src=True):
-        image = html.find_all("img").get('src')
-    return image
+    try:
+        image = None
+        if html.find("meta", property="image"):
+            image = html.find("meta", property="image").get('content')
+        elif html.find("meta", property="og:image"):
+            image = html.find("meta", property="og:image").get('content')
+        elif html.find("meta", property="twitter:image"):
+            image = html.find("meta", property="twitter:image").get('content')
+        elif html.find("img", src=True):
+            image = html.find_all("img").get('src')
+        return image
+    except Exception as e:
+        return None
 
 
 @login_required(login_url="core:signin")
@@ -90,14 +99,18 @@ def generate_preview_(url: str):
     print("URL is:", url)
     try:
         req = requests.get(url, headers)
-    except MissingSchema as e:
+        html = BeautifulSoup(req.content, 'html.parser')
+        meta_data = {
+            'title': get_title(html),
+            'description': get_description(html),
+            'image': get_image(html),
+        }
+        print("META_DATA IS:")
+        print(meta_data.get('description'))
+        if meta_data.get('title') and meta_data.get('description') and meta_data.get('image'):
+            return meta_data
+        else:
+            return dict()
+    except Exception as e:
         return dict()
-    html = BeautifulSoup(req.content, 'html.parser')
-    meta_data = {
-        'title': get_title(html),
-        'description': get_description(html),
-        'image': get_image(html),
-    }
-    print("META_DATA IS:")
-    print(meta_data.get('description'))
-    return meta_data
+

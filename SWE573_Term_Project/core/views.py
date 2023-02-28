@@ -176,7 +176,7 @@ def spaces(request, space_name):
     # Get the Tag object for given tag name
     try:
         space = Space.objects.get(name=space_name)
-    except Tag.DoesNotExist:
+    except Space.DoesNotExist:
         path = request.META.get('HTTP_REFERER')
         # TODO: Add does not exist message here
         return HttpResponseRedirect(path)
