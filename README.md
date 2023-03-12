@@ -1,6 +1,14 @@
-# SWE573_Term_Project
-This Repository contains the Term Project of SWE573 class in Bogazici Univesity.
-## Authors:  **Dağlar Berk Erdem**
+# SWE574
+This Repository contains the Term Project of SWE574 class in Bogazici Univesity.
+## Authors:  
+- **Dağlar Berk Erdem**
+- **Hüseyin Aydın**
+- **Kaan Can**
+- **Ertan Kaya**
+- **Gencay Polat**
+- **Eren Ohtaroğlu**
+- **Damla Alkan**
+- **Ali Kenan Yağmur**
 ## Application
 The application can be accessed through http://52.211.173.214:8000
 Please be careful about links :)
@@ -10,7 +18,7 @@ through contents. Moreover, users can browse through spaces or tags to discover 
 ## Installation
 Clone this git repository by using the command:
 ```
-git clone https://github.com/dberkerdem/SWE573_Term_Project.git
+git clone https://github.com/haydin505/SWE574-GROUP-1
 ```
 ## Setup
 Important Notes: 
