@@ -1,6 +1,6 @@
 # SWE574
 This Repository contains the Term Project of SWE574 class in Bogazici Univesity.
-## Authors:  
+## Authors:
 - **Dağlar Berk Erdem**
 - **Hüseyin Aydın**
 - **Kaan Can**
@@ -18,10 +18,10 @@ through contents. Moreover, users can browse through spaces or tags to discover 
 ## Installation
 Clone this git repository by using the command:
 ```
-git clone https://github.com/haydin505/SWE574-GROUP-1
+git clone https://github.com/SWE-574-GROUP-1/SWE574-GROUP-1
 ```
 ## Setup
-Important Notes: 
+Important Notes:
 - Suggested version of Python is Python 3.8.
 - Run the following commands in your GIT Bash terminal.
 
