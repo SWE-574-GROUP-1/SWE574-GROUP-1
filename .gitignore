@@ -5,7 +5,7 @@ __pycache__/
 *$py.class
 
 data
-SWE573_Term_Project/LinkMe/.env
+SWE574/LinkMe/.env
 *.pem
 .env
 .env.aws
@@ -133,7 +133,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 #/SWE573_Term_Project/images/profile_images/
-profile_images/
+profile_images/*
 !blank-profile-picture.png
 scripts/commands.txt
 scripts/
