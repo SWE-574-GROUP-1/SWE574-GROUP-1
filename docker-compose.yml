@@ -3,7 +3,7 @@ services:
   app:
     build: .  # build from Dockerfile in current directory
     volumes:
-      - ./SWE573_Term_Project/:/app  #
+      - ./SWE574/:/app  #
     restart: always
     ports:
       - "8000:8000"  # map port 8000 on host to port 8000 in container
