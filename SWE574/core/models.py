@@ -1,17 +1,19 @@
-# Import from django modules
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField
-from django.utils import timezone
 # Import from external packages
 from uuid import uuid4
+
+# Import from django modules
+from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.utils import timezone
+from model_utils.models import TimeStampedModel
 
 # Create your models here.
 
 User = get_user_model()
 
 
-class Profile(models.Model):
+class Profile(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_user = models.IntegerField(unique=True)
     bio = models.TextField(default="Write something here")
@@ -26,11 +28,10 @@ class Profile(models.Model):
         return self.user.username
 
 
-class Post(models.Model):
+class Post(TimeStampedModel):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
     owner_username = models.TextField(max_length=100)
-    created_at = models.DateTimeField(default=timezone.now)
     # Fields that are filled by owner user
     link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :)
     caption = models.TextField(blank=True)  # Caption can be empty
@@ -49,9 +50,9 @@ class Post(models.Model):
         return self.owner_username
 
 
-class Tag(models.Model):
+class Tag(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
 
 
-class Space(models.Model):
+class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
