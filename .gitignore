@@ -11,9 +11,6 @@ SWE574/LinkMe/.env
 .env.aws
 
 
-
-migrations/
-!__init__.py
 # C extensions
 *.so
 
