@@ -12,8 +12,6 @@ SWE574/LinkMe/.env
 
 
 
-migrations/
-!__init__.py
 # C extensions
 *.so
 
