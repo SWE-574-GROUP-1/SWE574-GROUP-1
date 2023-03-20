@@ -200,6 +200,14 @@
                 </div>
                 <div class="card-body tab-content">
                     <div class="tab-pane active" id="profile">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div{% if message.tags %} class="alert {{ message.tags }}"
+                                {% else %} class="alert alert-info"{% endif %} role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <h6>PROFILE SETTINGS</h6>
                         <hr>
                         <form action="" method="POST" enctype="multipart/form-data">
