@@ -16,3 +16,4 @@ sqlparse==0.4.3
 tzdata==2022.6
 urllib3==1.26.13
 environ==1.0.0
+django-model-utils~=4.3.1
