@@ -1,11 +1,12 @@
 """Contains utility methods to control settings.html"""
-from django.shortcuts import render, redirect
-from django.core.exceptions import ObjectDoesNotExist
-from ...models import Profile
 from django.contrib import messages
 from django.contrib.auth.models import User
-from ..models import user_model_handler
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, redirect
+
 from .signup_page_handler import validate_password_format
+from ..models import user_model_handler
+from ...models import Profile
 
 
 def settings_page_handler_main(request: object):
@@ -83,20 +84,20 @@ def account_settings_setter(request: object) -> redirect:
     @param request: HttpRequest object that contains metadata about request passed from frontend
     @return: Redirects the user to corresponding page
     """
-    # TODO - Dağlar: Refactor here
     if request.POST.get("email"):
         username = request.user.username
         new_email = request.POST.get("email")
         if not user_model_handler.validate_availability_email(email=new_email):
-            messages.info(request, "Email is already exist.")
+            messages.error(request, "Email is already exist.")
         else:
             user_model_handler.email_setter(username=username, new_email=new_email)
+            messages.success(request, "Email successfully changed.")
     if request.POST.get("username"):
         old_username = request.user.username
         new_username = request.POST.get("username")
         # Validate that username is available
         if not user_model_handler.validate_availability_username(username=new_username):
-            messages.info(request, "Username is already exist.")
+            messages.error(request, "Username is already exist.")
         else:
             user_model_handler.username_setter(old_username=old_username, new_username=new_username)
     # Set the password
@@ -109,22 +110,21 @@ def account_settings_setter(request: object) -> redirect:
                 new_username = request.POST.get("username")
                 user = User.objects.get(username=new_username)
             # Check password format
-            if not validate_password_format(request=request, password=request.POST.get("new_password")):
-                return redirect('core:settings')
+            if not validate_password_format(password=request.POST.get("new_password")):
+                messages.error(request, "Password does not satisfy criteria")
             # Compare with current password
             elif user.check_password(request.POST.get("old_password")):
                 # Set the password
                 user.set_password(request.POST.get("new_password"))
-                messages.info(request, "Password successfully changed.")
                 user.save()
                 print("Password changed")
-                messages.info(request, "Password changed")
+                messages.success(request, "Password successfully changed.")
                 # TODO: Should I logout the user, when i change the password?
                 return redirect('core:signin')
             else:
-                messages.info(request, "Invalid old password")
+                messages.error(request, "Invalid old password")
         elif request.POST.get("new_password") != request.POST.get("new_password2"):
-            messages.info(request, "New Passwords do not match!")
+            messages.error(request, "New Passwords do not match!")
         else:
-            messages.info(request, "Unknown error while setting new password, please try again.")
+            messages.error(request, "Unknown error while setting new password, please try again.")
     return redirect('core:settings')
