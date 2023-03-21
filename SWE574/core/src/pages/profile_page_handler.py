@@ -36,7 +36,7 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     # Get the request owner user object and profile
     request_owner_user_object = User.objects.get(username=request.user.username)
     request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
-    profile_owner_posts = Post.objects.filter(owner_username=profile_owner_user_object).order_by('-created_at')
+    profile_owner_posts = Post.objects.filter(owner_username=profile_owner_user_object).order_by('-created')
     context = {'request_owner_user': request_owner_user_object,
                'request_owner_user_profile': request_owner_user_profile,
                'profile_owner_user': profile_owner_user_object,
