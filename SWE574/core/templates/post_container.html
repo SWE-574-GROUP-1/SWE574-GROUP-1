@@ -1,0 +1,204 @@
+{% load static %}
+<div class="timeline-time">
+    <span class="date">
+        {{ post.created|date:"Y-m-d" }}
+    </span>
+    <span class="time">
+        {{ post.created|date:"H:i" }}
+    </span>
+</div>
+<div class="timeline-icon">
+    <a href="javascript:;">&nbsp;</a>
+</div>
+<div class="timeline-body">
+    <div class="timeline-header">
+        <span class="userimage"><img src="{{ post.owner.profile.profile_image.url }}" alt=""></span>
+        <span class="username"><a href="{% url 'core:profile' profile_owner_username=post.owner.username %}">
+                {{ post.owner.username }}
+            </a> <small></small></span>
+        </span>
+
+        <span class="pull-right text-muted"> 0</span>
+        <a href="#" onclick="bookmarkPost( {{ post.post_id }} , this)" class="pull-right text-muted">
+
+            <span class="pull-right text-muted ">
+                {% if request.user.id in post.bookmarked_by %}
+                <img src="{% static 'assets/images/logo/svg/bookmarks-fill.svg' %}" alt="Bootstrap" width="30"
+                    height="30">
+                {% else %}
+                <img src="{% static 'assets/images/logo/svg/bookmarks.svg' %}" alt="Bootstrap" width="30" height="30">
+                {% endif %}
+                &nbsp
+            </span>
+        </a>
+        <span class="username">
+            {% for space in post.spaces.all %}
+            <a style="color: blue;" href="{% url 'core:spaces' space_name=space.name %}"
+                class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill">
+                </i>{{ space.name }}
+            </a>
+            <a>&nbsp;</a>
+            {% endfor %}
+        </span>
+    </div>
+    <div class="timeline-content">
+
+        <div class="container" style="padding: 0">
+            {% if post.title %}
+            <div class="card mb-3" style="padding: 0">
+                <div class="row no-gutters">
+                    <div class="col-sm-6" style="display: flex">
+                        <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
+                            <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.description }}</p>
+                            <div class="d-flex d-grid gap-3">
+                                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To
+                                    Website</a>
+                                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
+                                    class="btn btn-success">Go To Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p>
+                {{ post.link }}
+            </p>
+            <div class="d-flex d-grid gap-3">
+                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To Website</a>
+                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}" class="btn btn-success">Go To
+                    Detail</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    <hr>
+    <div class="timeline-likes">
+        <div class="stats">
+            <p style="font-size: 15px;">
+                <strong>{{ post.caption }}</strong>
+            </p>
+        </div>
+    </div>
+    <div class="timeline-footer">
+        {% for tag in post.tags.all %}
+        <a href="{% url 'core:tags' tag_name=tag.name %}" class="m-r-15 text-inverse-lighter pull-left"><i
+                class="bi bi-tags-fill"></i>{{ tag.name }} </a>
+        <a>&nbsp;</a>
+        {% endfor %}
+        {% if post.owner_username == request_owner_user_profile.user.username %}
+        <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
+                class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
+        <a>&nbsp;</a>
+        <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
+            data-bs-target="#postUpdateModal"><i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="postUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update the
+                        Post</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'core:update_post' %}" method="POST" id="post_update_form">
+                        {% csrf_token %}
+                        <input name="form_name" type="hidden" id="form-name" value="post-update-form">
+                        <input name="post_id" type="hidden" id="form-name" value="{{ post.post_id }}">
+                        <div class="form-group text-secondary">
+                            <label for="link" class="col-form-label"><strong>Link</strong></label>
+                            <input name="link" type="text" class="form-control" id="link" value="{{ post.link }}">
+                            <hr>
+                            <label for="caption" class="col-form-label"><strong>Caption</strong></label>
+                            <textarea name="caption" class="form-control" id="caption">
+                                {{ post.caption }}
+                            </textarea>
+                        </div>
+                        <div style="display: flex;">
+                            {# Implementation of Tags #}
+                            <div class="dropdown" style="display: inline-block;">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true" aria-label="Tag select">
+                                    <span id="tagLabel">Select Tags</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu ml-2">
+                                    {% for tag in available_tags %}
+                                    {% if tag.name != ' ' %}
+                                    <li>
+                                        <input type="checkbox" id="{{ tag.name }}" name="tag-{{ forloop.counter0 }}"
+                                            value="{{ tag.name }}" {% if tag in post.tags.all %} checked {% endif %}>
+                                        <label for="{{ tag.name }}">{{ tag.name }}</label>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            {# Implementation of Spaces #}
+                            <div class="dropdown" style="display: inline-block;">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true" aria-label="Space select">
+                                    <span id="spaceLabel">Select Space</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu ml-2">
+                                    {% for space in available_spaces %}
+                                    {% if space.name != " " %}
+                                    <li>
+                                        <input type="radio" id="space" name="space" value="{{ space.name }}" {% if space in post.spaces.all %} checked {% endif %}>
+                                        <label for="space">{{ space.name }}</label>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                    </button>
+                    <button type="submit" form="post_update_form" class="btn btn-primary"
+                        onclick="return updatePost()">Update Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end timeline-body -->
+</div>
+
+{% block js %}
+<script type='text/javascript'>
+    function bookmarkPost(postId, el) {
+        // do something async
+    }
+
+    function updatePost() {
+        if (document.forms.post_update_form.link.value == "" & document.forms.post_update_form.caption.value == "") {
+            alert("Please fill at least 1 field");
+            return false;
+        } else {
+            console.log(document.forms.post_update_form.link.value)
+            document.post_update_form.submit();
+        }
+    }
+
+    function deletePost(postId) {
+       if(confirm("Are you sure you want to delete this post?")){
+           window.location.href = '/delete_post?post_id=' + postId;
+       }
+    }
+</script>
+{% endblock %}

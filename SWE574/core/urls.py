@@ -19,7 +19,9 @@ urlpatterns = [
     path("search", views.search, name="search"),
     path("follow", views.follow, name="follow"),
     path("tags/<str:tag_name>", views.tags, name="tags"),
-    path("spaces/<str:space_name>", views.spaces, name="spaces")
+    path("spaces/<str:space_name>", views.spaces, name="spaces"),
+    path("post/detail/<str:post_id>", views.post_detail, name="post_detail"),
+    path("post/update", views.update_post, name="update_post"),
     # path("feed", views.feed, name="logout"),
     # path("profile", views.profile, name="logout"),
 ]
