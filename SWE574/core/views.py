@@ -233,6 +233,14 @@ def spaces(request, space_name):
         return HttpResponseRedirect(redirect_path)
     return render(request, "spaces.html", context=context)
 
+@login_required
+def update_post(request):
+    if request.method == 'POST':
+        if request.POST.get("form_name") == "post-update-form":
+            print("post-update-form received")
+            post_model_handler.update_post(request=request)
+    # redirect back
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url="core:signin")
 def feed(request: object):
@@ -284,3 +292,10 @@ def feed(request: object):
         print(request.POST)
         return HttpResponseRedirect(redirect_path)
     return render(request, "feed.html", context=context)
+
+
+@login_required(login_url="core:signin")
+def post_detail(request, post_id):
+    post = Post.objects.get(post_id=post_id)
+    request_owner_user_profile = Profile.objects.get(user=request.user)
+    return render(request, "post_detail.html", {"post": post, "request_owner_user_profile": request_owner_user_profile})

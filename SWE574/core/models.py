@@ -12,9 +12,18 @@ from model_utils.models import TimeStampedModel
 
 User = get_user_model()
 
+# override the default user model
+class User(User):
+    # user belongs to a profile, profiles table has a foreign key to user table
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.username
+
 
 class Profile(TimeStampedModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     id_user = models.IntegerField(unique=True)
     bio = models.TextField(default="Write something here")
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
@@ -32,6 +41,8 @@ class Post(TimeStampedModel):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
     owner_username = models.TextField(max_length=100)
+    # posts must belong to a user
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', default=None)
     # Fields that are filled by owner user
     link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :)
     caption = models.TextField(blank=True)  # Caption can be empty
