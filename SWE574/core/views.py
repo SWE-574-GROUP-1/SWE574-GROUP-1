@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from itertools import chain
 
+
 def signup(request: object):
     return signup_page_handler_main(request=request)
 
@@ -55,8 +56,10 @@ def profile(request, profile_owner_username):
 @login_required(login_url="core:signin")
 def search(request: object):
     # Get the request owner user object and profile
-    request_owner_user_object = User.objects.get(username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
     context = {
         "request_owner_user": request_owner_user_object,
         "request_owner_user_profile": request_owner_user_profile,
@@ -65,7 +68,8 @@ def search(request: object):
     if request.method == 'POST':
         keyword = request.POST.get("keyword")
         if keyword:
-            searched_user_objects = User.objects.filter(username__icontains=keyword)
+            searched_user_objects = User.objects.filter(
+                username__icontains=keyword)
             search_result_user_profiles = list()
             for user in searched_user_objects:
                 profile_object = Profile.objects.get(user=user)
@@ -86,18 +90,24 @@ def search(request: object):
 def follow(request: object):
     path = request.META.get('HTTP_REFERER')
     profile_owner_id_user = int(request.GET.get('profile_owner_id_user'))
-    print("id_user obtained from request:", profile_owner_id_user, type(profile_owner_id_user))
-    profile_owner_user_profile = Profile.objects.get(id_user=profile_owner_id_user)
+    print("id_user obtained from request:",
+          profile_owner_id_user, type(profile_owner_id_user))
+    profile_owner_user_profile = Profile.objects.get(
+        id_user=profile_owner_id_user)
     request_owner_user_profile = Profile.objects.get(user=request.user)
-    print("profile_owner id_user is", profile_owner_user_profile.id_user, type(profile_owner_user_profile.id_user))
-    print("reqeust_owner id_user is", request_owner_user_profile.id_user, type(request_owner_user_profile.id_user))
+    print("profile_owner id_user is", profile_owner_user_profile.id_user,
+          type(profile_owner_user_profile.id_user))
+    print("reqeust_owner id_user is", request_owner_user_profile.id_user,
+          type(request_owner_user_profile.id_user))
     print("Followers", profile_owner_user_profile.followers)
     # Remove follower/following
     if request_owner_user_profile.id_user in profile_owner_user_profile.followers:
         # Remove follower
-        profile_owner_user_profile.followers.remove(request_owner_user_profile.id_user)
+        profile_owner_user_profile.followers.remove(
+            request_owner_user_profile.id_user)
         # Remove following
-        request_owner_user_profile.following.remove(profile_owner_user_profile.id_user)
+        request_owner_user_profile.following.remove(
+            profile_owner_user_profile.id_user)
         # Save profiles
         profile_owner_user_profile.save()
         request_owner_user_profile.save()
@@ -106,9 +116,11 @@ def follow(request: object):
     # Add follower/following
     else:
         # Add follower
-        profile_owner_user_profile.followers.append(request_owner_user_profile.id_user)
+        profile_owner_user_profile.followers.append(
+            request_owner_user_profile.id_user)
         # Add following
-        request_owner_user_profile.following.append(profile_owner_user_profile.id_user)
+        request_owner_user_profile.following.append(
+            profile_owner_user_profile.id_user)
         # Save profiles
         profile_owner_user_profile.save()
         request_owner_user_profile.save()
@@ -128,7 +140,7 @@ def tags(request, tag_name):
         # TODO: Add does not exist message here
         return HttpResponseRedirect(path)
     # Get all posts with specific tag name
-    posts = tag.posts.all().order_by('-created_at')
+    posts = tag.posts.all().order_by('-created')
     if request.method == 'POST':
         if request.POST.get('form_name') == 'tag-search-form':
             print(request.POST)
@@ -181,7 +193,7 @@ def spaces(request, space_name):
         # TODO: Add does not exist message here
         return HttpResponseRedirect(path)
     # Get all posts with specific tag name
-    posts = space.posts.all().order_by('-created_at')
+    posts = space.posts.all().order_by('-created')
     if request.method == 'POST':
         if request.POST.get('form_name') == 'tag-search-form':
             print(request.POST)
@@ -221,6 +233,14 @@ def spaces(request, space_name):
         return HttpResponseRedirect(redirect_path)
     return render(request, "spaces.html", context=context)
 
+@login_required
+def update_post(request):
+    if request.method == 'POST':
+        if request.POST.get("form_name") == "post-update-form":
+            print("post-update-form received")
+            post_model_handler.update_post(request=request)
+    # redirect back
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url="core:signin")
 def feed(request: object):
@@ -237,7 +257,7 @@ def feed(request: object):
         following_profile = Profile.objects.get(id_user=followed)
         followings_username.append(following_profile.user.username)
         # print(type(following_profiles_posts))
-    followings_posts = Post.objects.filter(owner_username__in=followings_username).order_by('-created_at')
+    followings_posts = Post.objects.filter(owner_username__in=followings_username).order_by('-created')
     print(followings_username)
     followings_profiles = list()
     for post in followings_posts:
@@ -272,3 +292,10 @@ def feed(request: object):
         print(request.POST)
         return HttpResponseRedirect(redirect_path)
     return render(request, "feed.html", context=context)
+
+
+@login_required(login_url="core:signin")
+def post_detail(request, post_id):
+    post = Post.objects.get(post_id=post_id)
+    request_owner_user_profile = Profile.objects.get(user=request.user)
+    return render(request, "post_detail.html", {"post": post, "request_owner_user_profile": request_owner_user_profile})

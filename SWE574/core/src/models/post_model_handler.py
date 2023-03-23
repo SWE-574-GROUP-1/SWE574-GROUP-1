@@ -13,6 +13,7 @@ def create_post(request: object) -> None:
     """
     # Get the username of the user that requests to create a post
     owner_username = request.user.username
+    owner = request.user
     # Get preview details
     preview = generate_preview_(url=request.POST.get('link'))
     print(preview.get('description'))
@@ -20,6 +21,7 @@ def create_post(request: object) -> None:
     # Creating new post
     if preview:
         new_post = Post.objects.create(owner_username=owner_username,
+                                       owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        title=preview.get('title'),
@@ -29,10 +31,12 @@ def create_post(request: object) -> None:
     else:
         print("HI FROM ELSE")
         new_post = Post.objects.create(owner_username=owner_username,
+                                       owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
-    print(['tag' in key for key in list(request.POST.keys())], type(request.POST.keys()), )
+    print(['tag' in key for key in list(request.POST.keys())],
+          type(request.POST.keys()), )
     for key in list(request.POST.keys()):
         if 'tag' in key:
             # Get the tag name
@@ -166,5 +170,5 @@ def __delete_post__(request: object) -> HttpResponseRedirect:
         messages.success(request, "The Post is deleted")
     except Exception as e:
         print("Error is:", e)
-    redirect_path = request.META.get('HTTP_REFERER')
+    redirect_path = '/profile/'+request.user.username
     return HttpResponseRedirect(redirect_path)
