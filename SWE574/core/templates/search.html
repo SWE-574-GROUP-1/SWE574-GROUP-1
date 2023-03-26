@@ -1,125 +1,41 @@
+{% extends "base_inside.html" %}
 {% load static %}
-<!-- https://www.bootdey.com/snippets/view/Search-users-page-result -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkMe</title>
-    <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
-    <link href="{% static 'core/css/search.css' %}" rel="stylesheet">
-    <style>
-        body {
-            background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-    </style>
-    <script id="_carbonads_projs" type="text/javascript"
-            src="https://srv.carbonads.net/ads/CKYILKJI.json?segment=placement:bootdeycom&amp;callback=_carbonads_go"></script>
-</head>
 
-<body>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
-      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
-<script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
-<header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;"
-        aria-label="Fifth navbar example">
-    <div class="container-fluid">
-        <a class="navbar-brand mb-0 h1" href="#">
-            <img src="{% static 'assets/images/logo/svg/logo-no-background.svg' %}" width="100"
-                 class="d-inline-block align-top" alt="">
-        </a>
-        <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
-            <br>
-            <form type="search" method="POST" id="search-form" action="{% url 'core:search' %}">
-                {% csrf_token %}
-                <input class="form-control me-0 input" type="search" placeholder="Search" aria-label="Search"
-                       name="keyword">
-            </form>
-            <button type="submit" form="search-form" class="btn btn-primary button" id="search-button">
-                <i class="fas fa-search"></i>
-            </button>
-            <ul class="navbar-nav position-relative ms-0 me-auto">
-                <li class="nav-item">
-                    <a href="/feed" class="nav-link px-3 text-white">Feed</a>
-                </li>
-                <!-- # TODO: Implement Discover -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link px-3 text-white">Discover</a>
-                </li>
-                <!-- # TODO: Implement Spaces -->
-                <li class="nav-item">
-                    <a href="" class="nav-link px-3 text-white">Spaces</a>
-                </li>
-            </ul>
-        </div>
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    <!-- <img width="35" height="35" src="{{request_owner_user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
-                </a>
-                <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
-                    <a class="dropdown-item text-white" href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}">Profile</a>
-                    <a class="dropdown-item text-white" href="/settings">Settings</a>
-                    <a class="dropdown-item text-white" href="#">About</a>
-                    <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
-                </div>
-            </li>
-        </ul>
-        <ul class="navbar-nav position-relative ms-auto me-0">
-            <li class="nav-item">
-                {#                <a href="profile?profile_owner_username={{ request_owner_user_profile.username }}" class="nav-link px-3 text-white">#}
-                <a href="{% url 'core:profile' profile_owner_username=request_owner_user.username %}"
-                   class="nav-link px-3 text-white">
-                    <img width="40" height="40" src="{{ request_owner_user_profile.profile_image.url }}"
-                         class="header-avatar"
-                         alt="Dropdown">
-                </a>
-            </li>
-        </ul>
-    </div>
-</header>
-body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
-<p>nbsp&</p>
+{% block style %}
+<link href="{% static 'core/css/search.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
 <div class="container">
     <div class="row gutters-sm">
         <div class="card col-md-3 col-md-push-9" style="height: 18rem;">
             <div class="card-body">
                 <nav class="nav flex-column nav-pills nav-gap-y-1">
-                    <a href="#profile" data-bs-toggle="tab"
-                       class="nav-item nav-link has-icon nav-link-faded active">
+                    <a href="#profile" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded active">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-people-fill" viewBox="0 0 16 16">
-                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                            class="bi bi-people-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                         </svg>
                         Users
                     </a>
-                    <a href="#user_settings" data-bs-toggle="tab"
-                       class="nav-item nav-link has-icon nav-link-faded">
+                    <a href="#user_settings" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
-                            <path d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.578 3.578 0 0 0-.108-.563 2.22 2.22 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2.35 2.35 0 0 0-.16-.045 3.797 3.797 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.552 2.552 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526l.24-2.408Zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361.599.599.437 1.732-.36 2.531Z"/>
-                            <path d="M5.205 10.787a7.632 7.632 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925Z"/>
+                            class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.578 3.578 0 0 0-.108-.563 2.22 2.22 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2.35 2.35 0 0 0-.16-.045 3.797 3.797 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.552 2.552 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526l.24-2.408Zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361.599.599.437 1.732-.36 2.531Z" />
+                            <path
+                                d="M5.205 10.787a7.632 7.632 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925Z" />
                         </svg>
                         Spaces
                     </a>
                     <a href="#privacy" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-tags-fill" viewBox="0 0 16 16">
-                            <path d="M2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2zm3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
-                            <path d="M1.293 7.793A1 1 0 0 1 1 7.086V2a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l.043-.043-7.457-7.457z"/>
+                            class="bi bi-tags-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2zm3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            <path
+                                d="M1.293 7.793A1 1 0 0 1 1 7.086V2a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l.043-.043-7.457-7.457z" />
                         </svg>
                         Tags
                     </a>
@@ -128,51 +44,56 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
         </div>
         <div class="col-md-9 col-md-pull-3">
             {% if search_result_user_profiles %}
-                {% for search_result_profile in search_result_user_profiles %}
-                    <section class="search-result-item">
-                        <a class="image-link" href="#">
-                            <img class="image" src="{{ search_result_profile.profile_image.url }}">
-                        </a>
-                        <div class="search-result-item-body">
-                            <div class="row">
-                                <div class="col-sm-9">
-                                    <h4 class="search-result-item-heading"><a
-                                            href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
-                                    </h4>
-                                    <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
-                                    <p class="description">{{ search_result_profile.bio }}</p>
-                                </div>
-                                <div class="col-sm-3 text-align-center">
-                                    <p class="fs-mini text-muted">{{ search_result_profile.followers|length }}
-                                        Follower</p>
-                                    <p class="fs-mini text-muted">{{ search_result_profile.following|length }}
-                                        Following</p>
-{#                                    <a class="btn btn-primary btn-info btn-sm" href="#">Follow</a>#}
-                                    {% if search_result_profile.user.username == request_owner_user.username %}
-                                        <a href="#" class="btn btn-sm btn-info mb-2"
-                                           style="visibility: hidden;">Follow</a>
-                                    {% else %}
-{#                                        TODO: Follow buttons are disabled since it does not redirect to the homepage#}
-{#                                        {% if request_owner_user_profile.id_user in search_result_profile.followers %}#}
-{#                                            <a href="/follow?profile_owner_id_user={{ search_result_profile.id_user }}"#}
-{#                                               class="btn btn-primary btn-info btn-sm">Unfollow</a>#}
-{#                                        {% else %}#}
-{#                                            <a href="/follow?profile_owner_id_user={{ search_result_profile.id_user }}"#}
-{#                                               class="btn btn-primary btn-info btn-sm">Follow</a>#}
-{#                                        {% endif %}#}
-                                    {% endif %}
-                                </div>
-                            </div>
+            {% for search_result_profile in search_result_user_profiles %}
+            <section class="search-result-item">
+                <a class="image-link" href="#">
+                    <img class="image" src="{{ search_result_profile.profile_image.url }}">
+                </a>
+                <div class="search-result-item-body">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <h4 class="search-result-item-heading"><a
+                                    href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
+                            </h4>
+                            <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
+                            <p class="description">{{ search_result_profile.bio }}</p>
                         </div>
-                    </section>
-                {% endfor %}
+                        <div class="col-sm-3 text-align-center">
+                            <p class="fs-mini text-muted"
+                                id="followers-{{ search_result_profile.id_user }}"
+                            >{{ search_result_profile.followers|length }}
+                                Follower</p>
+                            <p class="fs-mini text-muted"
+                                id="following-{{ search_result_profile.id_user }}"
+                            >{{ search_result_profile.following|length }}
+                                Following</p>
+                            {% if search_result_profile.user.username == request_owner_user.username %}
+                            <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
+                            {% else %}
+                            {% if request_owner_user_profile.id_user in search_result_profile.followers %}
+                            <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
+                                id="followButton-{{ search_result_profile.id_user }}"
+                                class="btn btn-primary btn-info btn-sm">Unfollow</a>
+                            {% else %}
+                            <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
+                                id="followButton-{{ search_result_profile.id_user }}"
+                                class="btn btn-primary btn-info btn-sm">Follow</a>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endfor %}
             {% endif %}
 
         </div>
     </div>
 </div>
-</body>
-{#//Program to disable or enable a button using javascript https://flexiple.com/javascript/disable-button-javascript/#}
+<!-- end profile-content -->
+{% endblock %}
+
+{% block js %}
 <script>
     let input = document.querySelector(".input");
     let button = document.querySelector(".button");
@@ -189,13 +110,16 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
         }
     }
 </script>
-<script>window.dataLayer = window.dataLayer || [];
+<script>
+    window.dataLayer = window.dataLayer || [];
 
-function gtag() {
-    dataLayer.push(arguments);
-}
+    function gtag() {
+        dataLayer.push(arguments);
+    }
 
-gtag('js', new Date());
+    gtag('js', new Date());
 
-gtag('config', 'G-F1RTS0P1CD');</script>
+    gtag('config', 'G-F1RTS0P1CD');</script>
+
 </html>
+{% endblock %}

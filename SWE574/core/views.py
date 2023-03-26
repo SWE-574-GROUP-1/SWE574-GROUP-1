@@ -93,48 +93,29 @@ def search(request: object):
 
 
 @login_required(login_url="core:signin")
-def follow(request: object):
-    path = request.META.get('HTTP_REFERER')
-    profile_owner_id_user = int(request.GET.get('profile_owner_id_user'))
-    print("id_user obtained from request:",
-          profile_owner_id_user, type(profile_owner_id_user))
-    profile_owner_user_profile = Profile.objects.get(
-        id_user=profile_owner_id_user)
-    request_owner_user_profile = Profile.objects.get(user=request.user)
-    print("profile_owner id_user is", profile_owner_user_profile.id_user,
-          type(profile_owner_user_profile.id_user))
-    print("reqeust_owner id_user is", request_owner_user_profile.id_user,
-          type(request_owner_user_profile.id_user))
-    print("Followers", profile_owner_user_profile.followers)
-    # Remove follower/following
-    if request_owner_user_profile.id_user in profile_owner_user_profile.followers:
-        # Remove follower
-        profile_owner_user_profile.followers.remove(
-            request_owner_user_profile.id_user)
-        # Remove following
-        request_owner_user_profile.following.remove(
-            profile_owner_user_profile.id_user)
-        # Save profiles
-        profile_owner_user_profile.save()
-        request_owner_user_profile.save()
-        print("unfollowed")
+def follow(request):    
+    logged_in_user = User.objects.get(username=request.user.username)
+    user_to_be_followed = User.objects.get(id=request.GET.get('profile_owner_id_user'))
 
-    # Add follower/following
+    if logged_in_user.id in user_to_be_followed.profile.followers:
+        """ remove from array field followers """
+        user_to_be_followed.profile.followers.remove(logged_in_user.id)
+        logged_in_user.profile.following.remove(user_to_be_followed.id)
+        followed = False
     else:
-        # Add follower
-        profile_owner_user_profile.followers.append(
-            request_owner_user_profile.id_user)
-        # Add following
-        request_owner_user_profile.following.append(
-            profile_owner_user_profile.id_user)
-        # Save profiles
-        profile_owner_user_profile.save()
-        request_owner_user_profile.save()
-        print("followed")
-    print("Followers of profile owner", profile_owner_user_profile.followers)
-    print(path)
-    return HttpResponseRedirect(path)
+        user_to_be_followed.profile.followers.append(logged_in_user.id)
+        logged_in_user.profile.following.append(user_to_be_followed.id)
+        # save changes
 
+        followed = True
+
+    user_to_be_followed.profile.save()
+    logged_in_user.profile.save()
+
+    followers_count = len(user_to_be_followed.profile.followers)
+    following_count = len(logged_in_user.profile.following)
+     
+    return JsonResponse({'followed': followed, 'followers_count': followers_count, 'following_count': following_count})
 
 def tags_search(request):
     tag_name = request.POST.get('tag_name_to_be_searched')
