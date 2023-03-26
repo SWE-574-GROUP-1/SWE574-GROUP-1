@@ -271,6 +271,23 @@
         })
     });
 </script>
+<script>
+    function follow(id_user) {
+        fetch(`/follow?profile_owner_id_user=${id_user}`)
+            .then(response => response.json())
+            .then(data => {
+                var followed = data.followed;
+                var followers_count = data.followers_count;
+                if (followed) {
+                    document.querySelector(`#followButton-${id_user}`).innerHTML = "Unfollow";
+                } else {
+                    document.querySelector(`#followButton-${id_user}`).innerHTML = "Follow";
+                }
+
+                document.querySelector(`#followers-${id_user}`).innerHTML = `${followers_count} Follower`;
+            });
+    }
+</script>
 {% block js %}
 
 {% endblock %}
