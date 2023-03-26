@@ -25,10 +25,12 @@
                 <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
                 {% else %}
                 {% if request_owner_user_profile.id_user in profile_owner_user_profile.followers %}
-                <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
+                <a style="cursor: pointer;" onclick="follow({{profile_owner_user_profile.id_user}})"
+                    id="followButton-{{ profile_owner_user_profile.id_user }}"
                     class="btn btn-sm btn-info mb-2">Unfollow</a>
                 {% else %}
-                <a href="/follow?profile_owner_id_user={{ profile_owner_user_profile.id_user }}"
+                <a style="cursor: pointer;" onclick="follow({{profile_owner_user_profile.id_user}})"
+                    id="followButton-{{ profile_owner_user_profile.id_user }}"
                     class="btn btn-sm btn-info mb-2">Follow</a>
                 {% endif %}
                 {% endif %}
