@@ -1,0 +1,70 @@
+{% load static %}
+<div class="modal fade" id="postUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update the
+                    Post</h5>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'core:update_post' %}" method="POST" id="post_update_form">
+                    {% csrf_token %}
+                    <input name="form_name" type="hidden" id="form-name" value="post-update-form">
+                    <input name="post_id" type="hidden" id="form-name">
+                    <div class="form-group text-secondary">
+                        <label for="link" class="col-form-label"><strong>Link</strong></label>
+                        <input name="link" type="text" class="form-control" id="link">
+                        <hr>
+                        <label for="caption" class="col-form-label"><strong>Caption</strong></label>
+                        <textarea name="caption" class="form-control" id="caption">
+                            </textarea>
+                    </div>
+                    <div class="d-grid gap-2">
+                        {# Implementation of Tags #}
+                        <input name="selectedTags" type="hidden" id="selectedTags">
+                        <label for="tags" class="col-form-label"><strong>Tags</strong></label>
+                        <select id="postUpdateModalTags" name="tags[]" multiple="multiple">
+
+                        </select>
+
+                        {# Implementation of Spaces #}
+                        <label for="spaces" class="col-form-label"><strong>Spaces</strong></label>
+                        <select id="spaces" name="spaces[]" multiple="multiple">
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                </button>
+                <button type="submit" form="post_update_form" class="btn btn-primary"
+                    onclick="return updatePost()">Update Post
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script>
+    $('#postUpdateModalTags').select2({
+        dropdownParent: $('#postUpdateModal'),
+        ajax: {
+            url: '/tags/all',
+            processResults: function (data) {
+                return {
+                    results: data.tags.map(function (tag) {
+                        return {
+                            id: tag.id,
+                            text: tag.name
+                        }
+                    })
+                };
+            }
+        },
+        tags: true
+
+    });
+</script>

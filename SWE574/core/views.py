@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth.decorators import login_required
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.models.post_model_handler import __delete_post__, __book_post__
@@ -7,10 +8,15 @@ from .src.models.user_model_handler import *
 from .src.pages.settings_page_handler import settings_page_handler_main
 # TODO: Improve modularity
 from django.urls import reverse
-from .models import Profile, Tag, Space, Post
+from .models import Profile, Tag, Space, Post, User
 from django.http import HttpResponseRedirect
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from itertools import chain
+from django.http import HttpResponse, JsonResponse
+from bs4 import BeautifulSoup
+import requests
+from django.db.models import Prefetch
+from django.db.models import Count
 
 
 def signup(request: object):
@@ -130,56 +136,43 @@ def follow(request: object):
     return HttpResponseRedirect(path)
 
 
-def tags(request, tag_name):
-    print(f"TAG NAME IS: {tag_name}")
-    # Get the Tag object for given tag name
-    try:
-        tag = Tag.objects.get(name=tag_name)
-    except Tag.DoesNotExist:
-        path = request.META.get('HTTP_REFERER')
-        # TODO: Add does not exist message here
-        return HttpResponseRedirect(path)
-    # Get all posts with specific tag name
-    posts = tag.posts.all().order_by('-created')
-    if request.method == 'POST':
-        if request.POST.get('form_name') == 'tag-search-form':
-            print(request.POST)
-            tag_name = request.POST.get('tag_name_to_be_searched')
-    # Create list of post owners
-    post_owner_profile_list = list()
-    for post in posts:
-        user_obj = User.objects.get(username=post.owner_username)
-        profile_obj = Profile.objects.get(user=user_obj)
-        post_owner_profile_list.append(profile_obj)
-        print(profile_obj.profile_image.url)
-    request_owner_user_object = User.objects.get(username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
-    post_owner_profile_list_with_posts = zip(post_owner_profile_list, posts)
-    context = {"post_owner_profile_list_with_posts": post_owner_profile_list_with_posts,
-               "request_owner_user_profile": request_owner_user_profile,
-               'available_tags': Tag.objects.all(),
-               'available_spaces': Space.objects.all(),
-               }
-    if request.method == 'POST':
-        redirect_path = request.META.get('HTTP_REFERER')
-        if request.POST.get('form_name') == 'tag-search-form':
-            tag_name = request.POST.get('tag_name_to_be_searched')
-            url = reverse('core:tags', kwargs={'tag_name': tag_name})
-            return redirect(url)
-        if request.POST.get("form_name") == "post-create-form":
-            print("post-create-form received")
-            post_model_handler.create_post(request=request)
-        if request.POST.get("form_name") == "post-update-form":
-            print("post-update-form received")
-            post_model_handler.update_post(request=request)
-        if request.POST.get("form_name") == "tag-create-form":
-            print("tag-create-form received")
-            is_tag_name_valid = tag_model_handler.validate_tag(request=request)
-            if is_tag_name_valid:
-                tag_model_handler.create_tag(request=request)
-        print(request.POST)
-        return HttpResponseRedirect(redirect_path)
-    return render(request, "tags.html", context=context)
+def tags_search(request):
+    tag_name = request.POST.get('tag_name_to_be_searched')
+    # return posts where has tags like tag_name
+    tags = Tag.objects.filter(name__icontains=tag_name)
+    posts = Post.objects.filter(tags__in=tags).distinct().prefetch_related(
+        Prefetch('tags', queryset=tags, to_attr='matching_tags'))
+    
+    tag_cloud = get_tag_cloud()
+
+    return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
+
+def tags_index(request):
+    tag_cloud = get_tag_cloud()
+    return render(request, 'tags.html', {'tag_cloud': tag_cloud})
+
+def tag_posts(request, tag_name): 
+    tag = Tag.objects.get(name=tag_name)
+    posts = Post.objects.filter(tags=tag).prefetch_related('tags')
+    tag_cloud = get_tag_cloud()
+    return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
+
+
+def get_tag_cloud():
+    tags = Tag.objects.annotate(count=Count('posts')).order_by('-count')
+    max_count = tags[0].count if tags else 0
+    min_count = tags[len(tags)-1].count if tags else 0
+    range_count = max_count - min_count
+    font_min = 12
+    font_max = 36
+    font_range = font_max - font_min
+    for tag in tags:
+        tag.font_size = font_min + (font_range * (tag.count - min_count) / (range_count or 1))
+
+    # randomize tag order
+    tags = sorted(tags, key=lambda x: random.random())
+
+    return tags
 
 
 @login_required(login_url="core:signin")
@@ -204,8 +197,10 @@ def spaces(request, space_name):
         user_obj = User.objects.get(username=post.owner_username)
         profile_obj = Profile.objects.get(user=user_obj)
         post_owner_profile_list.append(profile_obj)
-    request_owner_user_object = User.objects.get(username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
     post_owner_profile_list_with_posts = zip(post_owner_profile_list, posts)
     context = {"post_owner_profile_list_with_posts": post_owner_profile_list_with_posts,
                "request_owner_user_profile": request_owner_user_profile,
@@ -236,9 +231,16 @@ def spaces(request, space_name):
 @login_required
 def update_post(request):
     if request.method == 'POST':
-        if request.POST.get("form_name") == "post-update-form":
-            print("post-update-form received")
-            post_model_handler.update_post(request=request)
+        print("post-update-form received")
+        post_model_handler.update_post(request=request)
+    # redirect back
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        print("post-create-form received")
+        post_model_handler.create_post(request=request)
     # redirect back
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -262,15 +264,18 @@ def feed(request: object):
     followings_profiles = list()
     for post in followings_posts:
         post_owner_user_object = User.objects.get(username=post.owner_username)
-        post_owner_profile_object = Profile.objects.get(user=post_owner_user_object)
+        post_owner_profile_object = Profile.objects.get(
+            user=post_owner_user_object)
         followings_profiles.append(post_owner_profile_object)
     print(followings_profiles)
-    following_profile_list_with_posts = zip(followings_profiles, followings_posts)
-    context = {'following_profile_list_with_posts': following_profile_list_with_posts,
-               "request_owner_user_profile": request_owner_user_profile,
-               'available_tags': Tag.objects.all(),
-               'available_spaces': Space.objects.all(),
-               }
+    following_profile_list_with_posts = zip(
+        followings_profiles, followings_posts)
+    context = {
+        'following_profile_list_with_posts': following_profile_list_with_posts,
+        'request_owner_user_profile': request_owner_user_profile,
+        'available_tags': Tag.objects.all(),
+        'available_spaces': Space.objects.all(),
+    }
     if request.method == 'POST':
         redirect_path = request.META.get('HTTP_REFERER')
         if request.POST.get("form_name") == "post-create-form":
@@ -281,7 +286,8 @@ def feed(request: object):
             post_model_handler.update_post(request=request)
         if request.POST.get("form_name") == "space-create-form":
             print("space-create-form received")
-            is_space_name_valid = space_model_handler.validate_space(request=request)
+            is_space_name_valid = space_model_handler.validate_space(
+                request=request)
             if is_space_name_valid:
                 space_model_handler.create_space(request=request)
         if request.POST.get("form_name") == "tag-create-form":
@@ -299,3 +305,57 @@ def post_detail(request, post_id):
     post = Post.objects.get(post_id=post_id)
     request_owner_user_profile = Profile.objects.get(user=request.user)
     return render(request, "post_detail.html", {"post": post, "request_owner_user_profile": request_owner_user_profile})
+
+
+@login_required(login_url="core:signin")
+def like_post(request, post_id):
+    post = Post.objects.get(post_id=post_id)
+    user = User.objects.get(username=request.user.username)
+
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(user)
+        liked = False
+    else:
+        post.likes.add(user)
+        liked = True
+
+    return JsonResponse({'liked': liked, 'count': post.total_likes()})
+
+
+@login_required(login_url="core:signin")
+def bookmark_post(request, post_id):
+    post = Post.objects.get(post_id=post_id)
+    user = User.objects.get(username=request.user.username)
+
+    if post.bookmarks.filter(id=request.user.id).exists():
+        post.bookmarks.remove(user)
+        bookmarked = False
+    else:
+        post.bookmarks.add(user)
+        bookmarked = True
+
+    return JsonResponse({'bookmarked': bookmarked})
+
+# this methods fetch the given url's og tags and return json response as img, title, description
+
+
+@login_required(login_url="core:signin")
+def fetch_og_tags(request):
+    url = request.GET.get(
+        'url', 'https://www.bbc.com/news/uk-politics-65039661')
+    # print(url)
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    og_image = soup.find('meta', property='og:image')
+    og_title = soup.find('meta', property='og:title')
+    og_description = soup.find('meta', property='og:description')
+    # print(og_image['content'])
+    # print(og_title['content'])
+    # print(og_description['content'])
+    return JsonResponse({'img': og_image['content'], 'title': og_title['content'],
+                         'description': og_description['content']})
+
+
+def all_tags(request):
+    tags = Tag.objects.all()
+    return JsonResponse({'tags': list(tags.values())})
