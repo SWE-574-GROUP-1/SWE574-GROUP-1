@@ -27,6 +27,7 @@ urlpatterns = [
     path("post/create", views.create_post, name="create_post"),
     path("post/update", views.update_post, name="update_post"),
     path("post/like/<str:post_id>", views.like_post, name="like_post"),
+    path("post/dislike/<str:post_id>", views.dislike_post, name="like_post"),
     path("post/bookmark/<str:post_id>", views.bookmark_post, name="bookmark_post"),
     path("fetch-og-tags", views.fetch_og_tags, name="fetch_og_tags"),
     # path("feed", views.feed, name="logout"),

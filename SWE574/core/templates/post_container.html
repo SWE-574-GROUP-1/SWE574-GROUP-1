@@ -20,7 +20,7 @@
 
         <span class="pull-right text-muted" id="likesCount-{{post.post_id}}"> {{post.total_likes}}</span>
         <a style="cursor: pointer;" onclick="likePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
-
+            
             <span class="pull-right text-muted ">
                 {% if request.user in post.likes.all %}
                 <i class="bi bi-heart-fill" id="isLiked-{{post.post_id}}"></i>
@@ -30,8 +30,20 @@
                 &nbsp
             </span>
         </a>
-        <a style="cursor: pointer;" onclick="bookmarkPost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
+        <span class="pull-right text-muted me-1" id="dislikesCount-{{post.post_id}}"> {{post.total_dislikes}}</span>
+        <a style="cursor: pointer;" onclick="dislikePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
 
+            <span class="pull-right text-muted ">
+                {% if request.user in post.dislikes.all %}
+                <i class="bi bi-hand-thumbs-down-fill" id="isDisliked-{{post.post_id}}"></i>
+                {% else %}
+                <i class="bi bi-hand-thumbs-down" id="isDisliked-{{post.post_id}}"></i>
+                {% endif %}
+                &nbsp
+            </span>
+        </a>
+        <a style="cursor: pointer;" onclick="bookmarkPost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
+            
             <span class="pull-right text-muted ">
                 {% if request.user in post.bookmarks.all %}
                 <i class="bi bi-bookmark-fill" id="isBookmarked-{{post.post_id}}"></i>

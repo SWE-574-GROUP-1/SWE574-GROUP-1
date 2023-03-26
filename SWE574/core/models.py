@@ -41,6 +41,7 @@ class Post(TimeStampedModel):
     owner_username = models.TextField(max_length=100)
     #likes with created
     likes = models.ManyToManyField(User, related_name='liked_posts', through='Like')
+    dislikes = models.ManyToManyField(User, related_name='disliked_posts', through='Dislike')
     #bookmarks with created
     bookmarks = models.ManyToManyField(User, related_name='bookmarked_posts', through='Bookmark')
     # posts must belong to a user
@@ -64,6 +65,8 @@ class Post(TimeStampedModel):
     
     def total_likes(self):
         return self.likes.count()
+    def total_dislikes(self):
+        return self.dislikes.count()
     def tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"name": tag.name, "id": tag.id} for tag in self.tags.all()]
@@ -77,6 +80,13 @@ class Like(TimeStampedModel):
 class Bookmark(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarked_by_users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_bookmarked')
+
+    def __str__(self):
+        return self.user.username
+    
+class Dislike(TimeStampedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='disliked_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_disliked')
 
     def __str__(self):
         return self.user.username

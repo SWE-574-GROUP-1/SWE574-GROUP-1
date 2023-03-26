@@ -321,6 +321,20 @@ def like_post(request, post_id):
 
     return JsonResponse({'liked': liked, 'count': post.total_likes()})
 
+@login_required(login_url="core:signin")
+def dislike_post(request, post_id):
+    post = Post.objects.get(post_id=post_id)
+    user = User.objects.get(username=request.user.username)
+
+    if post.dislikes.filter(id=request.user.id).exists():
+        post.dislikes.remove(user)
+        disliked = False
+    else:
+        post.dislikes.add(user)
+        disliked = True
+
+    return JsonResponse({'disliked': disliked, 'count': post.total_dislikes()})
+
 
 @login_required(login_url="core:signin")
 def bookmark_post(request, post_id):
