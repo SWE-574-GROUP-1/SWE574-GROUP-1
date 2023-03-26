@@ -7,19 +7,17 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from model_utils.models import TimeStampedModel
+# Import user model from django
+from django.contrib.auth.models import User
 
 # Create your models here.
 
-User = get_user_model()
+# User = get_user_model()
 
 # override the default user model
 class User(User):
-    # user belongs to a profile, profiles table has a foreign key to user table
     class Meta:
         proxy = True
-
-    def __str__(self):
-        return self.username
 
 
 class Profile(TimeStampedModel):
@@ -41,6 +39,10 @@ class Post(TimeStampedModel):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
     owner_username = models.TextField(max_length=100)
+    #likes with created
+    likes = models.ManyToManyField(User, related_name='liked_posts', through='Like')
+    #bookmarks with created
+    bookmarks = models.ManyToManyField(User, related_name='bookmarked_posts', through='Bookmark')
     # posts must belong to a user
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', default=None)
     # Fields that are filled by owner user
@@ -59,7 +61,25 @@ class Post(TimeStampedModel):
 
     def __str__(self):
         return self.owner_username
+    
+    def total_likes(self):
+        return self.likes.count()
+    def tags_as_json_string(self):
+        """ name: tag_name, id: tag_id """
+        return [{"name": tag.name, "id": tag.id} for tag in self.tags.all()]
+class Like(TimeStampedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_liked')
 
+    def __str__(self):
+        return self.user.username
+    
+class Bookmark(TimeStampedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarked_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_bookmarked')
+
+    def __str__(self):
+        return self.user.username
 
 class Tag(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)

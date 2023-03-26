@@ -16,8 +16,6 @@ def create_post(request: object) -> None:
     owner = request.user
     # Get preview details
     preview = generate_preview_(url=request.POST.get('link'))
-    print(preview.get('description'))
-    print(type(preview.get('description')))
     # Creating new post
     if preview:
         new_post = Post.objects.create(owner_username=owner_username,
@@ -29,23 +27,22 @@ def create_post(request: object) -> None:
                                        preview_image=preview.get('image')
                                        )
     else:
-        print("HI FROM ELSE")
         new_post = Post.objects.create(owner_username=owner_username,
                                        owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
-    print(['tag' in key for key in list(request.POST.keys())],
-          type(request.POST.keys()), )
-    for key in list(request.POST.keys()):
-        if 'tag' in key:
-            # Get the tag name
-            print(key)
-            tag_name = request.POST.get(key)
-            print(tag_name)
-            # Get the Tag object
-            tag = Tag.objects.get(name=tag_name)
-            new_post.tags.add(tag)
+        
+    tags = request.POST.getlist('tags[]')
+    for tagId in tags:
+        """ if tagId is not a number, it means that the tag is not in the database. So, we need to create a new tag """
+        if not tagId.isdigit():
+            tag = Tag.objects.create(name=tagId)
+        else:
+            tag = Tag.objects.get(id=tagId)
+            
+        new_post.tags.add(tag)
+    
     space_name = request.POST.get('space')
     if space_name:
         space = Space.objects.get(name=space_name)
@@ -82,13 +79,16 @@ def update_post(request: object) -> None:
     # Reset the tags
     current_post.tags.clear()
     # Reassign the keys
-    for key in list(request.POST.keys()):
-        if 'tag' in key:
-            # Get the tag name
-            tag_name = request.POST.get(key)
-            # Get the Tag object
-            tag = Tag.objects.get(name=tag_name)
-            current_post.tags.add(tag)
+    tags = request.POST.getlist('tags[]')
+    for tagId in tags:
+        """ if tagId is not a number, it means that the tag is not in the database. So, we need to create a new tag """
+        if not tagId.isdigit():
+            tag = Tag.objects.create(name=tagId)
+        else:
+            tag = Tag.objects.get(id=tagId)
+            
+        current_post.tags.add(tag)
+
     space_name = request.POST.get('space')
     if space_name:
         current_post.spaces.clear()
