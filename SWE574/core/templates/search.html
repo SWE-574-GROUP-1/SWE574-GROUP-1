@@ -60,11 +60,11 @@
                         </div>
                         <div class="col-sm-3 text-align-center">
                             <p class="fs-mini text-muted"
-                                id="followers-{{ search_result_profile.id_user }}"
+                                id="followers-{{ search_result_profile.user.id }}"
                             >{{ search_result_profile.followers|length }}
                                 Follower</p>
                             <p class="fs-mini text-muted"
-                                id="following-{{ search_result_profile.id_user }}"
+                                id="following-{{ search_result_profile.user.id }}"
                             >{{ search_result_profile.following|length }}
                                 Following</p>
                             {% if search_result_profile.user.username == request_owner_user.username %}
@@ -72,11 +72,11 @@
                             {% else %}
                             {% if request_owner_user_profile.id_user in search_result_profile.followers %}
                             <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
-                                id="followButton-{{ search_result_profile.id_user }}"
+                                id="followButton-{{ search_result_profile.user.id }}"
                                 class="btn btn-primary btn-info btn-sm">Unfollow</a>
                             {% else %}
                             <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
-                                id="followButton-{{ search_result_profile.id_user }}"
+                                id="followButton-{{ search_result_profile.user.id }}"
                                 class="btn btn-primary btn-info btn-sm">Follow</a>
                             {% endif %}
                             {% endif %}
