@@ -2,6 +2,7 @@
 from ...models import Profile
 from django.contrib.auth.models import User
 
+
 def create_profile(request: object) -> None:
     """
     Implementation of creating a Profile model.
@@ -11,6 +12,6 @@ def create_profile(request: object) -> None:
     username = request.POST.get("username")
     # Create profile object for the new user
     user_model = User.objects.get(username=username)
-    new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
+    new_profile = Profile.objects.create(user=user_model)
     new_profile.save()
     pass
