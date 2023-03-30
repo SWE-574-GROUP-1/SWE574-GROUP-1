@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from requests.exceptions import MissingSchema
 
+
 def get_title(html):
     """Scrape page title."""
     try:
@@ -113,4 +114,3 @@ def generate_preview_(url: str):
             return dict()
     except Exception as e:
         return dict()
-
