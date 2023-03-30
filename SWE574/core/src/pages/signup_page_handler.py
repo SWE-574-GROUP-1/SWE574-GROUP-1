@@ -99,7 +99,8 @@ def validate_password(request: object) -> bool:
     else:
         return True
 
-def validate_password_length(password: str, allowed_min_length: int=8) -> bool:
+
+def validate_password_length(password: str, allowed_min_length: int = 8) -> bool:
     """
     Implementation of validating password length greater than 8
     @param password: a string, that corresponds to the password
@@ -114,6 +115,7 @@ def validate_password_length(password: str, allowed_min_length: int=8) -> bool:
         return False
     else:
         return True
+
 
 def validate_password_format(password: str):
     """

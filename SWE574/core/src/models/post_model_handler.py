@@ -32,7 +32,7 @@ def create_post(request: object) -> None:
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
-        
+
     tags = request.POST.getlist('tags[]')
     for tagId in tags:
         """ if tagId is not a number, it means that the tag is not in the database. So, we need to create a new tag """
@@ -40,9 +40,9 @@ def create_post(request: object) -> None:
             tag = Tag.objects.create(name=tagId)
         else:
             tag = Tag.objects.get(id=tagId)
-            
+
         new_post.tags.add(tag)
-    
+
     space_name = request.POST.get('space')
     if space_name:
         space = Space.objects.get(name=space_name)
@@ -86,7 +86,7 @@ def update_post(request: object) -> None:
             tag = Tag.objects.create(name=tagId)
         else:
             tag = Tag.objects.get(id=tagId)
-            
+
         current_post.tags.add(tag)
 
     space_name = request.POST.get('space')
@@ -170,5 +170,5 @@ def __delete_post__(request: object) -> HttpResponseRedirect:
         messages.success(request, "The Post is deleted")
     except Exception as e:
         print("Error is:", e)
-    redirect_path = '/profile/'+request.user.username
+    redirect_path = '/profile/' + request.user.username
     return HttpResponseRedirect(redirect_path)

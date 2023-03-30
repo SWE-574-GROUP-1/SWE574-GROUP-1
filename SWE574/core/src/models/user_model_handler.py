@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
+
 def create_user(request: object) -> None:
     """
     Implementation of creating a user model and saving it to database
@@ -18,7 +19,7 @@ def create_user(request: object) -> None:
     pass
 
 
-def login_user(request: object) -> [redirect, HttpResponseRedirect] :
+def login_user(request: object) -> [redirect, HttpResponseRedirect]:
     """
     Implementation of authorizing the user to log in
     @param request: HttpRequest object that contains metadata about request passed from frontend
@@ -28,7 +29,7 @@ def login_user(request: object) -> [redirect, HttpResponseRedirect] :
     password = request.POST.get("password")
     redirect_path = request.META.get('HTTP_REFERER')
     try:
-    # Log user in and redirect to feed
+        # Log user in and redirect to feed
         user_login = auth.authenticate(username=username, password=password)
         auth.login(request, user_login)
         return redirect("core:profile", profile_owner_username=username)
@@ -58,6 +59,7 @@ def delete_user(request: object) -> render:
     # TODO - Dağlar: Change this to homepage(welcome page) when created
     return render(request, 'signup.html')
 
+
 def username_setter(old_username: str, new_username: str) -> None:
     """
     Implementation of setter method for username attribute of the user
@@ -72,6 +74,7 @@ def username_setter(old_username: str, new_username: str) -> None:
     # Save the user with new username
     user.save()
 
+
 def email_setter(username: str, new_email: str) -> None:
     """
     Implementation of setter method for email attribute of the user
@@ -85,6 +88,7 @@ def email_setter(username: str, new_email: str) -> None:
     user.email = new_email
     # Save the user with new username
     user.save()
+
 
 def validate_availability_username(username: str) -> bool:
     """
