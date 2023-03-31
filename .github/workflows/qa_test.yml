@@ -1,4 +1,4 @@
-name: CI-Tests
+name: QA-Tests
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       # Setup Python
       - name: Setup Python 3.8
@@ -46,15 +46,8 @@ jobs:
       - name: Coverage Report
         run: |
           pip install coverage
-          cd /SWE574/
-          coverage run manage.py test
+          cd SWE574
           coverage report
-
-      # We already have this on the Coverage Report Section
-      - name: Django testing
-        run: |
-          cd /SWE574/ 
-          python3 manage.py test
 
 #      # Run a CodeQL Analysis
 #      - name: Initialize CodeQL
