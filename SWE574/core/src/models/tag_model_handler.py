@@ -10,6 +10,7 @@ def create_tag(request: object) -> None:
         # Message success here
     except Exception as e:
         # Message failure here
+        print(f"{e=}")
         pass
 
 

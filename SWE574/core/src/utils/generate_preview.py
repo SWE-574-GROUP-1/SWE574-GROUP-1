@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from requests.exceptions import MissingSchema
 
 
 def get_title(html):
@@ -19,6 +18,7 @@ def get_title(html):
             title = html.find("h1").string
         return title
     except Exception as e:
+        print(f"{e=}")
         return None
 
 
@@ -38,6 +38,7 @@ def get_description(html):
             description = html.find("p").contents
         return description
     except Exception as e:
+        print(f"{e=}")
         return None
 
 
@@ -55,6 +56,7 @@ def get_image(html):
             image = html.find_all("img").get('src')
         return image
     except Exception as e:
+        print(f"{e=}")
         return None
 
 
@@ -113,4 +115,5 @@ def generate_preview_(url: str):
         else:
             return dict()
     except Exception as e:
+        print(f"{e=}")
         return dict()

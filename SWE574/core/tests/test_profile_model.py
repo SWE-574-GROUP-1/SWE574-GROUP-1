@@ -1,10 +1,8 @@
 import os
 from unittest import TestCase
-from ..models import *
-from django.contrib.auth.models import User
+from ..models import User, Profile
 from django.db.models.fields.files import ImageFieldFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.exceptions import ObjectDoesNotExist
 
 username = "test_username"
 email = "test@test.com"
@@ -121,8 +119,11 @@ class ProfileTestCase(TestCase):
 
     def test_profile_image_path(self):
         """Assert that profile image is in /app/images/profile_images/ directory"""
+        if os.environ.get('GITHUB_WORKFLOW'):
+            default_dir = '/home/runner/work/SWE574-GROUP-1/SWE574-GROUP-1/SWE574/images/profile_images/'
+        else:
+            default_dir = '/app/images/profile_images/'
         profile_img_path = self.profile.profile_image.path
-        default_dir = '/app/images/profile_images/'
         self.assertTrue(default_dir in profile_img_path)
 
     def test_profile_image_can_be_updated(self):
@@ -143,10 +144,13 @@ class ProfileTestCase(TestCase):
 
     def test_profile_image_updated_dir(self):
         """Assert that dir of updated profile image is true"""
+        if os.environ.get('GITHUB_WORKFLOW'):
+            default_dir = '/home/runner/work/SWE574-GROUP-1/SWE574-GROUP-1/SWE574/images/profile_images/'
+        else:
+            default_dir = '/app/images/profile_images/'
         new_image = SimpleUploadedFile("new_image.jpg", b"new image content")
         self.profile.profile_image = new_image
         self.profile.save()
-        default_dir = '/app/images/profile_images/'
         self.assertTrue(default_dir in self.profile.profile_image.path)
         os.remove(self.profile.profile_image.path)
 
@@ -163,25 +167,36 @@ class ProfileTestCase(TestCase):
 
     def test_background_image_can_be_updated(self):
         """Assert that background image can be updated"""
-        new_img_path = '/app/images/background_images/bg-image-3.jpg'
+        if os.environ.get('GITHUB_WORKFLOW'):
+            new_img_path = '/home/runner/work/SWE574-GROUP-1/SWE574-GROUP-1/SWE574' \
+                           '/images/background_images/bg-image-3.jpg'
+        else:
+            new_img_path = '/app/images/background_images/bg-image-3.jpg'
         self.profile.background_image = new_img_path
         self.profile.save()
         self.assertEqual(new_img_path, self.profile.background_image.path)
 
     def test_background_image_updated_dtype(self):
         """Assert that dtype of updated background image is ImageFieldFile"""
-        new_img_path = '/app/images/background_images/bg-image-3.jpg'
+        if os.environ.get('GITHUB_WORKFLOW'):
+            new_img_path = '/home/runner/work/SWE574-GROUP-1/SWE574-GROUP-1/SWE574' \
+                           '/images/background_images/bg-image-3.jpg'
+        else:
+            new_img_path = '/app/images/background_images/bg-image-3.jpg'
         self.profile.background_image = new_img_path
         self.profile.save()
         self.assertTrue(isinstance(self.profile.background_image, ImageFieldFile))
 
     def test_background_image_updated_dir(self):
         """Assert that dir of updated background image is true"""
-        new_img_path = '/app/images/background_images/bg-image-3.jpg'
+        if os.environ.get('GITHUB_WORKFLOW'):
+            new_img_path = '/home/runner/work/SWE574-GROUP-1/SWE574-GROUP-1/SWE574' \
+                           '/images/background_images/bg-image-3.jpg'
+        else:
+            new_img_path = '/app/images/background_images/bg-image-3.jpg'
         self.profile.background_image = new_img_path
         self.profile.save()
-        default_dir = '/app/images/profile_images/'
-        self.assertTrue(default_dir in self.profile.profile_image.path)
+        self.assertTrue(new_img_path in self.profile.background_image.path)
 
     def test_followers_default(self):
         """Assert that followers field is empty list by default"""
