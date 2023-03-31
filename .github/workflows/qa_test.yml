@@ -42,13 +42,6 @@ jobs:
           pip install flake8
           flake8
 
-      # Generate the coverage report
-      - name: Coverage Report
-        run: |
-          pip install coverage
-          cd SWE574
-          coverage report
-
 #      # Run a CodeQL Analysis
 #      - name: Initialize CodeQL
 #        uses: github/codeql-action/init@v2
