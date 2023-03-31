@@ -1,5 +1,6 @@
 # SWE574
 This Repository contains the Term Project of SWE574 class in Bogazici Univesity.
+![CI-Tests](https://github.com/SWE-574-GROUP-1/SWE574-GROUP-1/actions/workflows/testing.yml/badge.svg)
 ## Authors:
 - **Dağlar Berk Erdem**
 - **Hüseyin Aydın**
