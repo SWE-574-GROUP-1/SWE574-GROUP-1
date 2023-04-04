@@ -2,124 +2,192 @@
 {% load static %}
 
 {% block style %}
-<link href="{% static 'core/css/search.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/search.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row gutters-sm">
-        <div class="card col-md-3 col-md-push-9" style="height: 18rem;">
-            <div class="card-body">
-                <nav class="nav flex-column nav-pills nav-gap-y-1">
-                    <a href="#profile" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded active">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-people-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                        </svg>
-                        Users
-                    </a>
-                    <a href="#user_settings" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.578 3.578 0 0 0-.108-.563 2.22 2.22 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2.35 2.35 0 0 0-.16-.045 3.797 3.797 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.552 2.552 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526l.24-2.408Zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361.599.599.437 1.732-.36 2.531Z" />
-                            <path
-                                d="M5.205 10.787a7.632 7.632 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925Z" />
-                        </svg>
-                        Spaces
-                    </a>
-                    <a href="#privacy" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-tags-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2zm3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
-                            <path
-                                d="M1.293 7.793A1 1 0 0 1 1 7.086V2a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l.043-.043-7.457-7.457z" />
-                        </svg>
-                        Tags
-                    </a>
-                </nav>
+    <div class="container">
+        <div class="row gutters-sm">
+            <div class="card col-md-15 col-md-push-9" style="height: 5rem;">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-pills justify-content-center" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                                    data-bs-target="#user" type="button" role="tab" aria-controls="pills-profile"
+                                    aria-selected="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-people-fill" viewBox="0 0 16 16">
+                                    <path
+                                            d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                                </svg>
+                                Users <span
+                                    style="border-radius: 20px; padding: 5px">{{ search_result_user_profiles|length }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-home-tab" data-bs-toggle="pill"
+                                    data-bs-target="#post" type="button" role="tab" aria-controls="pills-post"
+                                    aria-selected="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-people-fill" viewBox="0 0 16 16">
+                                    <path
+                                            d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                                </svg>
+                                Posts <span
+                                    style="border-radius: 20px; padding: 5px">{{ post_results|length }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                                    data-bs-target="#space" type="button" role="tab" aria-controls="pills-space"
+                                    aria-selected="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
+                                    <path
+                                            d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.578 3.578 0 0 0-.108-.563 2.22 2.22 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2.35 2.35 0 0 0-.16-.045 3.797 3.797 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.552 2.552 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526l.24-2.408Zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361.599.599.437 1.732-.36 2.531Z"/>
+                                    <path
+                                            d="M5.205 10.787a7.632 7.632 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925Z"/>
+                                </svg>
+                                Spaces <span style="border-radius: 20px; padding: 5px">{{ space_results|length }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#tag"
+                                    type="button" role="tab" aria-controls="pills-tag" aria-selected="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-tags-fill" viewBox="0 0 16 16">
+                                    <path
+                                            d="M2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2zm3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                                    <path
+                                            d="M1.293 7.793A1 1 0 0 1 1 7.086V2a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l.043-.043-7.457-7.457z"/>
+                                </svg>
+                                Tags <span style="border-radius: 20px; padding: 5px">{{ tag_results|length }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="col-md-9 col-md-pull-3">
-            {% if search_result_user_profiles %}
-            {% for search_result_profile in search_result_user_profiles %}
-            <section class="search-result-item">
-                <a class="image-link" href="#">
-                    <img class="image" src="{{ search_result_profile.profile_image.url }}">
-                </a>
-                <div class="search-result-item-body">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <h4 class="search-result-item-heading"><a
-                                    href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
-                            </h4>
-                            <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
-                            <p class="description">{{ search_result_profile.bio }}</p>
-                        </div>
-                        <div class="col-sm-3 text-align-center">
-                            <p class="fs-mini text-muted"
-                                id="followers-{{ search_result_profile.user.id }}"
-                            >{{ search_result_profile.followers|length }}
-                                Follower</p>
-                            <p class="fs-mini text-muted"
-                                id="following-{{ search_result_profile.user.id }}"
-                            >{{ search_result_profile.following|length }}
-                                Following</p>
-                            {% if search_result_profile.user.username == request_owner_user.username %}
-                            <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
-                            {% else %}
-                            {% if request_owner_user_profile.id_user in search_result_profile.followers %}
-                            <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
-                                id="followButton-{{ search_result_profile.user.id }}"
-                                class="btn btn-primary btn-info btn-sm">Unfollow</a>
-                            {% else %}
-                            <a style="cursor: pointer;" onclick="follow({{search_result_profile.id_user}})"
-                                id="followButton-{{ search_result_profile.user.id }}"
-                                class="btn btn-primary btn-info btn-sm">Follow</a>
-                            {% endif %}
-                            {% endif %}
-                        </div>
+            <div class="tab-content mt-xxl-2" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div>
+                        {% if search_result_user_profiles %}
+                            {% for search_result_profile in search_result_user_profiles %}
+                                <section class="search-result-item w-50 mt-5 mb-5 mx-auto">
+                                    <a class="image-link" href="#">
+                                        <img class="image" src="{{ search_result_profile.profile_image.url }}">
+                                    </a>
+                                    <div class="search-result-item-body">
+                                        <div class="row">
+                                            <div class="col-sm-9">
+                                                <h4 class="search-result-item-heading"><a
+                                                        href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
+                                                </h4>
+                                                <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
+                                                <p class="description">{{ search_result_profile.bio }}</p>
+                                            </div>
+                                            <div class="col-sm-3 text-align-center">
+                                                <p class="fs-mini text-muted"
+                                                   id="followers-{{ search_result_profile.id_user }}"
+                                                >{{ search_result_profile.followers|length }}
+                                                    Follower</p>
+                                                <p class="fs-mini text-muted"
+                                                   id="following-{{ search_result_profile.id_user }}"
+                                                >{{ search_result_profile.following|length }}
+                                                    Following</p>
+                                                {% if search_result_profile.user.username == request_owner_user.username %}
+                                                    <a href="#" class="btn btn-sm btn-info mb-2"
+                                                       style="visibility: hidden;">Follow</a>
+                                                {% else %}
+                                                    {% if request_owner_user_profile.id_user in search_result_profile.followers %}
+                                                        <a style="cursor: pointer;"
+                                                           onclick="follow({{ search_result_profile.id_user }})"
+                                                           id="followButton-{{ search_result_profile.id_user }}"
+                                                           class="btn btn-primary btn-info btn-sm">Unfollow</a>
+                                                    {% else %}
+                                                        <a style="cursor: pointer;"
+                                                           onclick="follow({{ search_result_profile.id_user }})"
+                                                           id="followButton-{{ search_result_profile.id_user }}"
+                                                           class="btn btn-primary btn-info btn-sm">Follow</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            {% endfor %}
+                        {% endif %}
+
                     </div>
                 </div>
-            </section>
-            {% endfor %}
-            {% endif %}
-
+                <div class="tab-pane fade" id="post" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    {% if post_results %}
+                        {% for post in post_results %}
+                            <section class="search-result-item">
+                                {% include "post_container.html" with post=post %}
+                            </section>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="space" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="tab-content mt-xxl-2" id="pills-tabContent">
+                        {% if space_results %}
+                            {% for space in space_results %}
+                                <section class="search-result-item w-25 mt-5 mb-5 mx-auto">
+                                    <div class="mx-auto row text-center">
+                                        <a href="{% url 'core:spaces' space_name=space.name %}">
+                                            {{ space.name }}
+                                        </a>
+                                    </div>
+                                </section>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tag" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    {% if tag_results %}
+                        {% for tag in tag_results %}
+                            <section class="search-result-item w-25 mt-5 mb-5 mx-auto text-center">
+                                <div class="tag-cloud">
+                                    <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
+                                       class="badge bg-secondary rounded-pill tag-{{ tag.count }}"
+                                       style="font-size: {{ tag.font_size }}px">{{ tag.name }}</a>
+                                </div>
+                            </section>
+                        {% endfor %}
+                    {% endif %}</div>
+            </div>
         </div>
-    </div>
-</div>
-<!-- end profile-content -->
+
+    </div><!-- end profile-content -->
 {% endblock %}
 
 {% block js %}
-<script>
-    let input = document.querySelector(".input");
-    let button = document.querySelector(".button");
+    <script>
+        let input = document.querySelector(".input");
+        let button = document.querySelector(".button");
 
-    button.disabled = true; //setting button state to disabled
+        button.disabled = true; //setting button state to disabled
 
-    input.addEventListener("change", stateHandle);
+        input.addEventListener("change", stateHandle);
 
-    function stateHandle() {
-        if (document.querySelector(".input").value === "") {
-            button.disabled = true; //button remains disabled
-        } else {
-            button.disabled = false; //button is enabled
+        function stateHandle() {
+            if (document.querySelector(".input").value === "") {
+                button.disabled = true; //button remains disabled
+            } else {
+                button.disabled = false; //button is enabled
+            }
         }
-    }
-</script>
-<script>
-    window.dataLayer = window.dataLayer || [];
+    </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
+        function gtag() {
+            dataLayer.push(arguments);
+        }
 
-    gtag('js', new Date());
+        gtag('js', new Date());
 
-    gtag('config', 'G-F1RTS0P1CD');</script>
+        gtag('config', 'G-F1RTS0P1CD');</script>
 
-</html>
+    </html>
 {% endblock %}
