@@ -1,22 +1,22 @@
 import random
+
+import requests
+from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
-from .src.pages.profile_page_handler import profile_page_handler_main
-from .src.models.post_model_handler import __delete_post__, __book_post__
-from .src.pages.signup_page_handler import signup_page_handler_main
-from .src.pages.signin_page_handler import signin_page_handler_main
-from .src.models.user_model_handler import *
-from .src.pages.settings_page_handler import settings_page_handler_main
+from django.db.models import Count, Q
+from django.db.models import Prefetch
+from django.http import JsonResponse
 # TODO: Improve modularity
 from django.urls import reverse
+
 from .models import Profile, Tag, Space, Post, User
-from django.http import HttpResponseRedirect
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
-from itertools import chain
-from django.http import HttpResponse, JsonResponse
-from bs4 import BeautifulSoup
-import requests
-from django.db.models import Prefetch
-from django.db.models import Count
+from .src.models.post_model_handler import __delete_post__, __book_post__
+from .src.models.user_model_handler import *
+from .src.pages.profile_page_handler import profile_page_handler_main
+from .src.pages.settings_page_handler import settings_page_handler_main
+from .src.pages.signin_page_handler import signin_page_handler_main
+from .src.pages.signup_page_handler import signup_page_handler_main
 
 
 def signup(request: object):
@@ -75,25 +75,27 @@ def search(request: object):
         keyword = request.POST.get("keyword")
         if keyword:
             searched_user_objects = User.objects.filter(
-                username__icontains=keyword)
+                username__contains=keyword)
             search_result_user_profiles = list()
             for user in searched_user_objects:
                 profile_object = Profile.objects.get(user=user)
                 search_result_user_profiles.append(profile_object)
                 print(profile_object.user.username)
-            # TODO: Implement search for posts, tags and spaces too
-            # search_tag_objects =
-            # searched_spaces_objects =
-            print(f"{len(search_result_user_profiles)} users are found")
             context["search_result_user_profiles"] = search_result_user_profiles
 
-    print("POST IS:")
-    print(request.POST.get("keyword"))
+            tag_results = Tag.objects.filter(name__contains=keyword)
+            context["tag_results"] = tag_results
+
+            post_results = Post.objects.filter(Q(link__contains=keyword) | Q(caption__contains=keyword))
+            context["post_results"] = post_results
+
+            space_results = Space.objects.filter(name__contains=keyword)
+            context["space_results"] = space_results
     return render(request, "search.html", context=context)
 
 
 @login_required(login_url="core:signin")
-def follow(request):    
+def follow(request):
     logged_in_user = User.objects.get(username=request.user.username)
     user_to_be_followed = User.objects.get(id=request.GET.get('profile_owner_id_user'))
 
@@ -114,8 +116,9 @@ def follow(request):
 
     followers_count = len(user_to_be_followed.profile.followers)
     following_count = len(logged_in_user.profile.following)
-     
+
     return JsonResponse({'followed': followed, 'followers_count': followers_count, 'following_count': following_count})
+
 
 def tags_search(request):
     tag_name = request.POST.get('tag_name_to_be_searched')
@@ -123,16 +126,18 @@ def tags_search(request):
     tags = Tag.objects.filter(name__icontains=tag_name)
     posts = Post.objects.filter(tags__in=tags).distinct().prefetch_related(
         Prefetch('tags', queryset=tags, to_attr='matching_tags'))
-    
+
     tag_cloud = get_tag_cloud()
 
     return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
+
 
 def tags_index(request):
     tag_cloud = get_tag_cloud()
     return render(request, 'tags.html', {'tag_cloud': tag_cloud})
 
-def tag_posts(request, tag_name): 
+
+def tag_posts(request, tag_name):
     tag = Tag.objects.get(name=tag_name)
     posts = Post.objects.filter(tags=tag).prefetch_related('tags')
     tag_cloud = get_tag_cloud()
@@ -142,7 +147,7 @@ def tag_posts(request, tag_name):
 def get_tag_cloud():
     tags = Tag.objects.annotate(count=Count('posts')).order_by('-count')
     max_count = tags[0].count if tags else 0
-    min_count = tags[len(tags)-1].count if tags else 0
+    min_count = tags[len(tags) - 1].count if tags else 0
     range_count = max_count - min_count
     font_min = 12
     font_max = 36
@@ -209,6 +214,7 @@ def spaces(request, space_name):
         return HttpResponseRedirect(redirect_path)
     return render(request, "spaces.html", context=context)
 
+
 @login_required
 def update_post(request):
     if request.method == 'POST':
@@ -217,6 +223,7 @@ def update_post(request):
     # redirect back
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -224,6 +231,7 @@ def create_post(request):
         post_model_handler.create_post(request=request)
     # redirect back
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 @login_required(login_url="core:signin")
 def feed(request: object):
@@ -302,6 +310,7 @@ def like_post(request, post_id):
 
     return JsonResponse({'liked': liked, 'count': post.total_likes()})
 
+
 @login_required(login_url="core:signin")
 def dislike_post(request, post_id):
     post = Post.objects.get(post_id=post_id)
@@ -330,6 +339,7 @@ def bookmark_post(request, post_id):
         bookmarked = True
 
     return JsonResponse({'bookmarked': bookmarked})
+
 
 # this methods fetch the given url's og tags and return json response as img, title, description
 
