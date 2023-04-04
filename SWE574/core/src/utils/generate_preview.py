@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
 
+
 def get_title(html):
     """Scrape page title."""
     try:
