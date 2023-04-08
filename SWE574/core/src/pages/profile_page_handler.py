@@ -31,12 +31,17 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     @return: Renders the profile page with Profile and Post data
     """
     # Get the profile owner user object and profile
-    profile_owner_user_object = User.objects.get(username=profile_owner_username)
-    profile_owner_user_profile = Profile.objects.get(user=profile_owner_user_object)
+    profile_owner_user_object = User.objects.get(
+        username=profile_owner_username)
+    profile_owner_user_profile = Profile.objects.get(
+        user=profile_owner_user_object)
     # Get the request owner user object and profile
-    request_owner_user_object = User.objects.get(username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
-    profile_owner_posts = Post.objects.filter(owner_username=profile_owner_user_object).order_by('-created')
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
+    profile_owner_posts = Post.objects.filter(
+        owner=profile_owner_user_object).order_by('-created')
     context = {'request_owner_user': request_owner_user_object,
                'request_owner_user_profile': request_owner_user_profile,
                'profile_owner_user': profile_owner_user_object,
@@ -44,10 +49,10 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
                'posts': profile_owner_posts,
                'num_followers': len(profile_owner_user_profile.followers),
                'num_following': len(profile_owner_user_profile.following),
-               'num_posts': len(Post.objects.filter(owner_username=profile_owner_user_profile.user.username)),
+               'num_posts': len(Post.objects.filter(owner=profile_owner_user_profile.user)),
                'available_tags': Tag.objects.all(),
                'available_spaces': Space.objects.all(),
-    }
+               }
     print(f"profile_owner_username is: {profile_owner_user_object.username}")
     print(f"request_owner_username is: {request_owner_user_object.username}")
     print([space.name for space in Space.objects.all()])
