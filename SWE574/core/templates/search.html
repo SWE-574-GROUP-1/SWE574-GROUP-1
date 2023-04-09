@@ -147,6 +147,7 @@
                     {% if tag_results %}
                         {% for tag in tag_results %}
                             <section class="search-result-item w-25 mt-5 mb-5 mx-auto text-center">
+                            <section class="search-result-item w-25 mt-5 mb-5 mx-auto text-center">
                                 <div class="tag-cloud">
                                     <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
                                        class="badge bg-secondary rounded-pill tag-{{ tag.count }}"

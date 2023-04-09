@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+{% endblock %}
+{% block _navbar %}
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://kit.fontawesome.com/a3c3edf16e.js" crossorigin="anonymous"></script>
+
+  <div class="navbar-collapse collapse " id="navbarNav">
+    <br>
+    <form type="search">
+      <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+    </form>
+    <ul class="navbar-nav position-relative ms-0 me-auto">
+      <li class="nav-item">
+        <a href="" class="nav-link px-3 text-white">Home</a>
+      </li>
+      <li class="nav-item">
+        <a href="about/" class="nav-link px-3 text-gray disabled">About</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav position-relative me-0">
+      <li class="nav-item">
+        <a class="nav-link px-3 text-white" aria-current="page" href="/signup">Sign Up</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-3 text-white" aria-current="page" href="/signin">Sign In</a>
+      </li>
+    </ul>
+  </div>
+
+{% endblock _navbar %}
+
+{% block content %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Us</title>
+    <style>
+      body {
+        background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+
+      }
+      .container {
+        margin-left: 0;
+       }
+      .row {
+       margin-left:-100;
+       }
+
+      .collapsible {
+        cursor: pointer;
+      }
+
+      .content {
+        display: none;
+        padding: 0 18px;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+      }
+
+
+    </style>
+  </head>
+ <body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="collapsible" onclick="toggleCollapsible('intro')">Introduction <i class="fa fa-chevron-down"></i></h1>
+      <div class="content" id="intro">
+        <p>LinkMe is a social media platform users can Search, Post and Save posts in their accounts. </p>
+        <p>With LinkMe  </p>
+      </div>
+
+      <h1 class="collapsible" onclick="toggleCollapsible('faq')">FAQ <i class="fa fa-chevron-down"></i></h1>
+      <div class="content" id="faq">
+
+        <p style="font-weight: bold">1) How to post new updates? </p>
+        <p> Sign in to your account and when you signed in, on the right corner you can see post bLink button. </p>
+        <p style="font-weight: bold">2) How can I like posts? </p>
+        <p> When you see post, you can easily click like button. </p>
+        <p style="font-weight: bold">3) Can I add tags? </p>
+        <p> Yes you can easily add tags </p>
+        <p style="font-weight: bold">4) Can I delete my posts? </p>
+        <p> Yes you can easily delete your posts. </p>
+        <p style="font-weight: bold" >5) Can I update my profiles </p>
+        <p> Yes you can update your profile from side bar. </p>
+        <p style="font-weight: bold" >6) Can I delete my profile </p>
+        <p> Yes you can delete your profile </p>
+        <p style="font-weight: bold" >7) Can I chat with other people? </p>
+        <p> Unfortunately but we are working on this feature! </p>
+
+      </div>
+
+      <h1 class="collapsible" onclick="toggleCollapsible('arch')">Architecture <i class="fa fa-chevron-down"></i></h1>
+      <div class="content" id="arch">
+        <p>Here you can see architecture below:  </p>
+        <img src="{% static 'C:\SWE574-GROUP-1\SWE574\static\assets\images\arch.png' %}" alt="Architecture Image" style="max-width: 100%;">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <script type="text/javascript">
+  function toggleCollapsible(id) {
+    var element = document.getElementById(id);
+    if (element.style.display === "none") {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+  }
+
+  var collapsibleItems = document.getElementsByClassName("collapsible-header");
+
+  for (var i = 0; i < collapsibleItems.length; i++) {
+    collapsibleItems[i].addEventListener("click", function() {
+      var id = this.getAttribute("data-target");
+      toggleCollapsible(id);
+    });
+  }
+</script>
+    <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
+  </body>
+</html>
+{% endblock %}
