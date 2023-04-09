@@ -1,22 +1,21 @@
 import random
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
-from .src.pages.profile_page_handler import profile_page_handler_main
-from .src.models.post_model_handler import __delete_post__, __book_post__
-from .src.pages.signup_page_handler import signup_page_handler_main
-from .src.pages.signin_page_handler import signin_page_handler_main
-from .src.models.user_model_handler import delete_user
-from .src.pages.settings_page_handler import settings_page_handler_main
+from django.db.models import Q
 from django.urls import reverse
+
 from .models import Profile, Tag, Space, Post, User
-from django.http import HttpResponseRedirect
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from django.http import JsonResponse
 from bs4 import BeautifulSoup
 import requests
 from django.db.models import Prefetch
 from django.db.models import Count
+from .src.models.post_model_handler import __delete_post__, __book_post__
+from .src.models.user_model_handler import *
+from .src.pages.profile_page_handler import profile_page_handler_main
+from .src.pages.settings_page_handler import settings_page_handler_main
+from .src.pages.signin_page_handler import signin_page_handler_main
+from .src.pages.signup_page_handler import signup_page_handler_main
 
 
 def signup(request: object):
@@ -75,20 +74,22 @@ def search(request: object):
         keyword = request.POST.get("keyword")
         if keyword:
             searched_user_objects = User.objects.filter(
-                username__icontains=keyword)
+                username__contains=keyword)
             search_result_user_profiles = list()
             for user in searched_user_objects:
                 profile_object = Profile.objects.get(user=user)
                 search_result_user_profiles.append(profile_object)
                 print(profile_object.user.username)
-            # TODO: Implement search for posts, tags and spaces too
-            # search_tag_objects =
-            # searched_spaces_objects =
-            print(f"{len(search_result_user_profiles)} users are found")
             context["search_result_user_profiles"] = search_result_user_profiles
 
-    print("POST IS:")
-    print(request.POST.get("keyword"))
+            tag_results = Tag.objects.filter(name__contains=keyword)
+            context["tag_results"] = tag_results
+
+            post_results = Post.objects.filter(Q(link__contains=keyword) | Q(caption__contains=keyword))
+            context["post_results"] = post_results
+
+            space_results = Space.objects.filter(name__contains=keyword)
+            context["space_results"] = space_results
     return render(request, "search.html", context=context)
 
 
@@ -343,11 +344,9 @@ def bookmark_post(request, post_id):
     return JsonResponse({'bookmarked': bookmarked})
 
 
-# this methods fetch the given url's og tags and return json response as img, title, description
-
-
 @login_required(login_url="core:signin")
 def fetch_og_tags(request):
+    """This method fetch the given url's og tags and return json response as img, title, description"""
     url = request.GET.get(
         'url', 'https://www.bbc.com/news/uk-politics-65039661')
     # print(url)

@@ -3,10 +3,12 @@ from uuid import uuid4
 
 # Import from django modules
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
+from django.utils.text import slugify
 # Import user model from django
-from django.contrib.auth.models import User
+from django.core.validators import URLValidator
 
 
 # override the default user model
@@ -37,20 +39,16 @@ class Profile(TimeStampedModel):
 class Post(TimeStampedModel):
     # Fields that are automatically filled
     post_id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    owner_username = models.TextField(max_length=100)
     # likes with created
     likes = models.ManyToManyField(User, related_name='liked_posts', through='Like')
     dislikes = models.ManyToManyField(User, related_name='disliked_posts', through='Dislike')
     # bookmarks with created
     bookmarks = models.ManyToManyField(User, related_name='bookmarked_posts', through='Bookmark')
     # posts must belong to a user
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', default=None)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=False)
     # Fields that are filled by owner user
-    link = models.URLField(blank=False)  # URLField cannot be empty, this not twitter :)
+    link = models.URLField(blank=False, validators=[URLValidator])
     caption = models.TextField(blank=True)  # Caption can be empty
-    # Fields that are filled by other users
-    bookmarked_by = ArrayField(models.IntegerField(), default=list, blank=True, )
-    num_of_bookmarks = models.IntegerField(default=0)
     # Preview attributes
     title = models.TextField(max_length=100, blank=True)
     description = models.TextField(max_length=500, blank=True)
@@ -60,7 +58,7 @@ class Post(TimeStampedModel):
     spaces = models.ManyToManyField('Space', related_name='posts', default=None)
 
     def __str__(self):
-        return self.owner_username
+        return self.owner.username
 
     def total_likes(self):
         return self.likes.count()
@@ -68,9 +66,36 @@ class Post(TimeStampedModel):
     def total_dislikes(self):
         return self.dislikes.count()
 
+    def total_bookmarks(self):
+        return self.bookmarks.count()
+
     def tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"name": tag.name, "id": tag.id} for tag in self.tags.all()]
+
+    def __setattr__(self, name, value):
+        """Override __setattr_ method to freeze post_id, owner attributes"""
+        if name == 'post_id':
+            try:
+                if value != self.post_id:
+                    return
+            except ValueError:
+                pass
+            except AttributeError:
+                pass
+            except Post.DoesNotExist:
+                pass
+        if name == 'owner':
+            try:
+                if value != self.owner:
+                    return
+            except Post.DoesNotExist:
+                pass
+        if name == 'link':
+            if value == "":
+                return
+
+        super(self.__class__, self).__setattr__(name, value)
 
 
 class Like(TimeStampedModel):
