@@ -1,18 +1,17 @@
 import random
-
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.db.models import Prefetch
-from django.http import JsonResponse
-# TODO: Improve modularity
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
-
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import auth
 from .models import Profile, Tag, Space, Post, User
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__, __book_post__
-from .src.models.user_model_handler import *
+from .src.models.user_model_handler import delete_user
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
@@ -176,7 +175,7 @@ def spaces(request, space_name):
     if request.method == 'POST':
         if request.POST.get('form_name') == 'tag-search-form':
             print(request.POST)
-            tag_name = request.POST.get('tag_name_to_be_searched')
+            # TODO: Is this line required? --> tag_name = request.POST.get('tag_name_to_be_searched')
     # Create list of post owners
     post_owner_profile_list = list()
     for post in posts:
@@ -293,7 +292,10 @@ def feed(request: object):
 def post_detail(request, post_id):
     post = Post.objects.get(post_id=post_id)
     request_owner_user_profile = Profile.objects.get(user=request.user)
-    return render(request, "post_detail.html", {"post": post, "request_owner_user_profile": request_owner_user_profile})
+    return render(
+        request, "post_detail.html",
+        {"post": post, "request_owner_user_profile": request_owner_user_profile}
+    )
 
 
 @login_required(login_url="core:signin")

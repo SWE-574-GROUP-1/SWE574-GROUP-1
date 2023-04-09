@@ -1,4 +1,4 @@
-from ...models import Space, Post
+from ...models import Space
 
 
 def create_space(request: object):
@@ -9,6 +9,7 @@ def create_space(request: object):
         space.save()
         # Message success here
     except Exception as e:
+        print(f"{e=}")
         # Message failure here
         pass
 
