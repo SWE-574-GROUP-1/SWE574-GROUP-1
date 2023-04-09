@@ -11,15 +11,13 @@ def create_post(request: object) -> None:
     @param request: HttpRequest object that contains metadata about request passed from frontend
     @return: None
     """
-    # Get the username of the user that requests to create a post
-    owner_username = request.user.username
+    # Get the user that requests to create a post
     owner = request.user
     # Get preview details
     preview = generate_preview_(url=request.POST.get('link'))
     # Creating new post
     if preview:
-        new_post = Post.objects.create(owner_username=owner_username,
-                                       owner=owner,
+        new_post = Post.objects.create(owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        title=preview.get('title'),
@@ -27,8 +25,7 @@ def create_post(request: object) -> None:
                                        preview_image=preview.get('image')
                                        )
     else:
-        new_post = Post.objects.create(owner_username=owner_username,
-                                       owner=owner,
+        new_post = Post.objects.create(owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
