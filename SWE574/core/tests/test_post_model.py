@@ -42,6 +42,8 @@ class TestPost(TestCase):
         self.post.delete()
         with self.assertRaises(Post.DoesNotExist):
             Post.objects.get(owner=self.user)
+        count = Post.objects.count()
+        self.assertEqual(0, count)
 
     def test_post_dtype(self):
         self.assertIsInstance(self.post, TimeStampedModel)
@@ -60,13 +62,6 @@ class TestPost(TestCase):
         user.delete()
         count = Post.objects.count()
         self.assertEqual(count, 0)
-
-    def test_post_delete(self):
-        """Assert that posts can be deleted"""
-        test_post = Post.objects.get(owner=self.user)
-        test_post.delete()
-        count = Post.objects.count()
-        self.assertEqual(0, count)
 
     def test_post_change_username(self):
         """Assert changing user.username does not affect accessing post"""
