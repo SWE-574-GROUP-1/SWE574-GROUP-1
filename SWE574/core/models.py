@@ -6,7 +6,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
-from django.utils.text import slugify
 # Import user model from django
 from django.core.validators import URLValidator
 
