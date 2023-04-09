@@ -88,35 +88,52 @@ MESSAGE_TAGS = {
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': env("DATABASE_NAME"),
+            'NAME': env("DATABASE_NAME"),
 
-        'USER': env('DATABASE_USER'),
+            'USER': env('DATABASE_USER'),
 
-        'PASSWORD': env('DATABASE_PASSWORD'),
+            'PASSWORD': env('DATABASE_PASSWORD'),
 
-        'HOST': env('DATABASE_HOST'),
+            'HOST': '127.0.0.1',
 
-        'PORT': env('DATABASE_PORT'),
-    },
-    # 'default': {
-    #
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #
-    #     'NAME': 'postgres',
-    #
-    #     'USER': 'postgres',
-    #
-    #     'PASSWORD': 'postgres',
-    #
-    #     'HOST': 'db',  # For containers
-    #
-    #     'PORT': '5432',
-    # },
-}
+            'PORT': '5432',
+        },
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+            'NAME': env("DATABASE_NAME"),
+
+            'USER': env('DATABASE_USER'),
+
+            'PASSWORD': env('DATABASE_PASSWORD'),
+
+            'HOST': env('DATABASE_HOST'),
+
+            'PORT': env('DATABASE_PORT'),
+        },
+        # 'default': {
+        #
+        #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #
+        #     'NAME': 'postgres',
+        #
+        #     'USER': 'postgres',
+        #
+        #     'PASSWORD': 'postgres',
+        #
+        #     'HOST': 'db',  # For containers
+        #
+        #     'PORT': '5432',
+        # },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
