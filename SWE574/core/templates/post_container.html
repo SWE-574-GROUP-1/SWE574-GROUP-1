@@ -116,7 +116,7 @@
                 class="bi bi-tags-fill"></i>{{ tag.name }} </a>
         <a>&nbsp;</a>
         {% endfor %}
-        {% if post.owner_username == request.user.username %}
+        {% if post.owner.id == request.user.id %}
         <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
                 class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
         <a>&nbsp;</a>

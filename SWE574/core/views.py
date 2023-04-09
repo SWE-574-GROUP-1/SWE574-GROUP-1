@@ -96,7 +96,7 @@ def search(request: object):
 @login_required(login_url="core:signin")
 def follow(request):
     logged_in_user = User.objects.get(username=request.user.username)
-    user_to_be_followed = User.objects.get(id=request.GET.get('profile_owner_id_user'))
+    user_to_be_followed = User.objects.get(id=request.GET.get('profile_owner_user_id'))
 
     if logged_in_user.id in user_to_be_followed.profile.followers:
         """ remove from array field followers """
@@ -114,7 +114,7 @@ def follow(request):
     logged_in_user.profile.save()
 
     followers_count = len(user_to_be_followed.profile.followers)
-    following_count = len(logged_in_user.profile.following)
+    following_count = len(user_to_be_followed.profile.following)
 
     return JsonResponse({'followed': followed, 'followers_count': followers_count, 'following_count': following_count})
 
@@ -179,7 +179,7 @@ def spaces(request, space_name):
     # Create list of post owners
     post_owner_profile_list = list()
     for post in posts:
-        user_obj = User.objects.get(username=post.owner_username)
+        user_obj = User.objects.get(username=post.owner.username)
         profile_obj = Profile.objects.get(user=user_obj)
         post_owner_profile_list.append(profile_obj)
     request_owner_user_object = User.objects.get(
@@ -238,20 +238,16 @@ def feed(request: object):
     request_owner_user_object = User.objects.get(username=request.user.username)
     request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
     # Get all posts with specific tag name
-    followings_username = list()
+    followings_user = list()
     # Get the posts in a list
     for followed in request_owner_user_profile.following:
-        # following_profile = Profile.objects.get(id_user=followed)
-        # following_profiles_posts = Post.objects.filter(owner_username=following_profile.user.username)
-        # followings_posts.append(following_profiles_posts)
         following_profile = Profile.objects.get(id_user=followed)
-        followings_username.append(following_profile.user.username)
-        # print(type(following_profiles_posts))
-    followings_posts = Post.objects.filter(owner_username__in=followings_username).order_by('-created')
-    print(followings_username)
+        followings_user.append(following_profile.user)
+    followings_posts = Post.objects.filter(owner__in=followings_user).order_by('-created')
+    print(followings_user.username)
     followings_profiles = list()
     for post in followings_posts:
-        post_owner_user_object = User.objects.get(username=post.owner_username)
+        post_owner_user_object = User.objects.get(username=post.owner.username)
         post_owner_profile_object = Profile.objects.get(
             user=post_owner_user_object)
         followings_profiles.append(post_owner_profile_object)

@@ -142,11 +142,11 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                         src="{{ post_owner_profile.profile_image.url }}"
                                                         alt=""></span>
                                                 <span class="username"><a
-                                                        href="{% url 'core:profile' profile_owner_username=post.owner_username %}">{{ post.owner_username }}</a> <small></small></span>
-                                                <span class="pull-right text-muted"> {{ post.num_of_bookmarks }}</span>
+                                                        href="{% url 'core:profile' profile_owner_username=post.owner.username %}">{{ post.owner.username }}</a> <small></small></span>
+                                                <span class="pull-right text-muted"> {{ post.bookmarks|length }}</span>
                                                 <a href="/book_post?post_id={{ post.post_id }}">
                                                 <span class="pull-right text-muted ">
-                                                    {% if request_owner_user_profile.id_user in post.bookmarked_by %}
+                                                    {% if request_owner_user_profile.user in post.bookmarks %}
                                                         <img src="{% static 'assets/images/logo/svg/bookmarks-fill.svg' %}"
                                                              alt="Bootstrap" width="30" height="30">
                                                     {% else %}
@@ -210,7 +210,7 @@ body > div.container-xxl.bd-gutter.mt-3.my-md-4.bd-layout
                                                             class="bi bi-tags-fill"></i>{{ tag.name }} </a>
                                                     <a>&nbsp;</a>
                                                 {% endfor %}
-                                                {% if post.owner_username == request_owner_user_profile.user.username %}
+                                                {% if post.owner.username == request_owner_user_profile.user.username %}
                                                     <a href="/delete_post?post_id={{ post.post_id }}"
                                                        class="m-r-15 text-inverse-lighter pull-right"><i
                                                             class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
