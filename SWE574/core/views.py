@@ -74,7 +74,7 @@ def search(request: object):
         keyword = request.POST.get("keyword")
         if keyword:
             searched_user_objects = User.objects.filter(
-                username__contains=keyword)
+                username__icontains=keyword)
             search_result_user_profiles = list()
             for user in searched_user_objects:
                 profile_object = Profile.objects.get(user=user)
@@ -82,13 +82,13 @@ def search(request: object):
                 print(profile_object.user.username)
             context["search_result_user_profiles"] = search_result_user_profiles
 
-            tag_results = Tag.objects.filter(name__contains=keyword)
+            tag_results = Tag.objects.filter(name__icontains=keyword)
             context["tag_results"] = tag_results
 
-            post_results = Post.objects.filter(Q(link__contains=keyword) | Q(caption__contains=keyword))
+            post_results = Post.objects.filter(Q(link__icontains=keyword) | Q(caption__icontains=keyword))
             context["post_results"] = post_results
 
-            space_results = Space.objects.filter(name__contains=keyword)
+            space_results = Space.objects.filter(name__icontains=keyword)
             context["space_results"] = space_results
     return render(request, "search.html", context=context)
 
