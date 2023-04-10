@@ -244,7 +244,8 @@ def feed(request: object):
         following_profile = Profile.objects.get(id_user=followed)
         followings_user.append(following_profile.user)
     followings_posts = Post.objects.filter(owner__in=followings_user).order_by('-created')
-    print(followings_user.username)
+    if followings_user:
+        print(followings_user.username)
     followings_profiles = list()
     for post in followings_posts:
         post_owner_user_object = User.objects.get(username=post.owner.username)
