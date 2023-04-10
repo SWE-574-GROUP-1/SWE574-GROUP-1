@@ -58,12 +58,15 @@ def profile(request, profile_owner_username):
     return profile_page_handler_main(request=request, profile_owner_username=profile_owner_username)
 
 
-@login_required(login_url="core:signin")
+
 def about(request):
     if request.user.is_authenticated:
-        return render(request, "about.html")
+        context = {'is_auth': True}
+        print("Yes auth")
     else:
-        return render(request, "about2.html")
+        context = {'is_auth': False}
+        print("Not Auth")
+    return render(request, "about.html", context=context)
 
 @login_required(login_url="core:signin")
 def search(request: object):
