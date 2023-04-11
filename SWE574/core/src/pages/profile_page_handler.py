@@ -1,6 +1,5 @@
 """Contains utility methods to manage profile.html"""
 from django.http import HttpResponseRedirect
-from ...models import Profile, Post, Tag, Space
 from django.shortcuts import render
 from ..models import post_model_handler
 from django.contrib.auth.models import User
@@ -32,26 +31,12 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     """
     # Get the profile owner user object and profile
     profile_owner_user_object = User.objects.get(username=profile_owner_username)
-    profile_owner_user_profile = Profile.objects.get(user=profile_owner_user_object)
     # Get the request owner user object and profile
-    request_owner_user_object = User.objects.get(username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(user=request_owner_user_object)
-    profile_owner_posts = Post.objects.filter(owner=profile_owner_user_object).order_by('-created')
+    request_owner_user_object = request.user
     context = {
         'request_owner_user': request_owner_user_object,
-        'request_owner_user_profile': request_owner_user_profile,
         'profile_owner_user': profile_owner_user_object,
-        'profile_owner_user_profile': profile_owner_user_profile,
-        'posts': profile_owner_posts,
-        'num_followers': len(profile_owner_user_profile.followers),
-        'num_following': len(profile_owner_user_profile.following),
-        'num_posts': len(Post.objects.filter(owner=profile_owner_user_object)),
-        'available_tags': Tag.objects.all(),
-        'available_spaces': Space.objects.all(),
     }
-    print(f"profile_owner_username is: {profile_owner_user_object.username}")
-    print(f"request_owner_username is: {request_owner_user_object.username}")
-    print([space.name for space in Space.objects.all()])
     return render(request, "profile.html", context=context)
 
 
