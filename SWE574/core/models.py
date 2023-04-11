@@ -22,8 +22,9 @@ class Profile(TimeStampedModel):
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
                                          default="background_images/bg-image-5.jpg")
-    followers = ArrayField(models.IntegerField(), default=list, blank=True)
-    following = ArrayField(models.IntegerField(), default=list, blank=True)
+    # followers = ArrayField(models.IntegerField(), default=list, blank=True)
+    # following = ArrayField(models.IntegerField(), default=list, blank=True)
+    followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
 
     def __str__(self):
         return self.user.username
@@ -33,6 +34,10 @@ class Profile(TimeStampedModel):
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
+
+    def sorted_posts_all(self):
+        """Returns all posts of the profile in ascending order by edit date"""
+        return self.user.posts.all().order_by("-modified")
 
 
 class Post(TimeStampedModel):
