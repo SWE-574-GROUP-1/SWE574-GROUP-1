@@ -24,9 +24,8 @@ jobs:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USERNAME }}
         port: ${{ secrets.SERVER_PORT }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /home/azureuser/SWE574-GROUP-1
           git pull origin main
-          docker exec -it SWE574 sh
-          python manage.py makemigrations
-          python manage.py migrate
+          docker exec -i SWE574 sh -c "python manage.py makemigrations && python manage.py migrate"
