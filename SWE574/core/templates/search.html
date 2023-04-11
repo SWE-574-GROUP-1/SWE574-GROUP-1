@@ -88,17 +88,17 @@
                                             <div class="col-sm-3 text-align-center">
                                                 <p class="fs-mini text-muted"
                                                    id="followers-{{ search_result_profile.user.id }}"
-                                                >{{ search_result_profile.followers|length }}
+                                                >{{ search_result_profile.followers.all|length }}
                                                     Follower</p>
                                                 <p class="fs-mini text-muted"
                                                    id="following-{{ search_result_profile.user.id }}"
-                                                >{{ search_result_profile.following|length }}
+                                                >{{ search_result_profile.following.all|length }}
                                                     Following</p>
                                                 {% if search_result_profile.user.username == request_owner_user.username %}
                                                     <a href="#" class="btn btn-sm btn-info mb-2"
                                                        style="visibility: hidden;">Follow</a>
                                                 {% else %}
-                                                    {% if request_owner_user_profile.user.id in search_result_profile.followers %}
+                                                    {% if request_owner_user_profile in search_result_profile.followers.all %}
                                                         <a style="cursor: pointer;"
                                                            onclick="follow({{ search_result_profile.user.id }})"
                                                            id="followButton-{{ search_result_profile.user.id }}"
