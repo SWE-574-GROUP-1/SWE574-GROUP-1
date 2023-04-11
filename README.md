@@ -3,7 +3,7 @@
 This Repository contains the Term Project of SWE574 class in Bogazici Univesity.\
 ![QA-Tests](https://github.com/SWE-574-GROUP-1/SWE574-GROUP-1/actions/workflows/qa_test.yml/badge.svg)
 ![Unit-Tests](https://github.com/SWE-574-GROUP-1/SWE574-GROUP-1/actions/workflows/unit_test.yml/badge.svg)
-
+![Deploy](https://github.com/SWE-574-GROUP-1/SWE574-GROUP-1/actions/workflows/deploy.yml/badge.svg)
 ## Authors:
 
 - **Dağlar Berk Erdem**
