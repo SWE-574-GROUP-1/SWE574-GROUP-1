@@ -1,6 +1,5 @@
 """Contains utility methods to manage profile.html"""
 from django.http import HttpResponseRedirect
-from ...models import Profile, Post, Tag, Space
 from django.shortcuts import render
 from ..models import post_model_handler
 from django.contrib.auth.models import User
