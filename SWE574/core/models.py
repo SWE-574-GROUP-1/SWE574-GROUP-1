@@ -58,6 +58,7 @@ class Post(TimeStampedModel):
     preview_image = models.TextField(max_length=200, blank=True)
     # Many-to-many field for tags
     tags = models.ManyToManyField('Tag', related_name='posts', default=None)
+    semantic_tags = models.ManyToManyField('SemanticTag', related_name='posts', default=None)
     spaces = models.ManyToManyField('Space', related_name='posts', default=None)
 
     def __str__(self):
@@ -127,6 +128,11 @@ class Dislike(TimeStampedModel):
 
 class Tag(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
+
+class SemanticTag(TimeStampedModel):
+    wikidata_id = models.CharField(max_length=25, unique=True)
+    label = models.CharField(max_length=200, unique=True)
+    description = models.CharField(max_length=500, unique=True)
 
 
 class Space(TimeStampedModel):

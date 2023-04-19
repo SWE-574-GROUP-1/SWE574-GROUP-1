@@ -39,6 +39,16 @@ def create_post(request: object) -> None:
             tag = Tag.objects.get(id=tagId)
 
         new_post.tags.add(tag)
+    
+    semantic_tags = request.POST.getlist('semantic_tags[]')
+    for tagId in semantic_tags:
+        """ if tagId is not a number, it means that the tag is not in the database. So, we need to create a new tag """
+        if not tagId.isdigit():
+            tag = Tag.objects.create(name=tagId)
+        else:
+            tag = Tag.objects.get(id=tagId)
+            
+        new_post.tags.add(tag)
 
     space_name = request.POST.get('space')
     if space_name:
@@ -63,6 +73,7 @@ def update_post(request: object) -> None:
     # Extract fields from request
     link = request.POST.get('link')
     caption = request.POST.get("caption")
+    preview_image = request.POST.get("preview_image")
     # Modify existing post
     if link:
         current_post.link = link
@@ -72,7 +83,10 @@ def update_post(request: object) -> None:
     if preview:
         current_post.title = preview.get('title')
         current_post.description = preview.get('description')
-        current_post.preview_image = preview.get('image')
+        if not preview_image:
+            current_post.preview_image = preview.get('image')
+        else:
+            current_post.preview_image = preview_image
     # Reset the tags
     current_post.tags.clear()
     # Reassign the keys
