@@ -19,6 +19,7 @@ urlpatterns = [
     path("search", views.search, name="search"),
     path("follow", views.follow, name="follow"),
     path("tags", views.tags_index, name="tags_index"),
+    path("tags/wiki-data-search", views.tag_wiki_data_search, name="tag_wiki_data_search"),
     path("tags/search", views.tags_search, name="tags_search"),
     path("tags/all", views.all_tags, name="all_tags"),
     path("tags/<str:tag_name>", views.tag_posts, name="tag_posts"),
