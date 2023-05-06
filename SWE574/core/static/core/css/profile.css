@@ -70,7 +70,7 @@ body{
 }
 
 .profile-header-img img {
-    max-width: 100%
+    max-width: 100%;
 }
 
 .profile-header-info h4 {
@@ -84,7 +84,7 @@ body{
 
 .profile-header .profile-header-content,
 .profile-header .profile-header-tab {
-    position: relative
+    position: relative;
 }
 
 .b-minus-1,
