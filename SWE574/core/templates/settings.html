@@ -176,15 +176,14 @@
                             <hr>
                             <input name="form_name" type="hidden" id="form-name"
                                    value="account-settings-form">
-                            {#    TODO: Fix Username change#}
-                            {#                                <div class="form-group text-secondary">#}
-                            {#                                    <label for="username"><strong>Username</strong></label>#}
-                            {#                                    <input type="text" class="form-control" name="username" id="username"#}
-                            {#                                           aria-describedby="usernameHelp" placeholder="{{ user.username }}">#}
-                            {#                                    <small id="usernameHelp" class="form-text text-muted">Your username may appear#}
-                            {#                                        around here where you are mentioned. You can change or remove it at any#}
-                            {#                                        time.</small>#}
-                            {#                                </div>#}
+                            <div class="form-group text-secondary">
+                                <label for="username"><strong>Username</strong></label>
+                                <input type="text" class="form-control" name="username" id="username"
+                                       aria-describedby="usernameHelp" placeholder="{{ user.username }}">
+                                <small id="usernameHelp" class="form-text text-muted">Your username may appear
+                                    around here where you are mentioned. You can change or remove it at any
+                                    time.</small>
+                            </div>
                             <div class="form-group text-secondary">
                                 <label for="email"><strong>Email</strong></label>
                                 <input type="email" class="form-control" name="email" id="email"

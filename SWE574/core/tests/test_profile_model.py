@@ -3,7 +3,7 @@ from unittest import TestCase
 from ..models import User, Profile
 from django.db.models.fields.files import ImageFieldFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+from django.db import models
 
 username = "test_username"
 email = "test@test.com"
@@ -201,21 +201,21 @@ class ProfileTestCase(TestCase):
         self.assertTrue(new_img_path in self.profile.background_image.path)
 
     def test_followers_default(self):
-        """Assert that followers field is empty list by default"""
-        followers = self.profile.followers
-        self.assertEqual(followers, list())
+        """Assert that followers field is empty by default"""
+        followers = self.profile.followers.all()
+        self.assertEqual(len(followers), 0)
 
     def test_followers_dtype(self):
         """Assert that followers dtype is list"""
-        followers = self.profile.followers
-        self.assertTrue(isinstance(followers, list))
+        followers = self.profile.followers.all()
+        self.assertTrue(isinstance(followers, models.QuerySet))
 
     def test_following_default(self):
         """Assert that following field is empty list by default"""
-        following = self.profile.following
-        self.assertEqual(following, list())
+        following = self.profile.following.all()
+        self.assertEqual(len(following), 0)
 
     def test_following_dtype(self):
         """Assert that following dtype is list"""
-        following = self.profile.following
-        self.assertTrue(isinstance(following, list))
+        following = self.profile.following.all()
+        self.assertTrue(isinstance(following, models.QuerySet))
