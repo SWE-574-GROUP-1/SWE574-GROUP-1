@@ -128,6 +128,16 @@ def tags_search(request):
     return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
 
 
+def about(request):
+    if request.user.is_authenticated:
+        context = {'is_auth': True}
+        print("Yes auth")
+    else:
+        context = {'is_auth': False}
+        print("Not Auth")
+    return render(request, "about.html", context=context)
+
+
 def tags_index(request):
     tag_cloud = get_tag_cloud()
     return render(request, 'tags.html', {'tag_cloud': tag_cloud})
