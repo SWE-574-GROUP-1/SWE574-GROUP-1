@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post, Tag, Space
+from ...models import Post, Tag, Space, SemanticTag
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -39,16 +39,19 @@ def create_post(request: object) -> None:
             tag = Tag.objects.get(id=tagId)
 
         new_post.tags.add(tag)
-    
-    semantic_tags = request.POST.getlist('semantic_tags[]')
-    for tagId in semantic_tags:
-        """ if tagId is not a number, it means that the tag is not in the database. So, we need to create a new tag """
-        if not tagId.isdigit():
-            tag = Tag.objects.create(name=tagId)
-        else:
-            tag = Tag.objects.get(id=tagId)
-            
-        new_post.tags.add(tag)
+
+    semantic_tags = request.POST.getlist('semanticTagValues[]')
+    semantic_tag_labels = request.POST.getlist('semanticTagLabels[]')
+    for value in semantic_tags:
+        wikidata_id = value.split("|")[0]
+        label = value.split("|")[1]
+        description = value.split("|")[2]
+        custom_label = semantic_tag_labels[semantic_tags.index(value)]
+
+        new_semantic_tag = SemanticTag.objects.create(wikidata_id=wikidata_id, label=label, description=description,
+                                                      custom_label=custom_label, post=new_post)
+
+        new_post.semantic_tags.add(new_semantic_tag)
 
     space_name = request.POST.get('space')
     if space_name:
@@ -99,6 +102,21 @@ def update_post(request: object) -> None:
             tag = Tag.objects.get(id=tagId)
 
         current_post.tags.add(tag)
+
+    current_post.semantic_tags.all().delete()
+
+    semantic_tags = request.POST.getlist('semanticTagValues[]')
+    semantic_tag_labels = request.POST.getlist('semanticTagLabels[]')
+    for value in semantic_tags:
+        wikidata_id = value.split("|")[0]
+        label = value.split("|")[1]
+        description = value.split("|")[2]
+        custom_label = semantic_tag_labels[semantic_tags.index(value)]
+
+        new_semantic_tag = SemanticTag.objects.create(wikidata_id=wikidata_id, label=label, description=description,
+                                                      custom_label=custom_label, post=current_post)
+
+        current_post.semantic_tags.add(new_semantic_tag)
 
     space_name = request.POST.get('space')
     if space_name:

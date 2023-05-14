@@ -252,6 +252,7 @@
             var title = button.getAttribute('data-title')
             var caption = button.getAttribute('data-description')
             var tags = button.getAttribute('data-tags')
+            var semantic_tags = button.getAttribute('data-semantic-tags')
             // replace ' with " to make it valid json
             tags = tags.replace(/'/g, '"')
             // parse json
@@ -259,6 +260,35 @@
             tags.forEach(function (tag) {
                 $('#postUpdateModalTags').append('<option value="' + tag.id + '" selected>' + tag.name + '</option>');
             })
+
+            semantic_tags = semantic_tags.replace(/'/g, '"')
+            semantic_tags = JSON.parse(semantic_tags)
+            semantic_tags.forEach(function (tag) {
+                $('#semanticTags').append('<option value="' + tag.id + '" selected>' + tag.label + '</option>');
+                var newTag = document.createElement("div");
+                newTag.setAttribute("class", "badge bg-secondary");
+                newTag.setAttribute("id", "semanticTag_" + tag.id);
+                newTag.setAttribute("style", "margin: 5px;");
+                newTag.innerHTML = tag.label + "<i class='bi bi-x' onclick='removeSemanticTag(" + tag.id + ")'></i>";
+
+                document.querySelector("#semanticTagLabels").appendChild(newTag);
+                // create text input under
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagLabels[]");
+                newInput.setAttribute("class", "form-control");
+                newInput.setAttribute("value", tag.custom_label);
+                document.querySelector("#semanticTagLabels").appendChild(newInput);
+                // create hidden input for to keep semantic tag values
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagValues[]");
+                newInput.setAttribute("type", "hidden");
+                newInput.setAttribute("value", tag.wikidata_id + "|" + tag.label + "|" + tag.description);
+                document.querySelector("#semanticTagLabels").appendChild(newInput);
+            })
+
+            if (semantic_tags.length) {
+
+            }
 
             var modalTitle = editModal.querySelector('.modal-title')
             var modalBodyInput = editModal.querySelector('.modal-body input[name="link"]')
@@ -294,6 +324,9 @@
                 document.querySelector(`#following-${id}`).innerHTML = `${following_count} Following`;
             });
     }
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    })
 </script>
 {% block js %}
 

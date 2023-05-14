@@ -36,6 +36,8 @@
                         <select id="semanticTags" name="semanticTags[]" multiple="multiple">
                         </select>
 
+                        <div id="semanticTagLabels">
+                        </div>
                         {# Implementation of Spaces #}
                         <label for="spaces" class="col-form-label"><strong>Spaces</strong></label>
                         <select id="spaces" name="spaces[]" multiple="multiple">
@@ -100,6 +102,34 @@
                 };
             }
         }
+    });
+
+    $('#postUpdateModal #semanticTags').on('select2:select', function (e) {
+        // create new input field for semantic tags in #semanticTagLabels
+        var tag = e.params.data;
+        var tagId = tag.id;
+        var tagName = tag.text;
+        var tagDescription = tag.text.split(" (")[1].split(")")[0];
+
+        var newTag = document.createElement("div");
+        newTag.setAttribute("class", "badge bg-secondary");
+        newTag.setAttribute("id", "semanticTag_" + tagId);
+        newTag.setAttribute("style", "margin: 5px;");
+        newTag.innerHTML = tagName + "<i class='bi bi-x' onclick='removeSemanticTag(" + tagId + ")'></i>";
+
+        document.querySelector("#semanticTagLabels").appendChild(newTag);
+        // create text input under
+        var newInput = document.createElement("input");
+        newInput.setAttribute("name", "semanticTagLabels[]");
+        newInput.setAttribute("class", "form-control");
+        newInput.setAttribute("value", "");
+        document.querySelector("#semanticTagLabels").appendChild(newInput);
+        // create hidden input for to keep semantic tag values
+        var newInput = document.createElement("input");
+        newInput.setAttribute("name", "semanticTagValues[]");
+        newInput.setAttribute("type", "hidden");
+        newInput.setAttribute("value", tagId + "|" + tagName + "|" + tagDescription);
+        document.querySelector("#semanticTagLabels").appendChild(newInput);
     });
 
     // validate the given text if it is a valid URL

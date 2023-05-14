@@ -58,7 +58,6 @@ class Post(TimeStampedModel):
     preview_image = models.TextField(max_length=200, blank=True)
     # Many-to-many field for tags
     tags = models.ManyToManyField('Tag', related_name='posts', default=None)
-    semantic_tags = models.ManyToManyField('SemanticTag', related_name='posts', default=None)
     spaces = models.ManyToManyField('Space', related_name='posts', default=None)
 
     def __str__(self):
@@ -76,6 +75,11 @@ class Post(TimeStampedModel):
     def tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"name": tag.name, "id": tag.id} for tag in self.tags.all()]
+
+    def semantic_tags_as_json_string(self):
+        """ name: tag_name, id: tag_id """
+        return [{"id": tag.id, "wikidata_id": tag.wikidata_id, "label": tag.label,
+                "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
 
     def __setattr__(self, name, value):
         """Override __setattr_ method to freeze post_id, owner attributes"""
@@ -129,10 +133,15 @@ class Dislike(TimeStampedModel):
 class Tag(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
 
+
 class SemanticTag(TimeStampedModel):
-    wikidata_id = models.CharField(max_length=25, unique=True)
-    label = models.CharField(max_length=200, unique=True)
-    description = models.CharField(max_length=500, unique=True)
+    wikidata_id = models.CharField(max_length=25, unique=False)
+    label = models.CharField(max_length=200, unique=False)
+    description = models.CharField(max_length=500, unique=False)
+    custom_label = models.CharField(max_length=200, unique=False, blank=True)
+    """ belongs to one post, post has many semantic tags """
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='semantic_tags', unique=False,
+                             blank=False, default=1)
 
 
 class Space(TimeStampedModel):
