@@ -67,11 +67,16 @@
 
         <div class="container" style="padding: 0">
             {% if post.title %}
-                <div class="card mb-3" style="padding: 0">
+                <div id="post_detail_content" class="card mb-3" style="padding: 0">
                     <div class="row no-gutters">
                         <div class="col-sm-6" style="display: flex">
-                            <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
-                                <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
+                            <div style="position:relative;left:0">
+                                <div position="relative">
+                                    <img id="post_image" class="img-fluid" src="{{ post.preview_image }}">
+                                </div>
+                            </div>
+                            <div class="post-detail-content" style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
+                               <!--  <img src="{{ post.preview_image }}" id="post_image" class="img-fluid"> -->
                             </div>
                         </div>
                         <div class="col-sm-6">
