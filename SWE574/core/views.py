@@ -373,3 +373,31 @@ def tag_wiki_data_search(request):
         response = list()
 
     return JsonResponse(response, safe=False)
+
+
+#For badge page and model added
+
+@login_required(login_url="core:signin")
+def badges(request):
+    return render(
+        request, "badges.html"
+    )
+
+@login_required
+def profile_view(request):
+    user = request.user
+    # Assign Badge 1 to assigned badges for current user
+    badge1 = badges.objects.get(name='Badge 1')
+    user_badge, created = user_badge.objects.get_or_create(user=user, badge=badge1)
+    if created:
+        user_badge.save()
+    
+    # Retrieve all badges and user's assigned badges
+    all_badges = badges.objects.all()
+    assigned_badges = user.badges.all()
+    
+    context = {
+        'all_badges': all_badges,
+        'assigned_badges': assigned_badges,
+    }
+    return render(request, 'badges.html', context)
