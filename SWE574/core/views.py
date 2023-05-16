@@ -16,6 +16,7 @@ from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
+import json
 
 
 def signup(request: object):
@@ -336,8 +337,10 @@ def bookmark_post(request, post_id):
 
 @login_required(login_url="core:signin")
 def fetch_og_tags(request):
-    url = request.GET.get(
-        'url', 'https://www.bbc.com/news/uk-politics-65039661')
+
+    """ get url from request body, post request """
+    data = json.loads(request.body.decode("utf-8"))
+    url = data["url"]
     # print(url)
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -354,3 +357,19 @@ def fetch_og_tags(request):
 def all_tags(request):
     tags = Tag.objects.all()
     return JsonResponse({'tags': list(tags.values())})
+
+
+def tag_wiki_data_search(request):
+    tag_name = request.GET.get('search', 'python')
+    url = "https://www.wikidata.org"
+    url += f"{url}/w/api.php?action=wbsearchentities&format=json&search={tag_name}&language=tr&type=item"
+    response = requests.get(url)
+
+    if len(response.json()['search']) > 1:
+        response = map(lambda x: {'id': x['id'], 'name': x['label'], 'description': x['description']},
+                       response.json()['search'])
+        response = list(response)
+    else:
+        response = list()
+
+    return JsonResponse(response, safe=False)

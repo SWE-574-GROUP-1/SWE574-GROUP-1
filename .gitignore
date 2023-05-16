@@ -137,3 +137,5 @@ scripts/
 activate.sh
 ssh_ec2.sh
 Pipfile
+.vs
+.vscode

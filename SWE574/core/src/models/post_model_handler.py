@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post, Tag, Space
+from ...models import Post, Tag, Space, SemanticTag
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -40,6 +40,19 @@ def create_post(request: object) -> None:
 
         new_post.tags.add(tag)
 
+    semantic_tags = request.POST.getlist('semanticTagValues[]')
+    semantic_tag_labels = request.POST.getlist('semanticTagLabels[]')
+    for value in semantic_tags:
+        wikidata_id = value.split("|")[0]
+        label = value.split("|")[1]
+        description = value.split("|")[2]
+        custom_label = semantic_tag_labels[semantic_tags.index(value)]
+
+        new_semantic_tag = SemanticTag.objects.create(wikidata_id=wikidata_id, label=label, description=description,
+                                                      custom_label=custom_label, post=new_post)
+
+        new_post.semantic_tags.add(new_semantic_tag)
+
     space_name = request.POST.get('space')
     if space_name:
         space = Space.objects.get(name=space_name)
@@ -63,6 +76,7 @@ def update_post(request: object) -> None:
     # Extract fields from request
     link = request.POST.get('link')
     caption = request.POST.get("caption")
+    preview_image = request.POST.get("preview_image")
     # Modify existing post
     if link:
         current_post.link = link
@@ -72,7 +86,10 @@ def update_post(request: object) -> None:
     if preview:
         current_post.title = preview.get('title')
         current_post.description = preview.get('description')
-        current_post.preview_image = preview.get('image')
+        if not preview_image:
+            current_post.preview_image = preview.get('image')
+        else:
+            current_post.preview_image = preview_image
     # Reset the tags
     current_post.tags.clear()
     # Reassign the keys
@@ -85,6 +102,21 @@ def update_post(request: object) -> None:
             tag = Tag.objects.get(id=tagId)
 
         current_post.tags.add(tag)
+
+    current_post.semantic_tags.all().delete()
+
+    semantic_tags = request.POST.getlist('semanticTagValues[]')
+    semantic_tag_labels = request.POST.getlist('semanticTagLabels[]')
+    for value in semantic_tags:
+        wikidata_id = value.split("|")[0]
+        label = value.split("|")[1]
+        description = value.split("|")[2]
+        custom_label = semantic_tag_labels[semantic_tags.index(value)]
+
+        new_semantic_tag = SemanticTag.objects.create(wikidata_id=wikidata_id, label=label, description=description,
+                                                      custom_label=custom_label, post=current_post)
+
+        current_post.semantic_tags.add(new_semantic_tag)
 
     space_name = request.POST.get('space')
     if space_name:

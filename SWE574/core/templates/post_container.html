@@ -118,6 +118,22 @@
                     class="bi bi-tags-fill"></i>{{ tag.name }} </a>
             <a>&nbsp;</a>
         {% endfor %}
+        {% if post.semantic_tags.count %}
+        {% for tag in post.semantic_tags.all %}
+        <!-- link with tooltip -->
+        <a href="#"
+           class="m-r-15 text-inverse-lighter pull-left"
+              data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="
+                {{ tag.label }}"
+           ><i
+                class="bi bi-tags-fill"></i>{{ tag.custom_label }} </a>
+        <a>&nbsp;</a>
+        {% endfor %}
+        {% endif %}
+
+
         {% if post.owner.id == request.user.id %}
             <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
                     class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
@@ -126,6 +142,7 @@
                data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
                data-link="{{ post.link }}" data-title="{{ post.title }}"
                data-tags='{{ post.tags_as_json_string }}'
+               data-semantic-tags='{{ post.semantic_tags_as_json_string }}'
             >
                 <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
         {% endif %}
