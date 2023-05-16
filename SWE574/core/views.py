@@ -375,7 +375,7 @@ def tag_wiki_data_search(request):
     return JsonResponse(response, safe=False)
 
 
-#For badge page and model added
+# For badge page and model added
 
 @login_required(login_url="core:signin")
 def badges(request):
