@@ -382,18 +382,3 @@ def badges(request):
     return render(
         request, "badges.html"
     )
-
-
-    user_badge, created = user_badge.objects.get_or_create(user=user, badge=badge1)
-    if created:
-        user_badge.save()
-    
-    # Retrieve all badges and user's assigned badges
-    all_badges = badges.objects.all()
-    assigned_badges = user.badges.all()
-    
-    context = {
-        'all_badges': all_badges,
-        'assigned_badges': assigned_badges,
-    }
-    return render(request, 'badges.html', context)
