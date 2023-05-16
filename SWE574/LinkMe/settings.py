@@ -93,11 +93,11 @@ if os.environ.get('GITHUB_WORKFLOW'):
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-            'NAME': 'postgres',
+            'NAME': env("DATABASE_NAME"),
 
-            'USER': 'postgres',
+            'USER': env('DATABASE_USER'),
 
-            'PASSWORD': "postgres",
+            'PASSWORD': env('DATABASE_PASSWORD'),
 
             'HOST': '127.0.0.1',
 
@@ -109,16 +109,15 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-            'NAME': 'postgres',
+            'NAME': env("DATABASE_NAME"),
 
-            'USER': 'postgres',
+            'USER': env('DATABASE_USER'),
 
-            'PASSWORD': "postgres",
+            'PASSWORD': env('DATABASE_PASSWORD'),
 
-            'HOST': 'db',
+            'HOST': env('DATABASE_HOST'),
 
-            'PORT': '5432',
-
+            'PORT': env('DATABASE_PORT'),
         },
         # 'default': {
         #
