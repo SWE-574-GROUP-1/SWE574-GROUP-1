@@ -147,16 +147,3 @@ class SemanticTag(TimeStampedModel):
 class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
 
-#Badges and User Badges class
-class Badge(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='badges/')
-    description = models.TextField()
-    def __str__(self):
-        return self.name
-
-class UserBadge(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
-    def __str__(self):
-        return f"{self.user.username} - {self.badge.name}"

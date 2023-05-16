@@ -383,11 +383,7 @@ def badges(request):
         request, "badges.html"
     )
 
-@login_required
-def profile_view(request):
-    user = request.user
-    # Assign Badge 1 to assigned badges for current user
-    badge1 = badges.objects.get(name='Badge 1')
+
     user_badge, created = user_badge.objects.get_or_create(user=user, badge=badge1)
     if created:
         user_badge.save()
