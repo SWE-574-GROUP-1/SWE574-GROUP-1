@@ -146,4 +146,3 @@ class SemanticTag(TimeStampedModel):
 
 class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
-    
