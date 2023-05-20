@@ -41,6 +41,8 @@ def logout(request: object):
 
 @login_required(login_url="core:signin")
 def delete_account(request: object):
+    # Sign-out the user
+    auth.logout(request)
     return delete_user(request=request)
 
 
