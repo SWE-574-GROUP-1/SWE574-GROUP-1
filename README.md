@@ -59,7 +59,8 @@ virtualenv --python="</path/to/python.exe>" "</path/to/new/virtualenv/>"
 Activate your virtual environment with following command:
 
 ```
-source "</path/to/new/virtualenv>/scripts/activate"
+source "</path/to/new/virtualenv>/scripts/activate"    ->This command is for Mac
+.\Scripts\activate   -> This command is for Windows enviroment
 ```
 
 Install site packages from requirements.txt with the following command:

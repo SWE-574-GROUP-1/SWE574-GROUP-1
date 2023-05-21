@@ -7,6 +7,9 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 # Import user model from django
 from django.core.validators import URLValidator
+#---------------------------------------
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
 
 # override the default user model
@@ -28,11 +31,11 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not delete User, Either we should use ForeignKey or
-    # See: https://stackoverflow.com/questions/12754024/onetoonefield-and-deleting
+    # Overwrite delete method since OneToOne relationship does not delete User
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
+
 
     def sorted_posts_all(self):
         """Returns all posts of the profile in ascending order by edit date"""
