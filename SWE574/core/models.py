@@ -29,7 +29,7 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not delete User
+    # Overwrite delete method since OneToOne relationship does not properly delete the user
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
