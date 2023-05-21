@@ -11,7 +11,6 @@ from django.contrib.auth.models import auth
 from .models import Profile, Tag, Space, Post, User
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__, __book_post__
-from .src.models.user_model_handler import delete_user
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
@@ -46,10 +45,7 @@ def delete_account(request: object):
     user.delete()
     # Return to sign-in page
     return redirect("core:signin") 
-
-
     return delete_account(request=request)
-
 
 @login_required(login_url='core:signin')
 def delete_post(request: object):

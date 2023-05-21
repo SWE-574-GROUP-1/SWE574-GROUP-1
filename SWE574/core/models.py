@@ -7,9 +7,7 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 # Import user model from django
 from django.core.validators import URLValidator
-#---------------------------------------
-from django.dispatch import receiver
-from django.db.models.signals import post_delete
+
 
 
 # override the default user model
@@ -36,11 +34,9 @@ class Profile(TimeStampedModel):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
 
-
     def sorted_posts_all(self):
         """Returns all posts of the profile in ascending order by edit date"""
         return self.user.posts.all().order_by("-modified")
-
 
 class Post(TimeStampedModel):
     # Fields that are automatically filled
