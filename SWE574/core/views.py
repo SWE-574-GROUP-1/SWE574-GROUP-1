@@ -47,6 +47,7 @@ def delete_account(request: object):
     return redirect("core:signin")
     return delete_account(request=request)
 
+
 @login_required(login_url='core:signin')
 def delete_post(request: object):
     return __delete_post__(request=request)

@@ -8,13 +8,10 @@ from model_utils.models import TimeStampedModel
 # Import user model from django
 from django.core.validators import URLValidator
 
-
-
 # override the default user model
 class User(User):
     class Meta:
         proxy = True
-
 
 class Profile(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -36,7 +33,8 @@ class Profile(TimeStampedModel):
 
     def sorted_posts_all(self):
         """Returns all posts of the profile in ascending order by edit date"""
-        return self.user.posts.all().order_by("-modified")
+           return self.user.posts.all().order_by("-modified")
+
 
 class Post(TimeStampedModel):
     # Fields that are automatically filled
