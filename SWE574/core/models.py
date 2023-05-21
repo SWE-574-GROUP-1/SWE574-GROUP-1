@@ -26,14 +26,14 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not properly delete the user
+    # Overwrite delete method since OneToOne relationship does not delete User
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
 
     def sorted_posts_all(self):
         """Returns all posts of the profile in ascending order by edit date"""
-           return self.user.posts.all().order_by("-modified")
+        return self.user.posts.all().order_by("-modified")
 
 
 class Post(TimeStampedModel):
