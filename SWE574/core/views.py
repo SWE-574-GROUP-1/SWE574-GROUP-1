@@ -45,7 +45,6 @@ def delete_account(request: object):
     user.delete()
     # Return to sign-in page
     return redirect("core:signin")
-    return delete_account(request=request)   
 
 
 @login_required(login_url='core:signin')

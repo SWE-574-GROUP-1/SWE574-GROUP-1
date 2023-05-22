@@ -125,7 +125,8 @@ Make sure that the virtual environment build with requirements_dex.txt.\
 Go to the root directory of project and run following from terminal
 
 ```
-# For flake8 
+# For flake8
+pip install flake8
 flake8
 # For coverage report in docker
 docker exec -it SWE574 sh -c "pip install coverage && coverage run manage.py test && coverage rep
