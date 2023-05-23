@@ -28,7 +28,8 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not delete User
+    # Overwrite delete method since OneToOne relationship does not delete User, Either we should use ForeignKey or
+    # See: https://stackoverflow.com/questions/12754024/onetoonefield-and-deleting
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
@@ -78,7 +79,7 @@ class Post(TimeStampedModel):
     def semantic_tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"id": tag.id, "wikidata_id": tag.wikidata_id, "label": tag.label,
-                "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
+                 "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
 
     def __setattr__(self, name, value):
         """Override __setattr_ method to freeze post_id, owner attributes"""
@@ -145,3 +146,11 @@ class SemanticTag(TimeStampedModel):
 
 class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
+    avatar = models.ImageField(upload_to="space_images", default="space_images/default_space.jpg")
+    description = models.CharField(max_length=100, blank=False, default="This is a Space!")
+    subscribers = models.ManyToManyField(User, related_name='subscribed_users', through='Subscriber')
+
+
+class Subscriber(TimeStampedModel):
+    space = models.ForeignKey(Space, on_delete=models.CASCADE, related_name='subscribed_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='spaces_subscribed')

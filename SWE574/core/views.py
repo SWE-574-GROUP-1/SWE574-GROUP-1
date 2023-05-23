@@ -120,6 +120,26 @@ def follow(request):
     return JsonResponse({'followed': followed, 'followers_count': followers_count, 'following_count': following_count})
 
 
+@login_required(login_url='core:signin')
+def join(request):
+    print("join called in views")
+    user = User.objects.get(username=request.user.username)
+    space_to_be_joined = Space.objects.get(name=request.GET.get('space_name'))
+    if user in space_to_be_joined.subscribers.all():
+        space_to_be_joined.subscribers.remove(user)
+        joined = False
+    else:
+        space_to_be_joined.subscribers.add(user)
+        joined = True
+
+    space_to_be_joined.save()
+    user.save()
+    subscribers_count = space_to_be_joined.subscribers.count()
+
+    return JsonResponse({'joined': joined, 'subscribers_count': subscribers_count})
+
+
+@login_required(login_url="core:signin")
 def tags_search(request):
     tag_name = request.POST.get('tag_name_to_be_searched')
     # return posts where has tags like tag_name
@@ -127,92 +147,96 @@ def tags_search(request):
     posts = Post.objects.filter(tags__in=tags).distinct().prefetch_related(
         Prefetch('tags', queryset=tags, to_attr='matching_tags'))
 
-    tag_cloud = get_tag_cloud()
+    tag_cloud = get_cloud(type_='tag')
 
     return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
 
 
+@login_required(login_url="core:signin")
 def tags_index(request):
-    tag_cloud = get_tag_cloud()
+    tag_cloud = get_cloud(type_='tag')
     return render(request, 'tags.html', {'tag_cloud': tag_cloud})
 
 
+@login_required(login_url="core:signin")
 def tag_posts(request, tag_name):
     tag = Tag.objects.get(name=tag_name)
     posts = Post.objects.filter(tags=tag).prefetch_related('tags')
-    tag_cloud = get_tag_cloud()
+    tag_cloud = get_cloud(type_='tag')
     return render(request, 'tags.html', {'posts': posts, 'tag_name': tag_name, 'tag_cloud': tag_cloud})
 
 
-def get_tag_cloud():
-    tags = Tag.objects.annotate(count=Count('posts')).order_by('-count')
-    max_count = tags[0].count if tags else 0
-    min_count = tags[len(tags) - 1].count if tags else 0
+def get_cloud(type_: str):
+    if type_ == 'tag':
+        objs = Tag.objects.annotate(count=Count('posts')).order_by('-count')
+    elif type_ == 'space':
+        objs = Space.objects.annotate(count=Count('posts')).order_by('-count')
+    max_count = objs[0].count if objs else 0
+    min_count = objs[len(objs) - 1].count if objs else 0
     range_count = max_count - min_count
     font_min = 12
     font_max = 36
     font_range = font_max - font_min
-    for tag in tags:
-        tag.font_size = font_min + (font_range * (tag.count - min_count) / (range_count or 1))
+    for obj in objs:
+        obj.font_size = font_min + (font_range * (obj.count - min_count) / (range_count or 1))
 
     # randomize tag order
-    tags = sorted(tags, key=lambda x: random.random())
+    objs = sorted(objs, key=lambda x: random.random())
 
-    return tags
+    return objs
 
 
 @login_required(login_url="core:signin")
-def spaces(request, space_name):
-    print(f"TAG NAME IS: {space_name}")
-    # Get the Tag object for given tag name
+def spaces_index(request):
+    space_cloud = get_cloud(type_='space')
+    return render(request, 'spaces.html', {'space_cloud': space_cloud})
+
+
+@login_required(login_url="core:signin")
+def space_posts(request, space_name):
+    space = Space.objects.get(name=space_name)
+    posts = Post.objects.filter(spaces=space).prefetch_related('spaces')
+    space_cloud = get_cloud(type_='space')
+    return render(request, 'spaces.html',
+                  {'posts': posts, 'space_name': space_name, 'space_cloud': space_cloud, "is_space_posts": True,
+                   "space": space})
+
+
+@login_required(login_url="core:signin")
+def create_space(request):
     try:
-        space = Space.objects.get(name=space_name)
-    except Space.DoesNotExist:
+        Space.objects.get(name=request.POST.get('space_name'))
         path = request.META.get('HTTP_REFERER')
-        # TODO: Add does not exist message here
         return HttpResponseRedirect(path)
-    # Get all posts with specific tag name
-    posts = space.posts.all().order_by('-created')
-    if request.method == 'POST':
-        if request.POST.get('form_name') == 'tag-search-form':
-            print(request.POST)
-            # TODO: Is this line required? --> tag_name = request.POST.get('tag_name_to_be_searched')
-    # Create list of post owners
-    post_owner_profile_list = list()
-    for post in posts:
-        user_obj = User.objects.get(username=post.owner.username)
-        profile_obj = Profile.objects.get(user=user_obj)
-        post_owner_profile_list.append(profile_obj)
-    request_owner_user_object = User.objects.get(
-        username=request.user.username)
-    request_owner_user_profile = Profile.objects.get(
-        user=request_owner_user_object)
-    post_owner_profile_list_with_posts = zip(post_owner_profile_list, posts)
-    context = {"post_owner_profile_list_with_posts": post_owner_profile_list_with_posts,
-               "request_owner_user_profile": request_owner_user_profile,
-               'available_tags': Tag.objects.all(),
-               'available_spaces': Space.objects.all(),
-               }
-    if request.method == 'POST':
-        redirect_path = request.META.get('HTTP_REFERER')
-        if request.POST.get('form_name') == 'space-search-form':
-            space_name = request.POST.get('space_name_to_be_searched')
-            url = reverse('core:spaces', kwargs={'space_name': space_name})
-            return redirect(url)
-        if request.POST.get("form_name") == "post-create-form":
-            print("post-create-form received")
-            post_model_handler.create_post(request=request)
-        if request.POST.get("form_name") == "post-update-form":
-            print("post-update-form received")
-            post_model_handler.update_post(request=request)
-        if request.POST.get("form_name") == "space-create-form":
-            print("space-create-form received")
-            is_space_name_valid = space_model_handler.validate_space(request=request)
-            if is_space_name_valid:
-                space_model_handler.create_space(request=request)
-        print(request.POST)
-        return HttpResponseRedirect(redirect_path)
-    return render(request, "spaces.html", context=context)
+    except Exception as e:
+        print("Space does not exist")
+        name = request.POST.get('space_name')
+        print(f"{request.FILES.get('avatar')=}")
+        space = Space.objects.create(
+            name=name,
+            description=request.POST.get('description'),
+        )
+
+        img = request.FILES.get('avatar')
+        if img:
+            space.avatar = img
+        space.save()
+        return space_posts(request, name)
+
+
+@login_required(login_url="core:signin")
+def all_spaces():
+    spaces = Space.objects.all()
+    return JsonResponse({'spaces': list(spaces.values())})
+
+
+@login_required(login_url="core:signin")
+def spaces_search(request):
+    space_name = request.POST.get('space_name_to_be_searched')
+    # return posts where has tags like space_name
+    spaces = Space.objects.filter(name__icontains=space_name)
+
+    return render(request, 'spaces_search.html', {'space_name': space_name, 'spaces': spaces})
 
 
 @login_required
@@ -348,7 +372,7 @@ def fetch_og_tags(request):
                          'description': og_description['content']})
 
 
-def all_tags(request):
+def all_tags():
     tags = Tag.objects.all()
     return JsonResponse({'tags': list(tags.values())})
 

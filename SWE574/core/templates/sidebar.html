@@ -1,0 +1,32 @@
+<div class="container-t">
+    <nav class="navbar navbar-dark"
+         style="background: #48ab89; border-top-right-radius: 60px; border-bottom-right-radius: 60px;">
+        <div class="sidebar-header d-flex flex-column align-items-center" style="padding-top: 100px;">
+            <img width="150" height="150" src="{{ space.avatar.url }}" alt="Sidebar Image" class="sidebar-image">
+
+            {% if user in space.subscribers.all %}
+                <a style="cursor: pointer;" onclick="join('{{ space.name }}')" id="joinButton-{{ space.name }}"
+                   class="btn btn-primary btn-info btn-lg">
+                    Joined
+                </a>
+            {% else %}
+                <a style="cursor: pointer;" onclick="join('{{ space.name }}')" id="joinButton-{{ space.name }}"
+                   class="btn btn-primary btn-info btn-lg">
+                    Join
+                </a>
+            {% endif %}
+        </div>
+        <ul class="sidebar-menu">
+            <hr>
+            <li><a id="subscribers-{{ space.name }}">{{ space.subscribers.all|length }} Subscribers</a>
+            </li>
+            <hr>
+            <li><a><b># of Posts:</b> {{ space.posts.all|length }}</a></li>
+            <hr>
+            <li><a><b>Created in</b> <br> {{ space.created }}</a></li>
+            <hr>
+            <li><a><b>Description</b> <br> {{ space.description }}</a></li>
+        </ul>
+        <hr>
+    </nav>
+</div>
