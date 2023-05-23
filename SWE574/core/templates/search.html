@@ -82,7 +82,7 @@
                                                 <h4 class="search-result-item-heading"><a
                                                         href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
                                                 </h4>
-                                                <p class="info">Joined at {{ search_result_profile.joined_at }}</p>
+                                                <p class="info">Joined at {{ search_result_profile.created }}</p>
                                                 <p class="description">{{ search_result_profile.bio }}</p>
                                             </div>
                                             <div class="col-sm-3 text-align-center">
@@ -134,7 +134,7 @@
                             {% for space in space_results %}
                                 <section class="search-result-item w-25 mt-5 mb-5 mx-auto">
                                     <div class="mx-auto row text-center">
-                                        <a href="{% url 'core:spaces' space_name=space.name %}">
+                                        <a href="{% url 'core:space_posts' space_name=space.name %}">
                                             {{ space.name }}
                                         </a>
                                     </div>

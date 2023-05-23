@@ -152,9 +152,10 @@
 
     // validate the given text if it is a valid URL
     function validateURL(textval) {
-        var urlregex = new RegExp(
-            "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)");
-        return urlregex.test(textval);
+        {#var urlregex = new RegExp(#}
+        {#    "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)");#}
+        {#return urlregex.test(textval);#}
+        return true;
     }
 
     // on paste on url input, validate the url and set the url to the input

@@ -21,8 +21,6 @@ class Profile(TimeStampedModel):
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
                                          default="background_images/bg-image-5.jpg")
-    # followers = ArrayField(models.IntegerField(), default=list, blank=True)
-    # following = ArrayField(models.IntegerField(), default=list, blank=True)
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
 
     def __str__(self):
@@ -79,7 +77,7 @@ class Post(TimeStampedModel):
     def semantic_tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"id": tag.id, "wikidata_id": tag.wikidata_id, "label": tag.label,
-                "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
+                 "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
 
     def __setattr__(self, name, value):
         """Override __setattr_ method to freeze post_id, owner attributes"""
@@ -146,4 +144,11 @@ class SemanticTag(TimeStampedModel):
 
 class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
-    
+    avatar = models.ImageField(upload_to="space_images", default="space_images/default_space.jpg")
+    description = models.CharField(max_length=100, blank=False, default="This is a Space!")
+    subscribers = models.ManyToManyField(User, related_name='subscribed_users', through='Subscriber')
+
+
+class Subscriber(TimeStampedModel):
+    space = models.ForeignKey(Space, on_delete=models.CASCADE, related_name='subscribed_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='spaces_subscribed')
