@@ -26,8 +26,7 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not delete User, Either we should use ForeignKey or
-    # See: https://stackoverflow.com/questions/12754024/onetoonefield-and-deleting
+    # Overwrite delete method since OneToOne relationship does not delete User
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)

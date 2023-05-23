@@ -11,7 +11,6 @@ from django.contrib.auth.models import auth
 from .models import Profile, Tag, Space, Post, User
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__, __book_post__
-from .src.models.user_model_handler import delete_user
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
@@ -41,7 +40,11 @@ def logout(request: object):
 
 @login_required(login_url="core:signin")
 def delete_account(request: object):
-    return delete_user(request=request)
+    user = User.objects.get(username=request.user.username)
+    # Delete the user account
+    user.delete()
+    # Return to sign-in page
+    return redirect("core:signin")
 
 
 @login_required(login_url='core:signin')
@@ -264,16 +267,8 @@ def feed(request: object):
     for following_profile in request_owner_user_object.profile.following.all():
         followings_user.append(following_profile.user)
     followings_posts = Post.objects.filter(owner__in=followings_user).order_by('-modified')
-    followings_profiles = list()
-    for post in followings_posts:
-        post_owner_user_object = User.objects.get(username=post.owner.username)
-        post_owner_profile_object = Profile.objects.get(
-            user=post_owner_user_object)
-        followings_profiles.append(post_owner_profile_object)
-    following_profile_list_with_posts = zip(
-        followings_profiles, followings_posts)
     context = {
-        'following_profile_list_with_posts': following_profile_list_with_posts,
+        'followings_posts': followings_posts,
         'available_tags': Tag.objects.all(),
         'available_spaces': Space.objects.all(),
     }
