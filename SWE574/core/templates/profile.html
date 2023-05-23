@@ -6,8 +6,8 @@
         <div class="profile-header">
             <!-- BEGIN profile-header-cover -->
             <div class="profile-header-cover" style="width: 100%; height: 100%; overflow: hidden;">
-                <img src="{{ profile_owner_user.profile.background_image.url }}" alt="" 
-                    style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="{{ profile_owner_user.profile.background_image.url }}" alt=""
+                     style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <!-- END profile-header-cover -->
             <!-- BEGIN profile-header-content -->
@@ -35,29 +35,29 @@
                                class="btn btn-sm btn-info mb-2">Follow</a>
                         {% endif %}
                     {% endif %}
-                        <p class="m-b-5 pull-right">
-                            {{ profile_owner_user.posts.all|length }} Posts
-                        </p>
-                        <p class="m-b-5 pull-right" style="margin-right: 0.5em"
-                           id="following-{{ profile_owner_user.id }}">
-                            {{ profile_owner_user.profile.following.all|length }} Following
-                        </p>
-                        <p class="m-b-5 pull-right" style="margin-right: 0.5em"
-                           id="followers-{{ profile_owner_user.id }}">
-                            {{ profile_owner_user.profile.followers.all|length }} Follower
-                        </p>
+                    <p class="m-b-5 pull-right">
+                        {{ profile_owner_user.posts.all|length }} Posts
+                    </p>
+                    <p class="m-b-5 pull-right" style="margin-right: 0.5em"
+                       id="following-{{ profile_owner_user.id }}">
+                        {{ profile_owner_user.profile.following.all|length }} Following
+                    </p>
+                    <p class="m-b-5 pull-right" style="margin-right: 0.5em"
+                       id="followers-{{ profile_owner_user.id }}">
+                        {{ profile_owner_user.profile.followers.all|length }} Follower
+                    </p>
                 </div>
                 <!-- END profile-header-info -->
             </div>
             <!-- END profile-header-content -->
             <!-- BEGIN profile-header-tab -->
             <ul class="profile-header-tab nav nav-tabs">
-                <li class="nav-item"><a href="#profile-post" target="__blank" class="nav-link_">POSTS</a>
+                <li class="nav-item"><a href="#profile-post" data-bs-toggle="tab" class="nav-link_">POSTS</a>
                 </li>
-                <li class="nav-item"><a href="#bookmarks" target="__blank" class="nav-link_">BOOKMARKS</a>
+                <li class="nav-item"><a href="#bookmarks" data-bs-toggle="tab" class="nav-link_">BOOKMARKS</a>
                 </li>
                 {% if profile_owner_user.username == request_owner_user.username %}
-                    <li class="nav-item"><a href="#settings" target="__blank" class="nav-link_">SETTINGS</a>
+                    <li class="nav-item"><a href="{% url 'core:settings' %}">SETTINGS</a>
                     </li>
                 {% endif %}
             </ul>
@@ -73,24 +73,68 @@
             <div class="tab-pane active" id="profile-post">
                 <!-- begin timeline -->
                 <ul class="timeline">
-                    {% for post in profile_owner_user.profile.sorted_posts_all %}
+                    {% if profile_owner_user.profile.sorted_posts_all|length > 0 %}
+                        {% for post in profile_owner_user.profile.sorted_posts_all %}
+                            <li>
+                                {% include "post_container.html" with post=post %}
+                            </li>
+                        {% endfor %}
+                        {% include "post_edit_modal.html" %}
                         <li>
-                            {% include "post_container.html" with post=post %}
+                            <!-- begin timeline-icon -->
+                            <div class="timeline-icon">
+                                <a href="javascript:;">&nbsp;</a>
+                            </div>
+                            <!-- end timeline-icon -->
+                            <!-- begin timeline-body -->
+                            <div class="timeline-body">
+                                <b>END</b>
+                            </div>
                         </li>
-                    {% endfor %}
-                    {% include "post_edit_modal.html" %}
-
-                    <li>
-                        <!-- begin timeline-icon -->
-                        <div class="timeline-icon">
-                            <a href="javascript:;">&nbsp;</a>
-                        </div>
-                        <!-- end timeline-icon -->
-                        <!-- begin timeline-body -->
-                        <div class="timeline-body">
-                            Loading...
-                        </div>
-                    </li>
+                    {% else %}
+                        <li>
+                            <div class="timeline-icon">
+                                <a href="javascript:;"></a>
+                            </div>
+                            <div class="timeline-body">
+                                <strong>No posts found.</strong>
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
+                <!-- end timeline -->
+            </div>
+            <div class="tab-pane" id="bookmarks">
+                <!-- begin timeline -->
+                <ul class="timeline">
+                    {% if profile_owner_user.posts_bookmarked.all|length > 0 %}
+                        {% for bookmark in profile_owner_user.posts_bookmarked.all %}
+                            <li>
+                                {% include "post_container.html" with post=bookmark.post %}
+                            </li>
+                        {% endfor %}
+                        {% include "post_edit_modal.html" %}
+                        <li>
+                            <!-- begin timeline-icon -->
+                            <div class="timeline-icon">
+                                <a href="javascript:;">&nbsp;</a>
+                            </div>
+                            <!-- end timeline-icon -->
+                            <!-- begin timeline-body -->
+                            <div class="timeline-body">
+                                End
+                            </div>
+                        </li>
+                    {% else %}
+                        <li>
+                            <div class="timeline-icon">
+                                <a href="javascript:;"></a>
+                            </div>
+                            <div class="timeline-body">
+                                <strong>No bookmarks found.</strong>
+                            </div>
+                        </li>
+                    {% endif %}
                 </ul>
                 <!-- end timeline -->
             </div>

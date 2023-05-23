@@ -243,16 +243,8 @@ def feed(request: object):
     for following_profile in request_owner_user_object.profile.following.all():
         followings_user.append(following_profile.user)
     followings_posts = Post.objects.filter(owner__in=followings_user).order_by('-modified')
-    followings_profiles = list()
-    for post in followings_posts:
-        post_owner_user_object = User.objects.get(username=post.owner.username)
-        post_owner_profile_object = Profile.objects.get(
-            user=post_owner_user_object)
-        followings_profiles.append(post_owner_profile_object)
-    following_profile_list_with_posts = zip(
-        followings_profiles, followings_posts)
     context = {
-        'following_profile_list_with_posts': following_profile_list_with_posts,
+        'followings_posts': followings_posts,
         'available_tags': Tag.objects.all(),
         'available_spaces': Space.objects.all(),
     }
@@ -340,7 +332,6 @@ def bookmark_post(request, post_id):
 
 @login_required(login_url="core:signin")
 def fetch_og_tags(request):
-
     """ get url from request body, post request """
     data = json.loads(request.body.decode("utf-8"))
     url = data["url"]
