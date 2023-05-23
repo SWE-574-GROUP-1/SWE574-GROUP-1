@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.db.models import Prefetch
 from django.http import JsonResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from .models import Profile, Tag, Space, Post, User
@@ -205,7 +204,7 @@ def create_space(request):
         Space.objects.get(name=request.POST.get('space_name'))
         path = request.META.get('HTTP_REFERER')
         return HttpResponseRedirect(path)
-    except Exception as e:
+    except:
         print("Space does not exist")
         name = request.POST.get('space_name')
         print(f"{request.FILES.get('avatar')=}")
