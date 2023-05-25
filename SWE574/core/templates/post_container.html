@@ -1,10 +1,10 @@
 {% load static %}
 <div class="timeline-time">
     <span class="date">
-        {{ post.created|date:"Y-m-d" }}
+        {{ post.modified|date:"Y-m-d" }}
     </span>
     <span class="time">
-        {{ post.created|date:"H:i" }}
+        {{ post.modified|date:"H:i" }}
     </span>
 </div>
 <div class="timeline-icon">
@@ -18,26 +18,26 @@
             </a> <small></small></span>
         </span>
 
-        <span class="pull-right text-muted" id="likesCount-{{post.post_id}}"> {{post.total_likes}}</span>
+        <span class="pull-right text-muted" id="likesCount-{{ post.post_id }}"> {{ post.total_likes }}</span>
         <a style="cursor: pointer;" onclick="likePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
             
             <span class="pull-right text-muted ">
                 {% if request.user in post.likes.all %}
-                <i class="bi bi-heart-fill" id="isLiked-{{post.post_id}}"></i>
+                    <i class="bi bi-heart-fill" id="isLiked-{{ post.post_id }}"></i>
                 {% else %}
-                <i class="bi bi-heart" id="isLiked-{{post.post_id}}"></i>
+                    <i class="bi bi-heart" id="isLiked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
         </a>
-        <span class="pull-right text-muted me-1" id="dislikesCount-{{post.post_id}}"> {{post.total_dislikes}}</span>
+        <span class="pull-right text-muted me-1" id="dislikesCount-{{ post.post_id }}"> {{ post.total_dislikes }}</span>
         <a style="cursor: pointer;" onclick="dislikePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
 
             <span class="pull-right text-muted ">
                 {% if request.user in post.dislikes.all %}
-                <i class="bi bi-hand-thumbs-down-fill" id="isDisliked-{{post.post_id}}"></i>
+                    <i class="bi bi-hand-thumbs-down-fill" id="isDisliked-{{ post.post_id }}"></i>
                 {% else %}
-                <i class="bi bi-hand-thumbs-down" id="isDisliked-{{post.post_id}}"></i>
+                    <i class="bi bi-hand-thumbs-down" id="isDisliked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
@@ -46,20 +46,20 @@
             
             <span class="pull-right text-muted ">
                 {% if request.user in post.bookmarks.all %}
-                <i class="bi bi-bookmark-fill" id="isBookmarked-{{post.post_id}}"></i>
+                    <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>
                 {% else %}
-                <i class="bi bi-bookmark" id="isBookmarked-{{post.post_id}}"></i>
+                    <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
         </a>
         <span class="username">
             {% for space in post.spaces.all %}
-            <a style="color: blue;" href="{% url 'core:spaces' space_name=space.name %}"
-                class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill">
+                <a style="color: blue;" href="{% url 'core:spaces' space_name=space.name %}"
+                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill">
                 </i>{{ space.name }}
             </a>
-            <a>&nbsp;</a>
+                <a>&nbsp;</a>
             {% endfor %}
         </span>
     </div>
@@ -67,36 +67,38 @@
 
         <div class="container" style="padding: 0">
             {% if post.title %}
-            <div class="card mb-3" style="padding: 0">
-                <div class="row no-gutters">
-                    <div class="col-sm-6" style="display: flex">
-                        <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
-                            <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
+                <div class="card mb-3" style="padding: 0">
+                    <div class="row no-gutters">
+                        <div class="col-sm-6" style="display: flex">
+                            <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
+                                <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ post.title }}</h5>
-                            <p class="card-text">{{ post.description }}</p>
-                            <div class="d-flex d-grid gap-3">
-                                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To
-                                    Website</a>
-                                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
-                                    class="btn btn-success">Go To Detail</a>
+                        <div class="col-sm-6">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.description }}</p>
+                                <div class="d-flex d-grid gap-3">
+                                    <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go
+                                        To
+                                        Website</a>
+                                    <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
+                                       class="btn btn-success">Go To Detail</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             {% else %}
-            <p>
-                {{ post.link }}
-            </p>
-            <div class="d-flex d-grid gap-3">
-                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To Website</a>
-                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}" class="btn btn-success">Go To
-                    Detail</a>
-            </div>
+                <p>
+                    {{ post.link }}
+                </p>
+                <div class="d-flex d-grid gap-3">
+                    <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To Website</a>
+                    <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}" class="btn btn-success">Go
+                        To
+                        Detail</a>
+                </div>
             {% endif %}
 
         </div>
@@ -111,21 +113,21 @@
     </div>
     <div class="timeline-footer">
         {% for tag in post.tags.all %}
-        <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
-        class="m-r-15 text-inverse-lighter pull-left"><i
-                class="bi bi-tags-fill"></i>{{ tag.name }} </a>
-        <a>&nbsp;</a>
+            <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
+               class="m-r-15 text-inverse-lighter pull-left"><i
+                    class="bi bi-tags-fill"></i>{{ tag.name }} </a>
+            <a>&nbsp;</a>
         {% endfor %}
-        {% if post.owner_username == request.user.username %}
-        <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
-                class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
-        <a>&nbsp;</a>
-        <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
-            data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
-            data-link="{{ post.link }}" data-title="{{ post.title }}"
-            data-tags='{{post.tags_as_json_string}}'
+        {% if post.owner.id == request.user.id %}
+            <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
+                    class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
+            <a>&nbsp;</a>
+            <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
+               data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
+               data-link="{{ post.link }}" data-title="{{ post.title }}"
+               data-tags='{{ post.tags_as_json_string }}'
             >
-            <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
+                <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
         {% endif %}
     </div>
 

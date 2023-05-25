@@ -1,5 +1,5 @@
 """Contains utility methods for Post model"""
-from ...models import Post, Profile, Tag, Space
+from ...models import Post, Tag, Space
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from ..utils.generate_preview import generate_preview_
@@ -11,15 +11,13 @@ def create_post(request: object) -> None:
     @param request: HttpRequest object that contains metadata about request passed from frontend
     @return: None
     """
-    # Get the username of the user that requests to create a post
-    owner_username = request.user.username
+    # Get the user that requests to create a post
     owner = request.user
     # Get preview details
     preview = generate_preview_(url=request.POST.get('link'))
     # Creating new post
     if preview:
-        new_post = Post.objects.create(owner_username=owner_username,
-                                       owner=owner,
+        new_post = Post.objects.create(owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        title=preview.get('title'),
@@ -27,8 +25,7 @@ def create_post(request: object) -> None:
                                        preview_image=preview.get('image')
                                        )
     else:
-        new_post = Post.objects.create(owner_username=owner_username,
-                                       owner=owner,
+        new_post = Post.objects.create(owner=owner,
                                        link=request.POST.get("link"),
                                        caption=request.POST.get("caption"),
                                        )
@@ -142,8 +139,8 @@ def bookmark_post(path, post: Post, id: int) -> HttpResponseRedirect:
 
 def un_bookmark_post(path, post: Post, id: int):
     """
-    Implementation of un-bookmarking of a Post model. Removes the username to the bookmarked_by attribute of the post and
-    decreases num_of_bookmarks by 1
+    Implementation of un-bookmarking of a Post model. Removes the username to the bookmarked_by attribute of the post
+    and decreases num_of_bookmarks by 1
     @param path: Redirection path after un-bookmarking is performed
     @param post: Post model to be bookmarked
     @param int id: id of the owner user of the Post

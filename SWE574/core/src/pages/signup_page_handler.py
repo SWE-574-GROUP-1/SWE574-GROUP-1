@@ -103,9 +103,9 @@ def validate_password(request: object) -> bool:
 def validate_password_length(password: str, allowed_min_length: int = 8) -> bool:
     """
     Implementation of validating password length greater than 8
-    @param password: a string, that corresponds to the password
-    @param allowed_min_length: an integer, that corresponds to minimum allowable length of a password, 8 chars by default
-    @return: a boolean, True if password length is valid, otherwise False
+    @param password: string, that corresponds to the password
+    @param allowed_min_length: integer, that corresponds to minimum allowable length of a password, 8 char by default
+    @return: boolean, True if password length is valid, otherwise False
     """
     # TODO - Dağlar: Decide on migrating password handling to another file?
     # Set allowed minimum length
