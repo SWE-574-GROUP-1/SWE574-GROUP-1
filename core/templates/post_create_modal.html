@@ -1,0 +1,211 @@
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create New Post</h5>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'core:create_post' %}" method="POST" id="post_create_form">
+                    {% csrf_token %}
+                    <input name="form_name" type="hidden" id="form-name" value="post-create-form">
+                    <!-- img preview -->
+                    <img name="" id="preview_image" class="img-thumbnail" src="" alt="Image Preview"
+                         style="width: 100%; height: 100%; display: none;">
+                    <input name="preview_image" type="hidden" id="image">
+                    <div class="form-group text-secondary">
+                        <label for="link" class="col-form-label"><strong>URL</strong></label>
+                        <input name="link" type="text" class="form-control" id="link" placeholder="Enter the link">
+                        <hr>
+                        <label for="caption" class="col-form-label"><strong>Caption</strong></label>
+                        <textarea name="caption" class="form-control" id="caption"
+                                  placeholder="Enter the caption"></textarea>
+                        <hr>
+                        <div class="d-grid gap-2" id="tagPanel">
+                            {# Implementation of Tags #}
+                            <input name="selectedTags" type="hidden" id="selectedTags">
+                            <label for="tags" class="col-form-label"><strong>Tags</strong></label>
+                            <select id="postCreateModalTags" name="tags[]" multiple="multiple">
+                            </select>
+
+                            {# Implementation of Semantic Tags #}
+                            <label for="semanticTags" class="col-form-label"><strong>Semantic Tags</strong></label>
+                            <select id="semanticTags" name="semanticTags[]" multiple="multiple">
+                            </select>
+
+                            <div id="semanticTagLabels">
+
+                            </div>
+
+                            {# Implementation of Spaces #}
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Spaces
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for space in request.user.profile.all_spaces %}
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input position-static" type="checkbox"
+                                                   style="margin-left: -1rem; float: none;"
+                                                   id="space{{ forloop.counter }}" name="spaces[]"
+                                                   value="{{ space.name }}">
+                                            <label class="form-check-label ml-2"
+                                                   for="space{{ forloop.counter }}">{{ space.name }}</label>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="post_create_form" class="btn btn-primary" onclick="return checkform();">
+                    Create Post
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script>
+    // post_create_form validation
+    document.querySelector('#post_create_form').addEventListener('submit', function (e) {
+        var link = document.querySelector('#postModal #link').value;
+        var caption = document.querySelector('#postModal #caption').value;
+        var tags = document.querySelector('#postModal #selectedTags').value;
+        var spaces = document.querySelector('#postModal #spaces').value;
+
+        if (link == "" && caption == "" && tags == "" && spaces == "") {
+            alert("Please enter a valid URL, caption, tags or spaces");
+            e.preventDefault();
+        }
+
+        if (!validateURL(link)) {
+            alert("Please enter a valid URL");
+            e.preventDefault();
+        }
+    });
+
+    $('#postCreateModalTags').select2({
+        dropdownParent: $('#postModal #tagPanel'),
+        ajax: {
+            url: '/tags/all',
+            processResults: function (data) {
+                return {
+                    results: data.tags.map(function (tag) {
+                        return {
+                            id: tag.id,
+                            text: tag.name
+                        }
+                    })
+                };
+            }
+        },
+        tags: true
+
+    });
+
+    $('#postModal #semanticTags').select2({
+        dropdownParent: $('#postModal #tagPanel'),
+        ajax: {
+            url: "{% url 'core:tag_wiki_data_search' %}",
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    type: 'public'
+                }
+
+                // Query parameters will be ?search=[term]&type=public
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function (tag) {
+                        return {
+                            id: tag.id,
+                            text: tag.name + " (" + tag.description + ")"
+                        }
+                    })
+                };
+            }
+        }
+    });
+
+    $('#postModal #semanticTags').on('select2:select', function (e) {
+        // create new input field for semantic tags in #semanticTagLabels
+        var tag = e.params.data;
+        var tagId = tag.id;
+        var tagName = tag.text;
+        var tagDescription = tag.text.split(" (")[1].split(")")[0];
+
+        var newTag = document.createElement("div");
+        newTag.setAttribute("class", "badge bg-secondary");
+        newTag.setAttribute("id", "semanticTag_" + tagId);
+        newTag.setAttribute("style", "margin: 5px;");
+        newTag.innerHTML = tagName + "<i class='bi bi-x' onclick='removeSemanticTag(" + tagId + ")'></i>";
+
+        document.querySelector("#semanticTagLabels").appendChild(newTag);
+        // create text input under
+        var newInput = document.createElement("input");
+        newInput.setAttribute("name", "semanticTagLabels[]");
+        newInput.setAttribute("class", "form-control");
+        newInput.setAttribute("value", "");
+        document.querySelector("#semanticTagLabels").appendChild(newInput);
+        // create hidden input for to keep semantic tag values
+        var newInput = document.createElement("input");
+        newInput.setAttribute("name", "semanticTagValues[]");
+        newInput.setAttribute("type", "hidden");
+        newInput.setAttribute("value", tagId + "|" + tagName + "|" + tagDescription);
+        document.querySelector("#semanticTagLabels").appendChild(newInput);
+    });
+
+    // validate the given text if it is a valid URL
+    function validateURL(textval) {
+        {#var urlregex = new RegExp(#}
+        {#    "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)");#}
+        {#return urlregex.test(textval);#}
+        return true;
+    }
+
+    // on paste on url input, validate the url and set the url to the input
+    document.querySelector('#postModal #link').addEventListener('paste', function (e) {
+        if (e.clipboardData) {
+            var text = e.clipboardData.getData('text/plain');
+            if (!validateURL(text)) {
+                alert("Please enter a valid URL");
+                return;
+            } else {
+                fetch("{% url 'core:fetch_og_tags' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        url: text
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        var description = data.description;
+                        var img = data.img;
+
+                        if (description != null) {
+                            document.querySelector('#postModal #caption').value = description;
+                        }
+
+                        if (img != null) {
+                            document.querySelector('#postModal #preview_image').src = img;
+                            document.querySelector('#postModal #preview_image').style.display = "block";
+                            document.querySelector('#postModal [name="preview_image"]').value = img;
+                        }
+                    });
+            }
+        }
+    });
+</script>

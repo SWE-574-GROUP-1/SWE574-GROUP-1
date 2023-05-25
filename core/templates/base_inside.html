@@ -1,0 +1,372 @@
+{% load static %}
+<!-- https://www.bootdey.com/snippets/view/bs4-profile-with-timeline-posts -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkMe</title>
+    <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            white-space: normal !important;
+        }
+    </style>
+    {% block style %}
+    {% endblock %}
+
+</head>
+
+<body>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+<script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
+{% include 'navbar.html' %}
+{% if is_space_posts %}
+    {% include 'sidebar.html' %}
+{% endif %}
+<div class="container-sm bd-gutter mt-3 my-md-4 bd-layout" style="padding-top:32px">
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="content" class="content content-full-width">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12">
+    <button type="button" class="btn btn-light post-button" value="Post" role="img" data-bs-toggle="modal"
+            data-bs-target="#postModal">
+        <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
+        <figcaption><strong>Post bLink</strong></figcaption>
+    </button>
+    {% include 'post_create_modal.html' %}
+    <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create New Tag</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST" id="tag_create_form">
+                        {% csrf_token %}
+                        <input name="form_name" type="hidden" id="form-name" value="tag-create-form">
+                        <div class="form-group text-secondary">
+                            <label for="tag_name" class="col-form-label"><strong>Link</strong></label>
+                            <input name="tag_name" type="text" class="form-control" id="tag_name"
+                                   placeholder="Enter the Tag">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="tag_create_form" class="btn btn-primary"
+                            onclick="return checkform_create_tags();">
+                        Create Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+{#<!-- Prevents posting empty post-creating-form -->#}
+<script type='text/javascript'>
+    function checkform() {
+        if (document.forms.post_create_form.link.value == "" || document.forms.post_create_form.caption.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            console.log(document.forms.post_create_form.link.value)
+            document.post_create_form.submit();
+            document.post_create_form.reset();
+        }
+    }
+</script>
+{#Prevents posting empty post-update-form#}
+<script type='text/javascript'>
+    function checkform_validity() {
+        if (document.forms.post_update_form.link.value == "" & document.forms.post_update_form.caption.value == "") {
+            alert("Please fill at least 1 field");
+            return false;
+        } else {
+            console.log(document.forms.post_update_form.link.value)
+            document.post_update_form.submit();
+            document.post_update_form.reset();
+        }
+    }
+</script>
+{#<!-- Prevents posting empty post-creating-form -->#}
+<script type='text/javascript'>
+    function checkform_tags() {
+        if (document.forms.tag_search_form.tag_name_to_be_searched.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            document.tag_search_form.submit();
+            document.tag_search_form.reset();
+        }
+    }
+</script>
+<script type='text/javascript'>
+    function checkform_spaces() {
+        if (document.forms.space_search_form.space_name_to_be_searched.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            document.space_search_form.submit();
+            document.space_search_form.reset();
+        }
+    }
+</script>
+<script type='text/javascript'>
+    function checkform_create_tags() {
+        if (document.forms.tag_create_form.tag_name.value == "") {
+            alert("Empty tag cannot be created!");
+            return false;
+        } else {
+            document.tag_search_form.submit();
+            document.tag_search_form.reset();
+        }
+    }
+</script>
+{#//Program to disable or enable a button using javascript https://flexiple.com/javascript/disable-button-javascript/#}
+<script type='text/javascript'>
+    let input = document.querySelector(".input");
+    let button = document.querySelector(".button");
+
+    button.disabled = true; //setting button state to disabled
+
+    input.addEventListener("change", stateHandle);
+
+    function stateHandle() {
+        if (document.querySelector(".input").value === "") {
+            button.disabled = true; //button remains disabled
+        } else {
+            button.disabled = false; //button is enabled
+        }
+    }
+
+    function checkform_create_spaces() {
+        if (document.forms.space_create_form.space_name.value === "" | document.forms.space_create_form.description.value === "") {
+            alert("Both Space Name and Description must be filled!");
+            return false;
+        } else {
+            document.space_create_form.submit();
+            document.space_create_form.reset();
+        }
+    }
+
+    function likePost(postId, el) {
+        fetch(`/post/like/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.liked) {
+                    document.getElementById(`isLiked-${postId}`).classList.add('bi-heart-fill');
+                    document.getElementById(`isLiked-${postId}`).classList.remove('bi-heart');
+                } else {
+                    document.getElementById(`isLiked-${postId}`).classList.add('bi-heart');
+                    document.getElementById(`isLiked-${postId}`).classList.remove('bi-heart-fill');
+                }
+                document.getElementById(`likesCount-${postId}`).innerHTML = data.count;
+            })
+    }
+
+    function dislikePost(postId, el) {
+        fetch(`/post/dislike/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.disliked) {
+                    document.getElementById(`isDisliked-${postId}`).classList.add('bi-hand-thumbs-down-fill');
+                    document.getElementById(`isDisliked-${postId}`).classList.remove('bi-hand-thumbs-down');
+                } else {
+                    document.getElementById(`isDisliked-${postId}`).classList.add('bi-hand-thumbs-down');
+                    document.getElementById(`isDisliked-${postId}`).classList.remove('bi-hand-thumbs-down-fill');
+                }
+                document.getElementById(`dislikesCount-${postId}`).innerHTML = data.count;
+            })
+    }
+
+    function bookmarkPost(postId, el) {
+        fetch(`/post/bookmark/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.bookmarked) {
+                    document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark-fill');
+                    document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark');
+                } else {
+                    document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark');
+                    document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark-fill');
+                }
+            })
+    }
+
+    function updatePost() {
+        if (document.forms.d.link.value == "" & document.forms.post_update_form.caption.value == "") {
+            alert("Please fill at least 1 field");
+            return false;
+        } else {
+            console.log(document.forms.post_update_form.link.value)
+            document.d.submit();
+        }
+    }
+
+    function deletePost(postId) {
+        if (confirm("Are you sure you want to delete this post?")) {
+            window.location.href = '/delete_post?post_id=' + postId;
+        }
+    }
+
+    /* when dom ready */
+    window.addEventListener('DOMContentLoaded', function () {
+        var editModal = document.getElementById('postUpdateModal')
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            console.log(button)
+            var post_id = button.getAttribute('data-post-id')
+            var link = button.getAttribute('data-link')
+            var title = button.getAttribute('data-title')
+            var caption = button.getAttribute('data-description')
+            var tags = button.getAttribute('data-tags')
+            var semantic_tags = button.getAttribute('data-semantic-tags')
+            var spaces = button.getAttribute('data-spaces')
+            // replace ' with " to make it valid json
+            tags = tags.replace(/'/g, '"')
+            // parse json
+            tags = JSON.parse(tags)
+            tags.forEach(function (tag) {
+                $('#postUpdateModalTags').append('<option value="' + tag.id + '" selected>' + tag.name + '</option>');
+            })
+
+            semantic_tags = semantic_tags.replace(/'/g, '"')
+            semantic_tags = JSON.parse(semantic_tags)
+            semantic_tags.forEach(function (tag) {
+                $('#semanticTags').append('<option value="' + tag.id + '" selected>' + tag.label + '</option>');
+                var newTag = document.createElement("div");
+                newTag.setAttribute("class", "badge bg-secondary");
+                newTag.setAttribute("id", "semanticTag_" + tag.id);
+                newTag.setAttribute("style", "margin: 5px;");
+                newTag.innerHTML = tag.label + "<i class='bi bi-x' onclick='removeSemanticTag(" + tag.id + ")'></i>";
+
+                document.querySelector("#semanticTagLabels").appendChild(newTag);
+                // create text input under
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagLabels[]");
+                newInput.setAttribute("class", "form-control");
+                newInput.setAttribute("value", tag.custom_label);
+                document.querySelector("#semanticTagLabels").appendChild(newInput);
+                // create hidden input for to keep semantic tag values
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagValues[]");
+                newInput.setAttribute("type", "hidden");
+                newInput.setAttribute("value", tag.wikidata_id + "|" + tag.label + "|" + tag.description);
+                document.querySelector("#semanticTagLabels").appendChild(newInput);
+            })
+
+            if (semantic_tags.length) {
+
+            }
+
+            var modalTitle = editModal.querySelector('.modal-title')
+            var modalBodyInput = editModal.querySelector('.modal-body input[name="link"]')
+            var modalBodyTextarea = editModal.querySelector('.modal-body textarea')
+            var postIdInput = editModal.querySelector('.modal-body input[name="post_id"]')
+            // set select2 value
+            var tagsInput = editModal.querySelector('.modal-body input[name="selectedTags"]')
+
+            spaces = spaces.replace(/'/g, '"')
+            spaces = JSON.parse(spaces)
+            spaces.forEach(function (space) {
+                console.log(space);
+                let checkbox = document.getElementById('space_' + space.id);
+                checkbox.checked = true;
+            })
+            tagsInput.value = tags
+            modalTitle.textContent = 'Edit Post'
+            modalBodyInput.value = link
+            modalBodyTextarea.value = caption
+            postIdInput.value = post_id
+            document.getElementById("post_update_form").action = "/post/update";
+        })
+    });
+
+    function follow(id) {
+        fetch(`/follow?profile_owner_user_id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                var followed = data.followed;
+                var followers_count = data.followers_count;
+                var following_count = data.following_count;
+                if (followed) {
+                    document.querySelector(`#followButton-${id}`).innerHTML = "Unfollow";
+                } else {
+                    document.querySelector(`#followButton-${id}`).innerHTML = "Follow";
+                }
+
+                document.querySelector(`#followers-${id}`).innerHTML = `${followers_count} Follower`;
+                document.querySelector(`#following-${id}`).innerHTML = `${following_count} Following`;
+            });
+    }
+
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+
+    function join(space_name) {
+        console.log("join called")
+        fetch(`/join?space_name=${space_name}`)
+            .then(response => response.json())
+            .then(data => {
+                var joined = data.joined;
+                var subscribers_count = data.subscribers_count;
+                if (joined) {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Joined";
+                } else {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Join";
+                }
+
+                document.querySelector(`#subscribers-${space_name}`).innerHTML = `${subscribers_count} Subscribers`;
+
+            });
+    }
+</script>
+{% block js %}
+
+{% endblock %}
+
+</html>

@@ -1,0 +1,251 @@
+{% extends "base_inside.html" %}
+{% load static %}
+{% block content %}
+    <div class="profile-content">
+        <div class="shadow"
+             style="margin-left: 23%; margin-right: 17%; background: #fff; position: relative; border-radius: 6px;">
+            <form id="space_search_form" method="POST" action="{% url 'core:spaces_search' %}">
+                {% csrf_token %}
+                <div class="input-group input-group-sm p-2">
+                    <input name="form_name" type="hidden" id="form-name" value="space-search-form">
+                    <input type="text" name="space_name_to_be_searched" class="form-control rounded me-2"
+                           placeholder="Search for Spaces">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" form="space_search_form"
+                                onclick="return checkform_spaces()">Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tag-cloud">
+            {% if space_cloud|length == 0 %}
+                <a style="text-align: center; display: block;"><strong>No Available Space Found</strong></a>
+            {% else %}
+                {% for tag in space_cloud %}
+                    <a href="{% url 'core:space_posts' space_name=tag.name %}"
+                       class="badge bg-secondary rounded-pill tag-{{ tag.count }}"
+                       style="font-size: {{ tag.font_size }}px">{{ tag.name }}</a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- begin tab-content -->
+        {% if space_name %}
+            <div class="tab-content p-0">
+                <!-- begin #profile-post tab -->
+                <div class="tab-pane active" id="profile-post">
+                    <!-- begin timeline -->
+                    <ul class="timeline">
+                        <!-- if posts variable exists!!! -->
+                        {% for post in posts %}
+                            <li>
+                                {% include "post_container.html" with post=post %}
+                            </li>
+                            <!-- if no posts found -->
+                            {% empty %}
+                            <li>
+                                <div class="timeline-icon">
+                                    <a href="javascript:;">&nbsp;</a>
+                                </div>
+
+                                <div class="timeline-body">
+                                    No posts found in Space: <b>{{ space_name }}</b>
+                                </div>
+                            </li>
+                        {% endfor %}
+
+                        {% include "post_edit_modal.html" %}
+                    </ul>
+                    <!-- end timeline -->
+                </div>
+                <!-- end #profile-post tab -->
+            </div>
+        {% endif %}
+        <!-- end tab-content -->
+    </div>
+    <!-- end profile-content -->
+    <div class="col-12">
+        <button type="button" class="btn btn-light tag-button" value="Post" role="img" data-bs-toggle="modal"
+                data-bs-target="#spaceModal">
+            <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
+            <figcaption><strong>Create Space</strong></figcaption>
+        </button>
+        <div class="modal fade" id="spaceModal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createTagModalLabel">Create New Space</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'core:create_space' %}" method="POST" id="space_create_form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input name="form_name" type="hidden" id="form-name" value="space-create-form">
+                            <div class="form-group text-secondary">
+                                <label class="text-secondary" for="avatar"><strong>Space Avatar</strong></label>
+                                <div class="form-group">
+                                    <img width="70" height="70" src="images/space_images/default_space.jpg"/>
+                                    <input type="file" name="avatar" value=""
+                                           class="shadow-none bg-gray-100">
+                                </div>
+                                <hr>
+                                <label for="space_name" class="col-form-label"><strong>Space Name</strong></label>
+                                <input name="space_name" type="text" class="form-control" id="space_name" value=""
+                                       placeholder="Enter the Space Name">
+                                <hr>
+                                <label for="description" class="col-form-label"><strong>Description</strong></label>
+                                <textarea name="description" class="form-control" id="description"
+                                          placeholder="Enter the description"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" form="space_create_form" class="btn btn-primary"
+                                onclick="return checkform_create_spaces();">
+                            Create Space
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <style>
+        .tag-cloud {
+            margin-top: 20px;
+            margin-left: 23%;
+            margin-right: 17%;
+            background: #fff;
+            position: relative;
+            border-radius: 6px;
+            padding: 5px;
+        }
+
+        .tag-cloud .badge {
+            margin: 1px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .tag-cloud .badge:hover {
+            opacity: 0.8;
+        }
+
+        .tag-cloud .tag-1 {
+            color: #fff;
+            background-color: #e9ecef;
+        }
+
+        .tag-cloud .tag-2 {
+            color: #fff;
+            background-color: #dee2e6;
+        }
+
+        .tag-cloud .tag-3 {
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .tag-cloud .tag-4 {
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .tag-cloud .tag-5 {
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .tag-cloud .tag-6 {
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .tag-cloud .tag-7 {
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .container-t {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 200px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar {
+            height: 100%;
+            border-top-right-radius: 60px;
+            border-bottom-right-radius: 60px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding-top: 5px;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sidebar-image {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .sidebar-menu {
+            padding-left: 0.5rem !important;
+            padding-top: 15px;
+        }
+
+        .sidebar-header {
+            padding-left: 25px;
+            text-align: center;
+        }
+
+        .sidebar-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .sidebar-header {
+            padding-top: 100px;
+            text-align: center;
+        }
+
+        .sidebar-image {
+            width: 150px;
+            height: 150px;
+        }
+
+        .btn {
+            margin-top: 15px;
+        }
+
+    </style>
+{% endblock %}

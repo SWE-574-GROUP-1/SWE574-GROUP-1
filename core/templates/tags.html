@@ -1,0 +1,126 @@
+{% extends "base_inside.html" %}
+
+{% block content %}
+<div class="profile-content">
+    <div class="shadow"
+        style="margin-left: 23%; margin-right: 17%; background: #fff; position: relative; border-radius: 6px;">
+        <form id="tag_search_form" method="POST" action="{% url 'core:tags_search' %}">
+            {% csrf_token %}
+            <div class="input-group input-group-sm p-2">
+                <input name="form_name" type="hidden" id="form-name" value="tag-search-form">
+                <input type="text" name="tag_name_to_be_searched" class="form-control rounded me-2"
+                    placeholder="Search for Tags">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit" form="tag_search_form"
+                        onclick="return checkform_tags()">Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="tag-cloud">
+        {% if tag_cloud|length == 0 %}
+            <a style="text-align: center; display: block;"><strong>No Available Tags Found</strong></a>
+        {% else %}
+
+            {% for tag in tag_cloud %}
+                <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
+                   class="badge bg-secondary rounded-pill tag-{{ tag.count }}"
+                   style="font-size: {{ tag.font_size }}px">{{ tag.name }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <!-- begin tab-content -->
+    {% if tag_name %}
+    <div class="tab-content p-0">
+        <!-- begin #profile-post tab -->
+        <div class="tab-pane active" id="profile-post">
+            <!-- begin timeline -->
+            <ul class="timeline">
+                <!-- if posts variable exists!!! -->
+                {% for post in posts %}
+                <li>
+                    {% include "post_container.html" with post=post %}
+                </li>
+                <!-- if no posts found -->
+                {% empty %}
+                <li>
+                    <div class="timeline-icon">
+                        <a href="javascript:;">&nbsp;</a>
+                    </div>
+                    <div class="timeline-body">
+                        No posts found with search key <b>{{ tag_name }}</b>
+                    </div>
+                </li>
+                {% endfor %}
+
+                {% include "post_edit_modal.html" %}
+            </ul>
+            <!-- end timeline -->
+        </div>
+        <!-- end #profile-post tab -->
+    </div>
+    {% endif %}
+    <!-- end tab-content -->
+</div>
+<!-- end profile-content -->
+{% endblock %}
+
+{% block js %}
+<style>
+    .tag-cloud {
+        margin-top: 20px;
+        margin-left: 23%;
+        margin-right: 17%;
+        background: #fff;
+        position: relative;
+        border-radius: 6px;
+        padding: 5px;
+    }
+
+    .tag-cloud .badge {
+        margin: 1px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .tag-cloud .badge:hover {
+        opacity: 0.8;
+    }
+
+    .tag-cloud .tag-1 {
+        color: #fff;
+        background-color: #e9ecef;
+    }
+
+    .tag-cloud .tag-2 {
+        color: #fff;
+        background-color: #dee2e6;
+    }
+
+    .tag-cloud .tag-3 {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .tag-cloud .tag-4 {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .tag-cloud .tag-5 {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .tag-cloud .tag-6 {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .tag-cloud .tag-7 {
+        color: #fff;
+        background-color: #007bff;
+    }
+</style>
+{% endblock %}
