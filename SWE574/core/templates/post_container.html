@@ -31,7 +31,7 @@
             </span>
         </a>
         <span class="pull-right text-muted me-1" id="dislikesCount-{{ post.post_id }}"> {{ post.total_dislikes }}</span>
-        <a style="cursor: pointer;" onclick="dislikePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
+        <a style="cursor: pointer;" onclick="dislikePost({{ post.post_id }})" class="pull-right text-muted">
 
             <span class="pull-right text-muted ">
                 {% if request.user in post.dislikes.all %}
@@ -42,22 +42,76 @@
                 &nbsp
             </span>
         </a>
-        <a style="cursor: pointer;" onclick="bookmarkPost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
-            
-            <span class="pull-right text-muted ">
-                {% if request.user in post.bookmarks.all %}
-                    <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>
-                {% else %}
-                    <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>
-                {% endif %}
-                &nbsp
-            </span>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#bookmarkModal">
+                            <span class="pull-right text-muted ">
+                        {% if request.user in post.bookmarks.all %}
+                            <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>
+                        {% else %}
+                            <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>
+                        {% endif %}
+                                &nbsp
+                    </span>
         </a>
-            {% for space in post.spaces.all %}
-                <a style="padding-right: 15px; color: blue; margin: auto;" href="{% url 'core:space_posts' space_name=space.name %}"
-                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
-                <a>&nbsp;</a>
-            {% endfor %}
+
+        <!-- Modal -->
+        <div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="myModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Modal Title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form within the modal -->
+                        {#                        <form method="POST" action="{% url 'your_form_action_url' %}">#}
+                        <form method="POST" id="bookmarkForm-{{ post.post_id }}">
+                            {% csrf_token %}
+                            {% for label in user.profile.all_labels %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="label{{ forloop.counter }} {% if label == post.bookmarks %}"
+                                           name="labels" value="{{ label }}">
+                                    <label class="form-check-label"
+                                           for="label{{ forloop.counter }}">{{ label }}</label>
+                                </div>
+                            {% endfor %}
+                            <br>
+                            <div class="text-center">
+                                {% if request.user in post.bookmarks.all %}
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="bookmarkPost( '{{ post.post_id }}' , this)">Update Bookmark
+                                    </button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="debookmarkPost( '{{ post.post_id }}' , this)">Cancel Bookmark
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="bookmarkPost( '{{ post.post_id }}' , this)">Send Form
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {#        <a style="cursor: pointer;" onclick="bookmarkPost( '{{ post.post_id }}' , this)" class="pull-right text-muted">#}
+        {#            <span class="pull-right text-muted ">#}
+        {#                {% if request.user in post.bookmarks.all %}#}
+        {#                    <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>#}
+        {#                {% else %}#}
+        {#                    <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>#}
+        {#                {% endif %}#}
+        {#                &nbsp#}
+        {#            </span>#}
+        {#        </a>#}
+        {% for space in post.spaces.all %}
+            <a style="padding-right: 15px; color: blue; margin: auto;"
+               href="{% url 'core:space_posts' space_name=space.name %}"
+               class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}
+            </a>
+            <a>&nbsp;</a>
+        {% endfor %}
 
     </div>
     <div class="timeline-content">

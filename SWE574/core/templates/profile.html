@@ -22,10 +22,10 @@
                     <h4 class="m-t-10 m-b-5">@{{ profile_owner_user.username }}</h4>
                     <p class="m-b-10">{{ profile_owner_user.profile.bio }}</p>
                     {# TODO: Make an if else loop for button changes and visibility for visitors#}
-                    {% if profile_owner_user.username == request_owner_user.username %}
+                    {% if profile_owner_user.username == user.username %}
                         <a href="#" class="btn btn-sm btn-info mb-2" style="visibility: hidden;">Follow</a>
                     {% else %}
-                        {% if request_owner_user.profile in profile_owner_user.profile.followers.all %}
+                        {% if user.profile in profile_owner_user.profile.followers.all %}
                             <a style="cursor: pointer;" onclick="follow({{ profile_owner_user.id }})"
                                id="followButton-{{ profile_owner_user.id }}"
                                class="btn btn-sm btn-info mb-2">Unfollow</a>
@@ -56,7 +56,7 @@
                 </li>
                 <li class="nav-item"><a href="#bookmarks" data-bs-toggle="tab" class="nav-link_">BOOKMARKS</a>
                 </li>
-                {% if profile_owner_user.username == request_owner_user.username %}
+                {% if profile_owner_user.username == user.username %}
                     <li class="nav-item"><a href="{% url 'core:settings' %}">SETTINGS</a>
                     </li>
                 {% endif %}

@@ -28,6 +28,19 @@ class Profile(TimeStampedModel):
     def __str__(self):
         return self.user.username
 
+    def all_labels(self):
+        bookmarks = Bookmark.objects.filter(user=self.user)
+        unique_labels = bookmarks.values_list('label', flat=True).distinct()
+        print(f"{unique_labels=}")
+        if len(unique_labels) == 0:
+            return ['default']
+        else:
+            return unique_labels
+
+
+    def all_spaces(self):
+        return Space.objects.all()
+
     # Overwrite delete method since OneToOne relationship does not delete User, Either we should use ForeignKey or
     # See: https://stackoverflow.com/questions/12754024/onetoonefield-and-deleting
     def delete(self, *args, **kwargs):
@@ -115,6 +128,7 @@ class Like(TimeStampedModel):
 
 
 class Bookmark(TimeStampedModel):
+    label = models.CharField(max_length=100, blank=False, default='default')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarked_by_users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_bookmarked')
 

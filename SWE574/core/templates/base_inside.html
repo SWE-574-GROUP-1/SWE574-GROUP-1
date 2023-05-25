@@ -216,8 +216,20 @@
             })
     }
 
-    function bookmarkPost(postId, el) {
-        fetch(`/post/bookmark/${postId}`, {
+    function bookmarkPost(postId) {
+        var form = document.getElementById(`bookmarkForm-${postId}`);
+
+        // Get the checked checkboxes
+        var checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+
+        // Store the values of checked checkboxes in an array
+        var checkedValues = [];
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkedValues.push(checkboxes[i].value);
+        }
+        console.log(checkedValues);
+
+        fetch(`/post/bookmark/${postId}?labels=${checkedValues}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -234,6 +246,19 @@
                     document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark-fill');
                 }
             })
+    }
+
+    function handleCheckboxChange(checkbox) {
+        var checkboxes = document.querySelectorAll('#myForm input[type="checkbox"]');
+
+        // Uncheck other checkboxes if a checkbox is selected
+        if (checkbox.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== checkbox) {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
     }
 
     function updatePost() {

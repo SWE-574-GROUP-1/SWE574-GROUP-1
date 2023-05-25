@@ -2,12 +2,11 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
-from django.db.models import Prefetch
+from django.db.models import Count, Q, Prefetch
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
-from .models import Profile, Tag, Space, Post, User
+from .models import Profile, Tag, Space, Post, User, Bookmark
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__, __book_post__
 from .src.pages.profile_page_handler import profile_page_handler_main
@@ -224,7 +223,7 @@ def create_space(request):
 
 
 @login_required(login_url="core:signin")
-def all_spaces():
+def all_spaces(request):
     spaces = Space.objects.all()
     return JsonResponse({'spaces': list(spaces.values())})
 
@@ -337,16 +336,30 @@ def dislike_post(request, post_id):
 
 @login_required(login_url="core:signin")
 def bookmark_post(request, post_id):
+    print("bookmark_post called")
     post = Post.objects.get(post_id=post_id)
     user = User.objects.get(username=request.user.username)
+    label = request.GET.get('label')
+    print(f"{label=}")
+    # post.bookmarks.add(user)
+    bookmark = Bookmark.objects.create(
+        label=label if label else 'default',
+        post=post,
+        user=user
+    )
+    bookmark.save()
+    bookmarked = True
 
-    if post.bookmarks.filter(id=request.user.id).exists():
-        post.bookmarks.remove(user)
-        bookmarked = False
-    else:
-        post.bookmarks.add(user)
-        bookmarked = True
+    return JsonResponse({'bookmarked': bookmarked})
 
+
+@login_required(login_url="core:signin")
+def debookmark_post(request, post_id):
+    print("debookmark_post called")
+    post = Post.objects.get(post_id=post_id)
+    bookmark = Bookmark.objects.get(post=post)
+    bookmark.delete()
+    bookmarked = False
     return JsonResponse({'bookmarked': bookmarked})
 
 
@@ -371,7 +384,7 @@ def fetch_og_tags(request):
                          'description': og_description['content']})
 
 
-def all_tags():
+def all_tags(request):
     tags = Tag.objects.all()
     return JsonResponse({'tags': list(tags.values())})
 
@@ -391,8 +404,6 @@ def tag_wiki_data_search(request):
 
     return JsonResponse(response, safe=False)
 
-
-# For badge page and model added
 
 @login_required(login_url="core:signin")
 def badges(request):
