@@ -72,6 +72,9 @@ def profile_information_setter(request: object) -> None:
     # Set the bio
     if request.POST.get('bio'):
         user_profile.bio = request.POST.get('bio')
+    # Save the background image
+    if request.FILES.get('background_image'):
+        user_profile.background_image = request.FILES.get('background_image')
     # Save the user profile
     user_profile.save()
     pass

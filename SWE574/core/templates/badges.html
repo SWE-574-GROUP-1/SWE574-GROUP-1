@@ -1,0 +1,73 @@
+{% extends "base_inside.html" %}
+
+{% block content %}
+
+<div class="profile-content">
+  <h2>My Badges</h2>
+  <div class="assigned-badges">
+    <h4>Assigned Badges</h4>
+    <!-- Assigned badges will go here, for now leave empty -->
+    <div class="badge-container">
+    </div>
+  </div>
+  <div class="all-badges">
+    <h4>All Badges</h4>
+    <div class="badge-container">
+      <div class="badge">
+        <img src="https://user-images.githubusercontent.com/28626390/234051388-5beeb15f-ddf6-400a-9090-aab03ecd5286.png" alt="Publisher">
+        <h5>Publisher</h5>
+      </div>
+      <div class="badge">
+        <img src="https://user-images.githubusercontent.com/28626390/234051529-6e1273ed-6701-4f18-98f2-097ec0af3440.png" alt="Community Builder">
+        <h5>Community Builder</h5>
+      </div>
+      <div class="badge">
+        <img src="https://user-images.githubusercontent.com/28626390/234051406-b652a709-1640-40fc-99ee-7ede19177950.png" alt="Most Liked">
+        <h5>Most Liked</h5>
+      </div>
+      <div class="badge">
+        <img src="https://user-images.githubusercontent.com/28626390/234051514-27f3e9f4-00f6-4a76-bfb3-b26ea61075ad.png" alt="Most Disliked">
+        <h5>Most Disliked</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  
+  .badge {
+    margin: 0.5rem;
+    text-align: center;
+  }
+  
+  .badge img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+  }
+  
+  .badge h5 {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .assigned-badges, .all-badges {
+    margin-top: 2rem;
+  }
+
+  h4 {
+    text-align: center;
+  }
+</style>
+
+{% endblock %}
