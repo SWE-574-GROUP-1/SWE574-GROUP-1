@@ -194,7 +194,7 @@ def spaces_index(request):
 @login_required(login_url="core:signin")
 def space_posts(request, space_name):
     space = Space.objects.get(name=space_name)
-    posts = Post.objects.filter(spaces=space).prefetch_related('spaces')
+    posts = Post.objects.filter(spaces=space).prefetch_related('spaces').order_by('-modified')
     space_cloud = get_cloud(type_='space')
     return render(request, 'spaces.html',
                   {'posts': posts, 'space_name': space_name, 'space_cloud': space_cloud, "is_space_posts": True,
@@ -207,7 +207,7 @@ def create_space(request):
         Space.objects.get(name=request.POST.get('space_name'))
         path = request.META.get('HTTP_REFERER')
         return HttpResponseRedirect(path)
-    except:
+    except Space.DoesNotExist:
         print("Space does not exist")
         name = request.POST.get('space_name')
         print(f"{request.FILES.get('avatar')=}")
@@ -224,7 +224,7 @@ def create_space(request):
 
 
 @login_required(login_url="core:signin")
-def all_spaces():
+def all_spaces(request):
     spaces = Space.objects.all()
     return JsonResponse({'spaces': list(spaces.values())})
 
@@ -371,7 +371,7 @@ def fetch_og_tags(request):
                          'description': og_description['content']})
 
 
-def all_tags():
+def all_tags(request):
     tags = Tag.objects.all()
     return JsonResponse({'tags': list(tags.values())})
 
@@ -379,7 +379,7 @@ def all_tags():
 def tag_wiki_data_search(request):
     tag_name = request.GET.get('search', 'python')
     url = "https://www.wikidata.org"
-    url += f"{url}/w/api.php?action=wbsearchentities&format=json&search={tag_name}&language=tr&type=item"
+    url = f"{url}/w/api.php?action=wbsearchentities&format=json&search={tag_name}&language=tr&type=item"
     response = requests.get(url)
 
     if len(response.json()['search']) > 1:

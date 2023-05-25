@@ -264,6 +264,7 @@
             var caption = button.getAttribute('data-description')
             var tags = button.getAttribute('data-tags')
             var semantic_tags = button.getAttribute('data-semantic-tags')
+            var spaces = button.getAttribute('data-spaces')
             // replace ' with " to make it valid json
             tags = tags.replace(/'/g, '"')
             // parse json
@@ -308,6 +309,13 @@
             // set select2 value
             var tagsInput = editModal.querySelector('.modal-body input[name="selectedTags"]')
 
+            spaces = spaces.replace(/'/g, '"')
+            spaces = JSON.parse(spaces)
+            spaces.forEach(function (space) {
+                console.log(space);
+                let checkbox = document.getElementById('space_' + space.id);
+                checkbox.checked = true;
+            })
             tagsInput.value = tags
             modalTitle.textContent = 'Edit Post'
             modalBodyInput.value = link
