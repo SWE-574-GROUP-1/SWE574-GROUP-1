@@ -255,6 +255,7 @@ def create_post(request):
     # redirect back
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 def about(request):
     if request.user.is_authenticated:
         context = {'is_auth': True}
@@ -263,6 +264,7 @@ def about(request):
         context = {'is_auth': False}
         print("Not Auth")
     return render(request, "about.html", context=context)
+
 
 @login_required(login_url="core:signin")
 def feed(request: object):

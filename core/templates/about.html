@@ -1,204 +1,189 @@
 {% extends 'base.html' %}
-{% include 'navbar.html' %}
 {% load static %}
+
+
 {% block head %}
 {% endblock %}
-{% block _navbar %}
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/a3c3edf16e.js" crossorigin="anonymous"></script>
-{% if user.authenticated %}
-<header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;"
-        aria-label="Fifth navbar example">
-    <div class="container-fluid">
-        <a class="navbar-brand mb-0 h1" href="#">
-            <img src="{% static 'assets/images/logo/svg/logo-no-background.svg' %}" width="100"
-                 class="d-inline-block align-top" alt="">
-        </a>
-        <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
-            <br>
-            <form type="search" method="POST" id="search-form" action="{% url 'core:search' %}">
-                {% csrf_token %}
-                <input class="form-control me-0 input" type="search" placeholder="Search" aria-label="Search"
-                       name="keyword">
-            </form>
-            <button type="submit" form="search-form" class="btn btn-primary button" id="search-button">
-                <i class="fas fa-search"></i>
+{% block _navbar %}
+    {% if user.is_authenticated %}
+        <!-- Navbar for authenticated users -->
+        <!-- Replace this section with your desired navbar for authenticated users -->
+        <header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;"
+                aria-label="Fifth navbar example">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="#">
+                <img src="{% static 'assets/images/logo/svg/logo-no-background.svg' %}" width="100"
+                     class="d-inline-block align-top" alt="">
+            </a>
+            <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <ul class="navbar-nav position-relative ms-0 me-auto">
-                <li class="nav-item">
-                    <a href="/feed" class="nav-link px-3 text-white">Feed</a>
+            <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
+                <br>
+                <form type="search" method="POST" id="search-form" action="{% url 'core:search' %}">
+                    {% csrf_token %}
+                    <input class="form-control me-0 input" type="search" placeholder="Search" aria-label="Search"
+                           name="keyword">
+                </form>
+                <button type="submit" form="search-form" class="btn btn-primary button" id="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <ul class="navbar-nav position-relative ms-0 me-auto">
+                    <li class="nav-item">
+                        <a href="/feed" class="nav-link px-3 text-white">Feed</a>
+                    </li>
+                    <!-- # TODO: Implement Discover -->
+                    <li class="nav-item">
+                        <a href="{% url 'core:tags_index' %}" class="nav-link px-3 text-white">Tags</a>
+                    </li>
+                    <!-- # TODO: Implement Spaces -->
+                    <li class="nav-item">
+                        <a href="{% url 'core:spaces_index' %}" class="nav-link px-3 text-white">Spaces</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <!-- <img width="35" height="35" src="{{request_owner_user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
+                    </a>
+                    <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
+                        <a class="dropdown-item text-white"
+                           href="{% url 'core:profile' profile_owner_username=request.user.username %}">{{ request.user.username }}</a>
+                        <a class="dropdown-item text-white" href="/settings">Settings</a>
+                        <a class="dropdown-item text-white" href="{% url 'core:about' %}">About</a>
+                        <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
+                    </div>
                 </li>
-                <!-- # TODO: Implement Discover -->
+            </ul>
+            <ul class="navbar-nav position-relative ms-auto me-0">
                 <li class="nav-item">
-                    <a href="{% url 'core:tags' tag_name=' ' %}" class="nav-link px-3 text-white">Tags</a>
-                </li>
-                <!-- # TODO: Implement Spaces -->
-                <li class="nav-item">
-                    <a href="{% url 'core:spaces' space_name=' ' %}" class="nav-link px-3 text-white">Spaces</a>
+                    <a href="{% url 'core:profile' profile_owner_username=request.user.username %}"
+                       class="nav-link px-3 text-white">
+                        <img width="40" height="40" src="{{ request.user.profile.profile_image.url }}"
+                             class="header-avatar"
+                             alt="Dropdown">
+                    </a>
                 </li>
             </ul>
         </div>
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    <!-- <img width="35" height="35" src="{{request_owner_user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
-                </a>
-                <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
-                    <a class="dropdown-item text-white"
-                       href="{% url 'core:profile' profile_owner_username=request_owner_user_profile.user.username %}">Profile</a>
-                    <a class="dropdown-item text-white" href="/settings">Settings</a>
-                    <a class="dropdown-item text-white" href="about/">About</a>
-                    <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
-                </div>
-            </li>
-        </ul>
-        <ul class="navbar-nav position-relative ms-auto me-0">
-            <li class="nav-item">
-                {# <a href="profile?profile_owner_username={{ request_owner_user_profile.username }}" class="nav-link px-3 text-white">#}
-                <a href="{% url 'core:profile' profile_owner_username=request_owner_user_profile.user.username %}"
-                   class="nav-link px-3 text-white">
-                    <img width="40" height="40" src="{{ request_owner_user_profile.profile_image.url }}"
-                         class="header-avatar"
-                         alt="Dropdown">
-                </a>
-            </li>
-        </ul>
-    </div>
-{% else %}
-<div class="navbar-collapse collapse " id="navbarNav">
-    <br>
-    <form type="search">
-      <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
-    </form>
-    <ul class="navbar-nav position-relative ms-0 me-auto">
-      <li class="nav-item">
-        <a href="" class="nav-link px-3 text-white">Home</a>
-      </li>
-      <li class="nav-item">
-        <a href="about/" class="nav-link px-3 text-gray disabled">About</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav position-relative me-0">
-      <li class="nav-item">
-        <a class="nav-link px-3 text-white" aria-current="page" href="/signup">Sign Up</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link px-3 text-white" aria-current="page" href="/signin">Sign In</a>
-      </li>
-    </ul>
-  </div>
-{% endif%}
-
-
-
-{% endblock _navbar %}
+    {% else %}
+        <!-- Navbar for non-authenticated users -->
+        <!-- Replace this section with your desired navbar for non-authenticated users -->
+        <div class="navbar-collapse collapse " id="navbarNav">
+            <br>
+            <form type="search">
+                <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <ul class="navbar-nav position-relative ms-0 me-auto">
+                <li class="nav-item">
+                    <a href="" class="nav-link px-3 text-white">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'core:about' %}" class="nav-link px-3 text-gray disabled">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav position-relative me-0">
+                <li class="nav-item">
+                    <a class="nav-link px-3 text-white" aria-current="page" href="/signup">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 text-white" aria-current="page" href="/signin">Sign In</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About Us</title>
-    <style>
-      body {
-        background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>About Us</title>
+        <style>
+            body {
+                background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
 
+            .container {
+                margin-left: 0;
+            }
 
-      }
-      .container {
-        margin-left: 0;
-       }
-      .row {
-       margin-left:-100;
-       }
+            .row {
+                margin-left: -100;
+            }
 
-      .collapsible {
-        cursor: pointer;
-      }
+            .collapsible {
+                cursor: pointer;
+            }
 
-      .content {
-        display: none;
-        padding: 0 18px;
-        overflow: hidden;
-        transition: max-height 0.2s ease-out;
-      }
+            .content {
+                display: none;
+                padding: 0 18px;
+                overflow: hidden;
+                transition: max-height 0.2s ease-out;
+            }
+        </style>
+    </head>
 
+    <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="collapsible" onclick="toggleCollapsible('intro')">Introduction <i
+                        class="fa fa-chevron-down"></i>
+                </h1>
+                <div class="content" id="intro">
+                    <p>LinkMe is a social media platform where users can search, post, and save posts in their
+                        accounts.</p>
+                    <p>With LinkMe, you can explore the world and stay connected with others.</p>
+                </div>
 
-    </style>
-  </head>
- <body>
+                <h1 class="collapsible" onclick="toggleCollapsible('faq')">FAQ <i class="fa fa-chevron-down"></i></h1>
+                <div class="content" id="faq">
+                    <p style="font-weight: bold">1) How to post new updates?</p>
+                    <p>Sign in to your account and when you signed in, on the right corner you can see the "Post Link"
+                        button.</p>
+                    <p style="font-weight: bold">2) How can I like posts?</p>
+                    <p>When you see a post, you can easily click the like button.</p>
+                    <p style="font-weight: bold">3) Can I add tags?</p>
+                    <p>Yes, you can easily add tags.</p>
+                    <p style="font-weight: bold">4) Can I delete my posts?</p>
+                    <p>Yes, you can easily delete your posts.</p>
+                    <p style="font-weight: bold">5) Can I update my profile?</p>
+                    <p>Yes, you can update your profile from the sidebar.</p>
+                    <p style="font-weight: bold">6) Can I delete my profile?</p>
+                    <p>Yes, you can delete your profile.</p>
+                    <p style="font-weight: bold">7) Can I chat with other people?</p>
+                    <p>Unfortunately, we are still working on this feature!</p>
+                </div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1 class="collapsible" onclick="toggleCollapsible('intro')">Introduction <i class="fa fa-chevron-down"></i></h1>
-      <div class="content" id="intro">
-        <p>LinkMe is a social media platform users can Search, Post and Save posts in their accounts. </p>
-        <p>With LinkMe, see all the world around  </p>
-      </div>
-
-      <h1 class="collapsible" onclick="toggleCollapsible('faq')">FAQ <i class="fa fa-chevron-down"></i></h1>
-      <div class="content" id="faq">
-
-        <p style="font-weight: bold">1) How to post new updates? </p>
-        <p> Sign in to your account and when you signed in, on the right corner you can see post bLink button. </p>
-        <p style="font-weight: bold">2) How can I like posts? </p>
-        <p> When you see post, you can easily click like button. </p>
-        <p style="font-weight: bold">3) Can I add tags? </p>
-        <p> Yes you can easily add tags </p>
-        <p style="font-weight: bold">4) Can I delete my posts? </p>
-        <p> Yes you can easily delete your posts. </p>
-        <p style="font-weight: bold" >5) Can I update my profiles </p>
-        <p> Yes you can update your profile from side bar. </p>
-        <p style="font-weight: bold" >6) Can I delete my profile </p>
-        <p> Yes you can delete your profile </p>
-        <p style="font-weight: bold" >7) Can I chat with other people? </p>
-        <p> Unfortunately but we are working on this feature! </p>
-
-      </div>
-
-      <h1 class="collapsible" onclick="toggleCollapsible('arch')">Architecture <i class="fa fa-chevron-down"></i></h1>
-      <div class="content" id="arch">
-        <p>You can see our Use Case Diagram below:  </p>
-        <img src="{% static 'useCaseDiagram.png' %}" alt="Architecture Image" style="max-width: 100%;">
-      </div>
+                <h1 class="collapsible" onclick="toggleCollapsible('arch')">Architecture <i
+                        class="fa fa-chevron-down"></i>
+                </h1>
+                <div class="content" id="arch">
+                    <p>You can see our Use Case Diagram below:</p>
+                    <img src="{% static 'useCaseDiagram.png' %}" alt="Architecture Image"
+                         style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-
- <script type="text/javascript">
-  function toggleCollapsible(id) {
-    var element = document.getElementById(id);
-    if (element.style.display === "none") {
-      element.style.display = "block";
-    } else {
-      element.style.display = "none";
-    }
-  }
-
-  var collapsibleItems = document.getElementsByClassName("collapsible-header");
-
-  for (var i = 0; i < collapsibleItems.length; i++) {
-    collapsibleItems[i].addEventListener("click", function() {
-      var id = this.getAttribute("data-target");
-      toggleCollapsible(id);
-    });
-  }
-</script>
-    <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
-  </body>
-</html>
+    <script>
+        function toggleCollapsible(id) {
+            var content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+    </script>
+    </body>
+    </html>
 {% endblock %}
