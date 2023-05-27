@@ -28,21 +28,22 @@
 </head>
 
 <body>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
-        integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
-    <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
-    {% include 'navbar.html' %}
-
-    <div class="container-sm bd-gutter mt-3 my-md-4 bd-layout" style="padding-top:32px">
-        <hr>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="content" class="content content-full-width">
-                    {% block content %}
-                    {% endblock %}
-                </div>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+<script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
+{% include 'navbar.html' %}
+{% if is_space_posts %}
+    {% include 'sidebar.html' %}
+{% endif %}
+<div class="container-sm bd-gutter mt-3 my-md-4 bd-layout" style="padding-top:32px">
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="content" class="content content-full-width">
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
     </div>
@@ -124,6 +125,17 @@
     }
 </script>
 <script type='text/javascript'>
+    function checkform_spaces() {
+        if (document.forms.space_search_form.space_name_to_be_searched.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            document.space_search_form.submit();
+            document.space_search_form.reset();
+        }
+    }
+</script>
+<script type='text/javascript'>
     function checkform_create_tags() {
         if (document.forms.tag_create_form.tag_name.value == "") {
             alert("Empty tag cannot be created!");
@@ -135,7 +147,7 @@
     }
 </script>
 {#//Program to disable or enable a button using javascript https://flexiple.com/javascript/disable-button-javascript/#}
-<script>
+<script type='text/javascript'>
     let input = document.querySelector(".input");
     let button = document.querySelector(".button");
 
@@ -150,19 +162,17 @@
             button.disabled = false; //button is enabled
         }
     }
-</script>
-<script type='text/javascript'>
+
     function checkform_create_spaces() {
-        if (document.forms.space_create_form.space_name.value == "") {
-            alert("Empty tag cannot be created!");
+        if (document.forms.space_create_form.space_name.value === "" | document.forms.space_create_form.description.value === "") {
+            alert("Both Space Name and Description must be filled!");
             return false;
         } else {
             document.space_create_form.submit();
             document.space_create_form.reset();
         }
     }
-</script>
-<script type='text/javascript'>
+
     function likePost(postId, el) {
         fetch(`/post/like/${postId}`, {
             method: 'POST',
@@ -253,6 +263,7 @@
             var caption = button.getAttribute('data-description')
             var tags = button.getAttribute('data-tags')
             var semantic_tags = button.getAttribute('data-semantic-tags')
+            var spaces = button.getAttribute('data-spaces')
             // replace ' with " to make it valid json
             tags = tags.replace(/'/g, '"')
             // parse json
@@ -297,6 +308,13 @@
             // set select2 value
             var tagsInput = editModal.querySelector('.modal-body input[name="selectedTags"]')
 
+            spaces = spaces.replace(/'/g, '"')
+            spaces = JSON.parse(spaces)
+            spaces.forEach(function (space) {
+                console.log(space);
+                let checkbox = document.getElementById('space_' + space.id);
+                checkbox.checked = true;
+            })
             tagsInput.value = tags
             modalTitle.textContent = 'Edit Post'
             modalBodyInput.value = link
@@ -305,8 +323,7 @@
             document.getElementById("post_update_form").action = "/post/update";
         })
     });
-</script>
-<script>
+
     function follow(id) {
         fetch(`/follow?profile_owner_user_id=${id}`)
             .then(response => response.json())
@@ -324,9 +341,28 @@
                 document.querySelector(`#following-${id}`).innerHTML = `${following_count} Following`;
             });
     }
+
     $(function () {
         $('[data-bs-toggle="tooltip"]').tooltip()
     })
+
+    function join(space_name) {
+        console.log("join called")
+        fetch(`/join?space_name=${space_name}`)
+            .then(response => response.json())
+            .then(data => {
+                var joined = data.joined;
+                var subscribers_count = data.subscribers_count;
+                if (joined) {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Joined";
+                } else {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Join";
+                }
+
+                document.querySelector(`#subscribers-${space_name}`).innerHTML = `${subscribers_count} Subscribers`;
+
+            });
+    }
 </script>
 {% block js %}
 

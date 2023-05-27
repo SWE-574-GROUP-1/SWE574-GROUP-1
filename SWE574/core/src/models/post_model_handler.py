@@ -50,19 +50,15 @@ def create_post(request: object) -> None:
 
         new_semantic_tag = SemanticTag.objects.create(wikidata_id=wikidata_id, label=label, description=description,
                                                       custom_label=custom_label, post=new_post)
-
         new_post.semantic_tags.add(new_semantic_tag)
 
-    space_name = request.POST.get('space')
-    if space_name:
-        space = Space.objects.get(name=space_name)
-        new_post.spaces.add(space)
-    print(request.POST)
+    spaces = request.POST.getlist('spaces[]')
+    if spaces:
+        for space in spaces:
+            space = Space.objects.get(name=space)
+            new_post.spaces.add(space)
     new_post.save()
     # Print the tags
-    for tag in new_post.tags.all():
-        print(tag.name)
-    pass
 
 
 def update_post(request: object) -> None:
@@ -118,12 +114,12 @@ def update_post(request: object) -> None:
 
         current_post.semantic_tags.add(new_semantic_tag)
 
-    space_name = request.POST.get('space')
-    if space_name:
+    space_names = request.POST.getlist('spaces[]')
+    if space_names:
         current_post.spaces.clear()
-        space = Space.objects.get(name=space_name)
-        current_post.spaces.add(space)
-    print(request.POST)
+        for space_name in space_names:
+            space = Space.objects.get(name=space_name)
+            current_post.spaces.add(space)
     current_post.save()
 
 

@@ -1,6 +1,6 @@
 # Import from external packages
 from uuid import uuid4
-
+import random
 # Import from django modules
 from django.contrib.auth.models import User
 from django.db import models
@@ -20,16 +20,13 @@ class Profile(TimeStampedModel):
     bio = models.TextField(default="Write something here", max_length=100)
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
-                                         default="background_images/bg-image-5.jpg")
-    # followers = ArrayField(models.IntegerField(), default=list, blank=True)
-    # following = ArrayField(models.IntegerField(), default=list, blank=True)
+                                         default=f"background_images/bg-image-{random.randint(1,5)}.jpg")
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
 
     def __str__(self):
         return self.user.username
 
-    # Overwrite delete method since OneToOne relationship does not delete User, Either we should use ForeignKey or
-    # See: https://stackoverflow.com/questions/12754024/onetoonefield-and-deleting
+    # Overwrite delete method since OneToOne relationship does not delete User
     def delete(self, *args, **kwargs):
         self.user.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
@@ -37,6 +34,9 @@ class Profile(TimeStampedModel):
     def sorted_posts_all(self):
         """Returns all posts of the profile in ascending order by edit date"""
         return self.user.posts.all().order_by("-modified")
+
+    def all_spaces(self):
+        return Space.objects.all()
 
 
 class Post(TimeStampedModel):
@@ -79,7 +79,10 @@ class Post(TimeStampedModel):
     def semantic_tags_as_json_string(self):
         """ name: tag_name, id: tag_id """
         return [{"id": tag.id, "wikidata_id": tag.wikidata_id, "label": tag.label,
-                "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
+                 "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
+
+    def spaces_as_json_string(self):
+        return [{"name": space.name, "id": space.id} for space in self.spaces.all()]
 
     def __setattr__(self, name, value):
         """Override __setattr_ method to freeze post_id, owner attributes"""
@@ -146,3 +149,11 @@ class SemanticTag(TimeStampedModel):
 
 class Space(TimeStampedModel):
     name = models.CharField(max_length=25, unique=True)
+    avatar = models.ImageField(upload_to="space_images", default="space_images/default_space.jpg")
+    description = models.CharField(max_length=100, blank=False, default="This is a Space!")
+    subscribers = models.ManyToManyField(User, related_name='subscribed_users', through='Subscriber')
+
+
+class Subscriber(TimeStampedModel):
+    space = models.ForeignKey(Space, on_delete=models.CASCADE, related_name='subscribed_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='spaces_subscribed')

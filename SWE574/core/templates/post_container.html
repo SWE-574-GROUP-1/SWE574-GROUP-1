@@ -53,15 +53,12 @@
                 &nbsp
             </span>
         </a>
-        <span class="username">
             {% for space in post.spaces.all %}
-                <a style="color: blue;" href="{% url 'core:spaces' space_name=space.name %}"
-                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill">
-                </i>{{ space.name }}
-            </a>
+                <a style="padding-right: 15px; color: blue; margin: auto;" href="{% url 'core:space_posts' space_name=space.name %}"
+                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
                 <a>&nbsp;</a>
             {% endfor %}
-        </span>
+
     </div>
     <div class="timeline-content">
 
@@ -119,18 +116,18 @@
             <a>&nbsp;</a>
         {% endfor %}
         {% if post.semantic_tags.count %}
-        {% for tag in post.semantic_tags.all %}
-        <!-- link with tooltip -->
-        <a href="#"
-           class="m-r-15 text-inverse-lighter pull-left"
-              data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="
+            {% for tag in post.semantic_tags.all %}
+                <!-- link with tooltip -->
+                <a href="#"
+                   class="m-r-15 text-inverse-lighter pull-left"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="
                 {{ tag.label }}"
-           ><i
-                class="bi bi-tags-fill"></i>{{ tag.custom_label }} </a>
-        <a>&nbsp;</a>
-        {% endfor %}
+                ><i
+                        class="bi bi-tags-fill"></i>{{ tag.custom_label }} </a>
+                <a>&nbsp;</a>
+            {% endfor %}
         {% endif %}
 
 
@@ -143,6 +140,7 @@
                data-link="{{ post.link }}" data-title="{{ post.title }}"
                data-tags='{{ post.tags_as_json_string }}'
                data-semantic-tags='{{ post.semantic_tags_as_json_string }}'
+               data-spaces="{{ post.spaces_as_json_string }}"
             >
                 <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
         {% endif %}

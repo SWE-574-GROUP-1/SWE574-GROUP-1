@@ -2,7 +2,7 @@
 <header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;"
         aria-label="Fifth navbar example">
     <div class="container-fluid">
-        <a class="navbar-brand mb-0 h1" href="#">
+        <a class="navbar-brand mb-0 h1" href="/feed">
             <img src="{% static 'assets/images/logo/svg/logo-no-background.svg' %}" width="100"
                  class="d-inline-block align-top" alt="">
         </a>
@@ -31,7 +31,7 @@
                 </li>
                 <!-- # TODO: Implement Spaces -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link px-3 text-white">Spaces</a>
+                    <a href="{% url 'core:spaces_index' %}" class="nav-link px-3 text-white">Spaces</a>
                 </li>
             </ul>
         </div>
@@ -45,7 +45,7 @@
                     <a class="dropdown-item text-white"
                        href="{% url 'core:profile' profile_owner_username=request.user.username %}">{{ request.user.username }}</a>
                     <a class="dropdown-item text-white" href="/settings">Settings</a>
-                    <a class="dropdown-item text-white" href="#">About</a>
+                    <a class="dropdown-item text-white" href="{% url 'core:about' %}">About</a>
                     <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
                 </div>
             </li>
