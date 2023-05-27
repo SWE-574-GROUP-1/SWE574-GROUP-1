@@ -15,6 +15,7 @@ from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def signup(request: object):
@@ -399,3 +400,22 @@ def badges(request):
     return render(
         request, "badges.html"
     )
+
+
+@csrf_exempt
+@login_required(login_url="core:signin")
+def check_link(request):
+    if request.method == 'POST' and request.is_ajax():
+        link = request.POST.get('link')
+        print(link)
+        user = request.user
+        exists = Post.objects.filter(owner=request.user, link=link).exists()
+        if (exists == False):
+            response_data = {'valid': True}
+            print("Uygun")
+        else:
+            response_data = {'valid': False}
+            print("deil")
+        return JsonResponse(response_data)
+
+    return JsonResponse({}, status=400)
