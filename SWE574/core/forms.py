@@ -24,7 +24,3 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
-
-
-class CommentForm(forms.Form):
-    content = forms.CharField(widget=forms.Textarea)
