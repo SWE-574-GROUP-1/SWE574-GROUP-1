@@ -109,15 +109,15 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-            'NAME': env("DATABASE_NAME"),
+            'NAME': 'postgres',
 
-            'USER': env('DATABASE_USER'),
+            'USER': 'postgres',
 
-            'PASSWORD': env('DATABASE_PASSWORD'),
+            'PASSWORD': 'postgres',
 
-            'HOST': env('DATABASE_HOST'),
+            'HOST': 'db',
 
-            'PORT': env('DATABASE_PORT'),
+            'PORT': '5432',
         },
         # 'default': {
         #
