@@ -42,13 +42,14 @@
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                 Select Spaces
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <ul id="spaceCheckboxList" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 {% for space in request.user.profile.all_spaces %}
                                     <li>
                                         <div class="form-check">
                                             <input class="form-check-input position-static" type="checkbox"
                                                    style="margin-left: -1rem; float: none;"
                                                    id="space{{ forloop.counter }}" name="spaces[]"
+                                                    onclick="onSpaceSelectCreate('{{ space.name }}')"
                                                    value="{{ space.name }}">
                                             <label class="form-check-label ml-2"
                                                    for="space{{ forloop.counter }}">{{ space.name }}</label>
@@ -74,6 +75,18 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 <script>
+    function onSpaceSelectCreate(spaceName) {
+        let names = [];
+        $('#postModal #spaceCheckboxList input:checked').each(function() {
+            names.push(this.value);
+        });
+        console.log('create',names);
+        if (names.length > 0) {
+            document.querySelector('#postModal').querySelector('#dropdownMenuButton').innerHTML = names.join(",");
+        } else {
+            document.querySelector('#postModal').querySelector('#dropdownMenuButton').innerHTML = "x Space";
+        }
+    }
     // post_create_form validation
     document.querySelector('#post_create_form').addEventListener('submit', function (e) {
         var link = document.querySelector('#postModal #link').value;
@@ -149,7 +162,6 @@
         newTag.setAttribute("id", "semanticTag_" + tagId);
         newTag.setAttribute("style", "margin: 5px;");
         newTag.innerHTML = tagName + "<i class='bi bi-x' onclick='removeSemanticTag(" + tagId + ")'></i>";
-
         document.querySelector("#semanticTagLabels").appendChild(newTag);
         // create text input under
         var newInput = document.createElement("input");
@@ -166,11 +178,15 @@
     });
 
     // validate the given text if it is a valid URL
-    function validateURL(textval) {
-        {#var urlregex = new RegExp(#}
-        {#    "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)");#}
-        {#return urlregex.test(textval);#}
-        return true;
+    function validateURL(url) {
+        var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '(www\\.)?' + // sub-domain
+            '([a-z\\d]([a-z\\d-]*[a-z\\d])?\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3})' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        return pattern.test(url);
     }
 
     // on paste on url input, validate the url and set the url to the input
