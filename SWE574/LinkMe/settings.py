@@ -117,7 +117,7 @@ else:
 
             'HOST': env('DATABASE_HOST'),
 
-            'PORT': '5432',
+            'PORT': env('DATABASE_PORT'),
         },
         # 'default': {
         #
