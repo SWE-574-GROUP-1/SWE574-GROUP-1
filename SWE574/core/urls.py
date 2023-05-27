@@ -39,4 +39,5 @@ urlpatterns = [
     path("fetch-og-tags", views.fetch_og_tags, name="fetch_og_tags"),
     path("badges", views.badges, name="badges"),
     path('add-comment/<uuid:post_id>/', views.add_comment, name='add_comment'),
+    path('delete-comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]

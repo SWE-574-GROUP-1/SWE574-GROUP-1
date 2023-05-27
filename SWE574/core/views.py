@@ -336,6 +336,18 @@ def add_comment(request, post_id):
 
 
 @login_required(login_url="core:signin")
+def delete_comment(request, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+
+    # Sadece comment'in sahibi comment'i silebilir
+    if comment.user == request.user:
+        comment.delete()
+        return redirect('core:post_detail', post_id=comment.post.post_id)
+    else:
+        return HttpResponseForbidden("You don't have permission to delete this comment.")
+
+
+@login_required(login_url="core:signin")
 def like_post(request, post_id):
     post = Post.objects.get(post_id=post_id)
     user = User.objects.get(username=request.user.username)

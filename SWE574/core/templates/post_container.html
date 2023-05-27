@@ -125,17 +125,46 @@
         {% endfor %}
         {% endif %}
 
-        <div id="commentList-{{ post.post_id }}">
+
+        <!-- <div id="commentList-{{ post.post_id }}">
             {% if post.get_comments %}
             {% for comment in post.get_comments %}
             <div class="comment">
                 <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+                {% if comment.user == request.user %}
+                <form class="delete-comment-form" method="POST"
+                    action="{% url 'core:delete_comment' comment_id=comment.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link">Delete</button>
+                </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No comments yet</p>
+            {% endif %}
+        </div> -->
+        <div id="commentList-{{ post.post_id }}">
+            {% if post.get_comments %}
+            {% for comment in post.get_comments %}
+            <div class="comment">
+                <strong>{{ comment.user.username }}</strong> {{ comment.content }}
+                {% if comment.user == request.user %}
+                <form class="delete-comment-form" method="POST"
+                    action="{% url 'core:delete_comment' comment_id=comment.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link delete-comment-button"
+                        style="float: right;">Delete</button>
+                </form>
+                {% endif %}
+                <div style="clear: both;"></div>
             </div>
             {% endfor %}
             {% else %}
             <p>No comments yet</p>
             {% endif %}
         </div>
+
 
         <form id="commentForm-{{ post.post_id }}" class="comment-form" data-post-id="{{ post.post_id }}" method="POST"
             action="{% url 'core:add_comment' post_id=post.post_id %}">
@@ -146,6 +175,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Post Comment</button>
         </form>
+
 
 
         {% if post.owner.id == request.user.id %}
