@@ -47,42 +47,43 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
-        <button type="button" class="btn btn-light post-button" value="Post" role="img" data-bs-toggle="modal"
+</div>
+<div class="col-12">
+    <button type="button" class="btn btn-light post-button" value="Post" role="img" data-bs-toggle="modal"
             data-bs-target="#postModal">
-            <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
-            <figcaption><strong>Post bLink</strong></figcaption>
-        </button>
-        {% include 'post_create_modal.html' %}
-        <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create New Tag</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="POST" id="tag_create_form">
-                            {% csrf_token %}
-                            <input name="form_name" type="hidden" id="form-name" value="tag-create-form">
-                            <div class="form-group text-secondary">
-                                <label for="tag_name" class="col-form-label"><strong>Link</strong></label>
-                                <input name="tag_name" type="text" class="form-control" id="tag_name"
-                                    placeholder="Enter the Tag">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" form="tag_create_form" class="btn btn-primary"
+        <img src="{% static 'assets/images/logo/svg/pencil-square.svg' %}" alt="Bootstrap" width="32" height="32">
+        <figcaption><strong>Post bLink</strong></figcaption>
+    </button>
+    {% include 'post_create_modal.html' %}
+    <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create New Tag</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST" id="tag_create_form">
+                        {% csrf_token %}
+                        <input name="form_name" type="hidden" id="form-name" value="tag-create-form">
+                        <div class="form-group text-secondary">
+                            <label for="tag_name" class="col-form-label"><strong>Link</strong></label>
+                            <input name="tag_name" type="text" class="form-control" id="tag_name"
+                                   placeholder="Enter the Tag">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="close" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="tag_create_form" class="btn btn-primary"
                             onclick="return checkform_create_tags();">
-                            Create Post
-                        </button>
-                    </div>
+                        Create Post
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 </body>
