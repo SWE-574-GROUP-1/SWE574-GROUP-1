@@ -59,6 +59,8 @@ class Post(TimeStampedModel):
     # Many-to-many field for tags
     tags = models.ManyToManyField('Tag', related_name='posts', default=None)
     spaces = models.ManyToManyField('Space', related_name='posts', default=None)
+    # Many-to-many field for comments
+    comments = models.ManyToManyField(User, related_name='commented_posts', through='Comment')
 
     def __str__(self):
         return self.owner.username
@@ -107,6 +109,18 @@ class Post(TimeStampedModel):
                 return
 
         super(self.__class__, self).__setattr__(name, value)
+
+    def get_comments(self):
+        return Comment.objects.filter(post=self)
+
+
+class Comment(TimeStampedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='commented_by_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_commented')
+    content = models.TextField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content}"
 
 
 class Like(TimeStampedModel):

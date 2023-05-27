@@ -20,12 +20,12 @@
 
         <span class="pull-right text-muted" id="likesCount-{{ post.post_id }}"> {{ post.total_likes }}</span>
         <a style="cursor: pointer;" onclick="likePost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
-            
+
             <span class="pull-right text-muted ">
                 {% if request.user in post.likes.all %}
-                    <i class="bi bi-heart-fill" id="isLiked-{{ post.post_id }}"></i>
+                <i class="bi bi-heart-fill" id="isLiked-{{ post.post_id }}"></i>
                 {% else %}
-                    <i class="bi bi-heart" id="isLiked-{{ post.post_id }}"></i>
+                <i class="bi bi-heart" id="isLiked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
@@ -35,67 +35,68 @@
 
             <span class="pull-right text-muted ">
                 {% if request.user in post.dislikes.all %}
-                    <i class="bi bi-hand-thumbs-down-fill" id="isDisliked-{{ post.post_id }}"></i>
+                <i class="bi bi-hand-thumbs-down-fill" id="isDisliked-{{ post.post_id }}"></i>
                 {% else %}
-                    <i class="bi bi-hand-thumbs-down" id="isDisliked-{{ post.post_id }}"></i>
+                <i class="bi bi-hand-thumbs-down" id="isDisliked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
         </a>
         <a style="cursor: pointer;" onclick="bookmarkPost( '{{ post.post_id }}' , this)" class="pull-right text-muted">
-            
+
             <span class="pull-right text-muted ">
                 {% if request.user in post.bookmarks.all %}
-                    <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>
+                <i class="bi bi-bookmark-fill" id="isBookmarked-{{ post.post_id }}"></i>
                 {% else %}
-                    <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>
+                <i class="bi bi-bookmark" id="isBookmarked-{{ post.post_id }}"></i>
                 {% endif %}
                 &nbsp
             </span>
         </a>
-            {% for space in post.spaces.all %}
-                <a style="padding-right: 15px; color: blue; margin: auto;" href="{% url 'core:space_posts' space_name=space.name %}"
-                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
-                <a>&nbsp;</a>
-            {% endfor %}
+        {% for space in post.spaces.all %}
+        <a style="padding-right: 15px; color: blue; margin: auto;"
+            href="{% url 'core:space_posts' space_name=space.name %}" class="m-r-15 text-inverse-lighter pull-right"><i
+                class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
+        <a>&nbsp;</a>
+        {% endfor %}
 
     </div>
     <div class="timeline-content">
 
         <div class="container" style="padding: 0">
             {% if post.title %}
-                <div class="card mb-3" style="padding: 0">
-                    <div class="row no-gutters">
-                        <div class="col-sm-6" style="display: flex">
-                            <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
-                                <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
-                            </div>
+            <div class="card mb-3" style="padding: 0">
+                <div class="row no-gutters">
+                    <div class="col-sm-6" style="display: flex">
+                        <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
+                            <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
                         </div>
-                        <div class="col-sm-6">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ post.title }}</h5>
-                                <p class="card-text">{{ post.description }}</p>
-                                <div class="d-flex d-grid gap-3">
-                                    <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go
-                                        To
-                                        Website</a>
-                                    <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
-                                       class="btn btn-success">Go To Detail</a>
-                                </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.description }}</p>
+                            <div class="d-flex d-grid gap-3">
+                                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go
+                                    To
+                                    Website</a>
+                                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
+                                    class="btn btn-success">Go To Detail</a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             {% else %}
-                <p>
-                    {{ post.link }}
-                </p>
-                <div class="d-flex d-grid gap-3">
-                    <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To Website</a>
-                    <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}" class="btn btn-success">Go
-                        To
-                        Detail</a>
-                </div>
+            <p>
+                {{ post.link }}
+            </p>
+            <div class="d-flex d-grid gap-3">
+                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go To Website</a>
+                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}" class="btn btn-success">Go
+                    To
+                    Detail</a>
+            </div>
             {% endif %}
 
         </div>
@@ -110,39 +111,52 @@
     </div>
     <div class="timeline-footer">
         {% for tag in post.tags.all %}
-            <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
-               class="m-r-15 text-inverse-lighter pull-left"><i
-                    class="bi bi-tags-fill"></i>{{ tag.name }} </a>
-            <a>&nbsp;</a>
+        <a href="{% url 'core:tag_posts' tag_name=tag.name %}" class="m-r-15 text-inverse-lighter pull-left"><i
+                class="bi bi-tags-fill"></i>{{ tag.name }} </a>
+        <a>&nbsp;</a>
         {% endfor %}
         {% if post.semantic_tags.count %}
-            {% for tag in post.semantic_tags.all %}
-                <!-- link with tooltip -->
-                <a href="#"
-                   class="m-r-15 text-inverse-lighter pull-left"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="
-                {{ tag.label }}"
-                ><i
-                        class="bi bi-tags-fill"></i>{{ tag.custom_label }} </a>
-                <a>&nbsp;</a>
-            {% endfor %}
+        {% for tag in post.semantic_tags.all %}
+        <!-- link with tooltip -->
+        <a href="#" class="m-r-15 text-inverse-lighter pull-left" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="
+                {{ tag.label }}"><i class="bi bi-tags-fill"></i>{{ tag.custom_label }} </a>
+        <a>&nbsp;</a>
+        {% endfor %}
         {% endif %}
+
+        <div id="commentList-{{ post.post_id }}">
+            {% if post.get_comments %}
+            {% for comment in post.get_comments %}
+            <div class="comment">
+                <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No comments yet</p>
+            {% endif %}
+        </div>
+
+        <form id="commentForm-{{ post.post_id }}" class="comment-form" data-post-id="{{ post.post_id }}" method="POST"
+            action="{% url 'core:add_comment' post_id=post.post_id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea class="form-control" id="comment-{{ post.post_id }}" name="content" rows="3"
+                    placeholder="Enter your comment..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
 
 
         {% if post.owner.id == request.user.id %}
-            <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
-                    class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
-            <a>&nbsp;</a>
-            <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
-               data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
-               data-link="{{ post.link }}" data-title="{{ post.title }}"
-               data-tags='{{ post.tags_as_json_string }}'
-               data-semantic-tags='{{ post.semantic_tags_as_json_string }}'
-               data-spaces="{{ post.spaces_as_json_string }}"
-            >
-                <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
+        <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
+                class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
+        <a>&nbsp;</a>
+        <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
+            data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
+            data-link="{{ post.link }}" data-title="{{ post.title }}" data-tags='{{ post.tags_as_json_string }}'
+            data-semantic-tags='{{ post.semantic_tags_as_json_string }}' data-spaces="{{ post.spaces_as_json_string }}">
+            <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
         {% endif %}
     </div>
 
