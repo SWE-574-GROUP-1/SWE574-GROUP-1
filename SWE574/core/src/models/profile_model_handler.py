@@ -1,5 +1,5 @@
 """Contains utility methods for Profile model"""
-from ...models import Profile, BookmarkLabel
+from ...models import Profile
 from django.contrib.auth.models import User
 
 
