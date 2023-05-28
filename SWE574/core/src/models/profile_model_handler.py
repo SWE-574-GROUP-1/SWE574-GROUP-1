@@ -1,5 +1,5 @@
 """Contains utility methods for Profile model"""
-from ...models import Profile
+from ...models import Profile, BookmarkLabel
 from django.contrib.auth.models import User
 
 
@@ -13,5 +13,5 @@ def create_profile(request: object) -> None:
     # Create profile object for the new user
     user_model = User.objects.get(username=username)
     new_profile = Profile.objects.create(user=user_model)
+    new_profile.available_labels.append('default')
     new_profile.save()
-    pass
