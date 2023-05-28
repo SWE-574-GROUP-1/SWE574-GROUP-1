@@ -15,16 +15,14 @@
         function getAnnotation() {
             return {
                 annotationCreated: (annotation) => {
-                    console.log(annotation)
-                    // put it in the window so we can access it later
-                    let annotations = JSON.parse(window.localStorage.getItem('annotations'));
-                    annotations[annotation.id] = annotation;
-                    window.localStorage.setItem('annotations', JSON.stringify(annotations));
                 },
                 start: () => {
                     window.localStorage.setItem('annotations', JSON.stringify({}));
                 },
                 annotationUpdated: (annotation) => window.annotations[annotation.id] = annotation,
+                beforeAnnotationCreated: function (ann) {
+                    ann.uri = window.location.href;
+                }
             }
         }
 
@@ -33,29 +31,23 @@
         app.include(annotatorImageSelect, {
             element: $('#post_image'),
         });
-        /* app.include(annotator.storage.http, {
-            prefix: 'http://127.0.0.1:8008',
+        app.include(annotator.storage.http, {
+            prefix: '/annotations/',
             urls: {
-                create: '/annotations',
-                update: '/annotations/:id',
-                destroy: '/annotations/:id',
-                search: '/annotations',
-            },
-        }); */
+                search: 'search',
+                create: 'create',
+            }
+        });
 
         app.include(getAnnotation);
-        app.start();
+        app.start()
+            .then(function () {
+                app.annotations.load({
+                    uri: window.location.href
+                });
+            });
     }
 </script>
-
-
-<!-- <script src="{% static 'core/js/annotator-full.min.js' %}"></script>
-<script>
-    jQuery(function ($) {
-        $('#post_detail_content').annotator();
-    });
-</script> -->
-
 {% endblock %}
 
 {% block content %}
