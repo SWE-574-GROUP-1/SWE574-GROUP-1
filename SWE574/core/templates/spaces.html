@@ -78,7 +78,7 @@
                         <h5 class="modal-title" id="createTagModalLabel">Create New Space</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="{% url 'core:create_space' %}" method="POST" id="space_create_form">
+                        <form action="{% url 'core:create_space' %}" method="POST" id="space_create_form" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input name="form_name" type="hidden" id="form-name" value="space-create-form">
                             <div class="form-group text-secondary">
@@ -218,10 +218,11 @@
 
         .sidebar-menu {
             padding-left: 0.5rem !important;
+            padding-top: 15px;
         }
 
         .sidebar-header {
-            padding: 25px;
+            padding-left: 25px;
             text-align: center;
         }
 

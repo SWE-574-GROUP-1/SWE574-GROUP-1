@@ -1,11 +1,8 @@
-# Import from external packages
 from uuid import uuid4
 import random
-# Import from django modules
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
-# Import user model from django
 from django.core.validators import URLValidator
 from django.contrib.postgres.fields import ArrayField
 
@@ -21,7 +18,7 @@ class Profile(TimeStampedModel):
     bio = models.TextField(default="Write something here", max_length=100)
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
-                                         default=f"background_images/bg-image-{random.randint(1, 5)}.jpg")
+                                         default=f"background_images/bg-image-{random.randint(1,5)}.jpg")
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
     available_labels = ArrayField(models.CharField(max_length=255), default=list, blank=True)
 
@@ -88,6 +85,9 @@ class Post(TimeStampedModel):
         """ name: tag_name, id: tag_id """
         return [{"id": tag.id, "wikidata_id": tag.wikidata_id, "label": tag.label,
                  "description": tag.description, "custom_label": tag.custom_label} for tag in self.semantic_tags.all()]
+
+    def spaces_as_json_string(self):
+        return [{"name": space.name, "id": space.id} for space in self.spaces.all()]
 
     def __setattr__(self, name, value):
         """Override __setattr_ method to freeze post_id, owner attributes"""

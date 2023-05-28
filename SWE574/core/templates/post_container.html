@@ -58,16 +58,12 @@
             </span>
             </a>
             {% for space in post.spaces.all %}
-                <a style="padding-right: 15px; color: blue; margin: auto;"
-                   href="{% url 'core:space_posts' space_name=space.name %}"
-                   class="m-r-15 text-inverse-lighter pull-right"><i
-                        class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}
-                </a>
+                <a style="padding-right: 15px; color: blue; margin: auto;" href="{% url 'core:space_posts' space_name=space.name %}"
+                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
                 <a>&nbsp;</a>
             {% endfor %}
         </div>
         <div class="timeline-content">
-
             <div class="container" style="padding: 0">
                 {% if post.title %}
                     <div class="card mb-3" style="padding: 0">
@@ -105,7 +101,6 @@
                             Detail</a>
                     </div>
                 {% endif %}
-
             </div>
         </div>
         <hr>
@@ -139,20 +134,19 @@
             {% endif %}
 
 
-            {% if post.owner.id == request.user.id %}
-                <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
-                        class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
-                <a>&nbsp;</a>
-                <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
-                   data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}"
-                   data-description="{{ post.caption }}"
-                   data-link="{{ post.link }}" data-title="{{ post.title }}"
-                   data-tags='{{ post.tags_as_json_string }}'
-                   data-semantic-tags='{{ post.semantic_tags_as_json_string }}'
-                >
-                    <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
-            {% endif %}
-        </div>
-        <!-- end timeline-body -->
+        {% if post.owner.id == request.user.id %}
+            <a href="#" onclick="deletePost('{{ post.post_id }}')" class="m-r-15 text-inverse-lighter pull-right"><i
+                    class="fa-solid fa-trash fa-fw fa-lg m-r-3"></i>Delete</a>
+            <a>&nbsp;</a>
+            <a href="" class="m-r-15 text-inverse-lighter pull-right" data-bs-toggle="modal"
+               data-bs-target="#postUpdateModal" data-post-id="{{ post.post_id }}" data-description="{{ post.caption }}"
+               data-link="{{ post.link }}" data-title="{{ post.title }}"
+               data-tags='{{ post.tags_as_json_string }}'
+               data-semantic-tags='{{ post.semantic_tags_as_json_string }}'
+               data-spaces="{{ post.spaces_as_json_string }}"
+            >
+                <i class="button fa-regular fa-file-pen fa-fw fa-lg m-r-3"></i>Edit</a>
+        {% endif %}
     </div>
+    <!-- end timeline-body -->
 </div>

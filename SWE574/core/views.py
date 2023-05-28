@@ -55,6 +55,16 @@ def profile(request, profile_owner_username):
     return profile_page_handler_main(request=request, profile_owner_username=profile_owner_username)
 
 
+def about(request):
+    if request.user.is_authenticated:
+        context = {'is_auth': True}
+        print("Yes auth")
+    else:
+        context = {'is_auth': False}
+        print("Not Auth")
+    return render(request, "about.html", context=context)
+
+
 @login_required(login_url="core:signin")
 def search(request: object):
     # Get the request owner user object and profile
@@ -188,7 +198,7 @@ def spaces_index(request):
 @login_required(login_url="core:signin")
 def space_posts(request, space_name):
     space = Space.objects.get(name=space_name)
-    posts = Post.objects.filter(spaces=space).prefetch_related('spaces')
+    posts = Post.objects.filter(spaces=space).prefetch_related('spaces').order_by('-modified')
     space_cloud = get_cloud(type_='space')
     return render(request, 'spaces.html',
                   {'posts': posts, 'space_name': space_name, 'space_cloud': space_cloud, "is_space_posts": True,
@@ -201,7 +211,7 @@ def create_space(request):
         Space.objects.get(name=request.POST.get('space_name'))
         path = request.META.get('HTTP_REFERER')
         return HttpResponseRedirect(path)
-    except:
+    except Space.DoesNotExist:
         print("Space does not exist")
         name = request.POST.get('space_name')
         print(f"{request.FILES.get('avatar')=}")
@@ -354,10 +364,11 @@ def bookmark_post(request):
 
 @login_required(login_url="core:signin")
 def fetch_og_tags(request):
-    # This methods fetch the given url's og tags and return json response as img, title, description
     """ get url from request body, post request """
     data = json.loads(request.body.decode("utf-8"))
     url = data["url"]
+    is_valid = is_duplicate(request, url)
+    # print(url)
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     og_image = soup.find('meta', property='og:image')
@@ -365,7 +376,7 @@ def fetch_og_tags(request):
     og_description = soup.find('meta', property='og:description')
 
     return JsonResponse({'img': og_image['content'], 'title': og_title['content'],
-                         'description': og_description['content']})
+                         'description': og_description['content'], 'duplicate': is_valid})
 
 
 def all_tags(request):
@@ -376,7 +387,7 @@ def all_tags(request):
 def tag_wiki_data_search(request):
     tag_name = request.GET.get('search', 'python')
     url = "https://www.wikidata.org"
-    url += f"{url}/w/api.php?action=wbsearchentities&format=json&search={tag_name}&language=tr&type=item"
+    url = f"{url}/w/api.php?action=wbsearchentities&format=json&search={tag_name}&language=tr&type=item"
     response = requests.get(url)
 
     if len(response.json()['search']) > 1:
@@ -389,8 +400,16 @@ def tag_wiki_data_search(request):
     return JsonResponse(response, safe=False)
 
 
+# For badge page and model added
+
 @login_required(login_url="core:signin")
 def badges(request):
     return render(
         request, "badges.html"
     )
+
+
+def is_duplicate(request, link):
+    user = request.user
+    exists = Post.objects.filter(owner=user, link=link).exists()
+    return exists

@@ -301,6 +301,7 @@
             var caption = button.getAttribute('data-description')
             var tags = button.getAttribute('data-tags')
             var semantic_tags = button.getAttribute('data-semantic-tags')
+            var spaces = button.getAttribute('data-spaces')
             // replace ' with " to make it valid json
             tags = tags.replace(/'/g, '"')
             // parse json
@@ -319,24 +320,24 @@
                 newTag.setAttribute("style", "margin: 5px;");
                 newTag.innerHTML = tag.label + "<i class='bi bi-x' onclick='removeSemanticTag(" + tag.id + ")'></i>";
 
-                document.querySelector("#semanticTagLabels").appendChild(newTag);
+                var newTagContainer = document.createElement("div");
+                newTagContainer.setAttribute("id", "semanticTagContainer_" + tag.id);
+                newTagContainer.appendChild(newTag);
+
+                document.querySelector("#semanticTagLabels").appendChild(newTagContainer);
                 // create text input under
                 var newInput = document.createElement("input");
                 newInput.setAttribute("name", "semanticTagLabels[]");
                 newInput.setAttribute("class", "form-control");
                 newInput.setAttribute("value", tag.custom_label);
-                document.querySelector("#semanticTagLabels").appendChild(newInput);
+                newTagContainer.appendChild(newInput);
                 // create hidden input for to keep semantic tag values
                 var newInput = document.createElement("input");
                 newInput.setAttribute("name", "semanticTagValues[]");
                 newInput.setAttribute("type", "hidden");
                 newInput.setAttribute("value", tag.wikidata_id + "|" + tag.label + "|" + tag.description);
-                document.querySelector("#semanticTagLabels").appendChild(newInput);
+                newTagContainer.appendChild(newInput);
             })
-
-            if (semantic_tags.length) {
-
-            }
 
             var modalTitle = editModal.querySelector('.modal-title')
             var modalBodyInput = editModal.querySelector('.modal-body input[name="link"]')
@@ -344,6 +345,22 @@
             var postIdInput = editModal.querySelector('.modal-body input[name="post_id"]')
             // set select2 value
             var tagsInput = editModal.querySelector('.modal-body input[name="selectedTags"]')
+
+            spaces = spaces.replace(/'/g, '"')
+            spaces = JSON.parse(spaces)
+            spaces.forEach(function (space) {
+                console.log(space);
+                let checkbox = document.getElementById('space_' + space.id);
+                checkbox.checked = true;
+            })
+            var spaceNames = spaces.map(function (space) {
+                return space.name;
+            }).join(', ');
+            if(spaceNames.length) {
+                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = spaceNames;   
+            } else {
+                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = 'Select Spaces';
+            }
 
             tagsInput.value = tags
             modalTitle.textContent = 'Edit Post'
