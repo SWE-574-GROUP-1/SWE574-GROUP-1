@@ -1,6 +1,7 @@
 name: Deploy to Docker
 
 on:
+  workflow_dispatch:
   push:
     branches:
       ["main"]
@@ -26,6 +27,6 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /home/azureuser/SWE574-GROUP-1
+          cd /home/ali/app
           git pull origin main
           docker exec -i SWE574 sh -c "python manage.py makemigrations && python manage.py migrate"

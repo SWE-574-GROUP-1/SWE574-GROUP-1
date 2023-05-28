@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+{% endblock %}
+
+{% block _navbar %}
+    {% if user.is_authenticated %}
+        <!-- Navbar for authenticated users -->
+        <!-- Replace this section with your desired navbar for authenticated users -->
+        <header class="navbar fixed-top navbar-expand-lg py-2" style="background-color: #006257;"
+                aria-label="Fifth navbar example">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="#">
+                <img src="{% static 'assets/images/logo/svg/logo-no-background.svg' %}" width="100"
+                     class="d-inline-block align-top" alt="">
+            </a>
+            <button class="navbar-toggler ms-auto me-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse justify-content-md-center" id="navbarNav">
+                <br>
+                <form type="search" method="POST" id="search-form" action="{% url 'core:search' %}">
+                    {% csrf_token %}
+                    <input class="form-control me-0 input" type="search" placeholder="Search" aria-label="Search"
+                           name="keyword">
+                </form>
+                <button type="submit" form="search-form" class="btn btn-primary button" id="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <ul class="navbar-nav position-relative ms-0 me-auto">
+                    <li class="nav-item">
+                        <a href="/feed" class="nav-link px-3 text-white">Feed</a>
+                    </li>
+                    <!-- # TODO: Implement Discover -->
+                    <li class="nav-item">
+                        <a href="{% url 'core:tags_index' %}" class="nav-link px-3 text-white">Tags</a>
+                    </li>
+                    <!-- # TODO: Implement Spaces -->
+                    <li class="nav-item">
+                        <a href="{% url 'core:spaces_index' %}" class="nav-link px-3 text-white">Spaces</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <!-- <img width="35" height="35" src="{{request_owner_user_profile.profile_image.url}}" class="header-avatar" alt="Dropdown"> -->
+                    </a>
+                    <div class="dropdown-menu" style="background-color: #006257;" aria-labelledby="dropdown03">
+                        <a class="dropdown-item text-white"
+                           href="{% url 'core:profile' profile_owner_username=request.user.username %}">{{ request.user.username }}</a>
+                        <a class="dropdown-item text-white" href="/settings">Settings</a>
+                        <a class="dropdown-item text-white" href="{% url 'core:about' %}">About</a>
+                        <a class="dropdown-item text-white" href="{% url 'core:logout' %}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav position-relative ms-auto me-0">
+                <li class="nav-item">
+                    <a href="{% url 'core:profile' profile_owner_username=request.user.username %}"
+                       class="nav-link px-3 text-white">
+                        <img width="40" height="40" src="{{ request.user.profile.profile_image.url }}"
+                             class="header-avatar"
+                             alt="Dropdown">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% else %}
+        <!-- Navbar for non-authenticated users -->
+        <!-- Replace this section with your desired navbar for non-authenticated users -->
+        <div class="navbar-collapse collapse " id="navbarNav">
+            <br>
+            <form type="search">
+                <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <ul class="navbar-nav position-relative ms-0 me-auto">
+                <li class="nav-item">
+                    <a href="" class="nav-link px-3 text-white">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'core:about' %}" class="nav-link px-3 text-gray disabled">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav position-relative me-0">
+                <li class="nav-item">
+                    <a class="nav-link px-3 text-white" aria-current="page" href="/signup">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 text-white" aria-current="page" href="/signin">Sign In</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>About Us</title>
+        <style>
+            body {
+                background-image: url('../../static/assets/images/bg/stacked-peaks-haikei-1.svg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+
+            .container {
+                margin-left: 0;
+            }
+
+            .row {
+                margin-left: -100;
+            }
+
+            .collapsible {
+                cursor: pointer;
+            }
+
+            .content {
+                display: none;
+                padding: 0 18px;
+                overflow: hidden;
+                transition: max-height 0.2s ease-out;
+            }
+        </style>
+    </head>
+
+    <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="collapsible" onclick="toggleCollapsible('intro')">Introduction <i
+                        class="fa fa-chevron-down"></i>
+                </h1>
+                <div class="content" id="intro">
+                    <p>LinkMe is a social media platform where users can search, post, and save posts in their
+                        accounts.</p>
+                    <p>With LinkMe, you can explore the world and stay connected with others.</p>
+                </div>
+
+                <h1 class="collapsible" onclick="toggleCollapsible('faq')">FAQ <i class="fa fa-chevron-down"></i></h1>
+                <div class="content" id="faq">
+                    <p style="font-weight: bold">1) How to post new updates?</p>
+                    <p>Sign in to your account and when you signed in, on the right corner you can see the "Post Link"
+                        button.</p>
+                    <p style="font-weight: bold">2) How can I like posts?</p>
+                    <p>When you see a post, you can easily click the like button.</p>
+                    <p style="font-weight: bold">3) Can I add tags?</p>
+                    <p>Yes, you can easily add tags.</p>
+                    <p style="font-weight: bold">4) Can I delete my posts?</p>
+                    <p>Yes, you can easily delete your posts.</p>
+                    <p style="font-weight: bold">5) Can I update my profile?</p>
+                    <p>Yes, you can update your profile from the sidebar.</p>
+                    <p style="font-weight: bold">6) Can I delete my profile?</p>
+                    <p>Yes, you can delete your profile.</p>
+                    <p style="font-weight: bold">7) Can I chat with other people?</p>
+                    <p>Unfortunately, we are still working on this feature!</p>
+                </div>
+
+                <h1 class="collapsible" onclick="toggleCollapsible('arch')">Architecture <i
+                        class="fa fa-chevron-down"></i>
+                </h1>
+                <div class="content" id="arch">
+                    <p>You can see our Use Case Diagram below:</p>
+                    <img src="{% static 'useCaseDiagram.png' %}" alt="Architecture Image"
+                         style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleCollapsible(id) {
+            var content = document.getElementById(id);
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+    </script>
+    </body>
+    </html>
+{% endblock %}
