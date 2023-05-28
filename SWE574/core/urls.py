@@ -15,7 +15,6 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("delete_account", views.delete_account, name="delete_account"),
     path("delete_post", views.delete_post, name="delete_post"),
-    path("book_post", views.book_post, name="book_post"),
     path("preview/", generate_preview.generate_preview, name="generate"),
     path("search", views.search, name="search"),
     path("follow", views.follow, name="follow"),
@@ -35,7 +34,7 @@ urlpatterns = [
     path("post/update", views.update_post, name="update_post"),
     path("post/like/<str:post_id>", views.like_post, name="like_post"),
     path("post/dislike/<str:post_id>", views.dislike_post, name="like_post"),
-    path("post/bookmark/<str:post_id>", views.bookmark_post, name="bookmark_post"),
+    path("post/bookmark_post", views.bookmark_post, name="bookmark_post"),
     path("fetch-og-tags", views.fetch_og_tags, name="fetch_og_tags"),
     path("badges", views.badges, name="badges"),
 ]

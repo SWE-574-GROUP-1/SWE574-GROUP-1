@@ -2,20 +2,18 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
-from django.db.models import Prefetch
+from django.db.models import Count, Q, Prefetch
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
-from .models import Profile, Tag, Space, Post, User
+from .models import Profile, Tag, Space, Post, User, Bookmark
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
-from .src.models.post_model_handler import __delete_post__, __book_post__
+from .src.models.post_model_handler import __delete_post__
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
 import json
-from django.views.decorators.csrf import csrf_exempt
 
 
 def signup(request: object):
@@ -50,11 +48,6 @@ def delete_account(request: object):
 @login_required(login_url='core:signin')
 def delete_post(request: object):
     return __delete_post__(request=request)
-
-
-@login_required(login_url='core:signin')
-def book_post(request: object):
-    return __book_post__(request=request)
 
 
 @login_required(login_url="core:signin")
@@ -347,21 +340,26 @@ def dislike_post(request, post_id):
 
 
 @login_required(login_url="core:signin")
-def bookmark_post(request, post_id):
+def bookmark_post(request):
+    data = json.loads(request.body)
+    post_id = data.get("postId")
+    label_name = data.get("labelName")
     post = Post.objects.get(post_id=post_id)
     user = User.objects.get(username=request.user.username)
-
     if post.bookmarks.filter(id=request.user.id).exists():
-        post.bookmarks.remove(user)
+        bookmark = Bookmark.objects.get(post=post, user=user)
+        bookmark.delete()
         bookmarked = False
     else:
-        post.bookmarks.add(user)
+        bookmark = Bookmark.objects.create(
+            post=post,
+            user=user,
+            label_name=label_name
+        )
+        bookmark.save()
         bookmarked = True
 
     return JsonResponse({'bookmarked': bookmarked})
-
-
-# this methods fetch the given url's og tags and return json response as img, title, description
 
 
 @login_required(login_url="core:signin")
@@ -376,9 +374,7 @@ def fetch_og_tags(request):
     og_image = soup.find('meta', property='og:image')
     og_title = soup.find('meta', property='og:title')
     og_description = soup.find('meta', property='og:description')
-    # print(og_image['content'])
-    # print(og_title['content'])
-    # print(og_description['content'])
+
     return JsonResponse({'img': og_image['content'], 'title': og_title['content'],
                          'description': og_description['content'], 'duplicate': is_valid})
 
