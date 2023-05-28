@@ -1,5 +1,4 @@
 from uuid import uuid4
-import random
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
@@ -18,7 +17,7 @@ class Profile(TimeStampedModel):
     bio = models.TextField(default="Write something here", max_length=100)
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
-                                         default=f"background_images/bg-image-{random.randint(1,5)}.jpg")
+                                         default="background_images/bg-image-5.jpg")
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
     available_labels = ArrayField(models.CharField(max_length=255), default=list, blank=True)
 
