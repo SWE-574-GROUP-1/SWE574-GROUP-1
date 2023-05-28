@@ -38,9 +38,33 @@
                             </div>
 
                             {# Implementation of Spaces #}
-                            <label for="spaces" class="col-form-label"><strong>Spaces</strong></label>
-                            <select id="spaces" name="spaces[]" multiple="multiple">
-                            </select>
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Spaces
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if request.user.profile.all_spaces|length == 0 %}
+                                    <li>
+                                        <ul>
+                                            <a>No Space found</a>
+                                        </ul>
+                                    </li>
+                                {% else %}
+
+                                    {% for space in request.user.profile.all_spaces %}
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input position-static" type="checkbox"
+                                                       style="margin-left: -1rem; float: none;"
+                                                       id="space{{ forloop.counter }}" name="spaces[]"
+                                                       value="{{ space.name }}">
+                                                <label class="form-check-label ml-2"
+                                                       for="space{{ forloop.counter }}">{{ space.name }}</label>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                {% endif %}
                         </div>
                     </div>
                 </form>

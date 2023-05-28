@@ -1,12 +1,13 @@
 # Import from external packages
 from uuid import uuid4
-
+import random
 # Import from django modules
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
 # Import user model from django
 from django.core.validators import URLValidator
+from django.contrib.postgres.fields import ArrayField
 
 
 # override the default user model
@@ -20,23 +21,17 @@ class Profile(TimeStampedModel):
     bio = models.TextField(default="Write something here", max_length=100)
     profile_image = models.ImageField(upload_to="profile_images", default="profile_images/blank-profile-picture.png")
     background_image = models.ImageField(upload_to="background_images",
-                                         default="background_images/bg-image-5.jpg")
-    # followers = ArrayField(models.IntegerField(), default=list, blank=True)
-    # following = ArrayField(models.IntegerField(), default=list, blank=True)
+                                         default=f"background_images/bg-image-{random.randint(1, 5)}.jpg")
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False)
+    available_labels = ArrayField(models.CharField(max_length=255), default=list, blank=True)
 
     def __str__(self):
         return self.user.username
 
     def all_labels(self):
         bookmarks = Bookmark.objects.filter(user=self.user)
-        unique_labels = bookmarks.values_list('label', flat=True).distinct()
-        print(f"{unique_labels=}")
-        if len(unique_labels) == 0:
-            return ['default']
-        else:
-            return unique_labels
-
+        unique_labels = bookmarks.values_list('label_name', flat=True).distinct()
+        return unique_labels
 
     def all_spaces(self):
         return Space.objects.all()
@@ -118,6 +113,11 @@ class Post(TimeStampedModel):
 
         super(self.__class__, self).__setattr__(name, value)
 
+    def self_label(self):
+        """Get the bookmark label for a specific user. If the user has not bookmarked this post, return None."""
+        bookmark = Bookmark.objects.filter(user=self.owner, post=self).first()
+        return bookmark.label_name if bookmark else None
+
 
 class Like(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_by_users')
@@ -128,12 +128,23 @@ class Like(TimeStampedModel):
 
 
 class Bookmark(TimeStampedModel):
-    label = models.CharField(max_length=100, blank=False, default='default')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarked_by_users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts_bookmarked')
+    label_name = models.CharField(max_length=25, blank=False, default="default")
 
     def __str__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        created = not self.pk  # Check if the instance is being created
+
+        super().save(*args, **kwargs)
+
+        if created:
+            profile = self.user.profile
+            if self.label_name not in profile.available_labels:
+                profile.available_labels.append(self.label_name)
+                profile.save()
 
 
 class Dislike(TimeStampedModel):

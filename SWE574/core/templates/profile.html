@@ -52,9 +52,9 @@
             <!-- END profile-header-content -->
             <!-- BEGIN profile-header-tab -->
             <ul class="profile-header-tab nav nav-tabs">
-                <li class="nav-item"><a href="#profile-post" data-bs-toggle="tab" class="nav-link_">POSTS</a>
+                <li class="nav-item"><a href="#profile-post" data-bs-toggle="tab" class="nav-link_" id="postsTab">POSTS</a>
                 </li>
-                <li class="nav-item"><a href="#bookmarks" data-bs-toggle="tab" class="nav-link_">BOOKMARKS</a>
+                <li class="nav-item"><a href="#bookmarks" data-bs-toggle="tab" class="nav-link_" id="bookmarksTab">BOOKMARKS</a>
                 </li>
                 {% if profile_owner_user.username == user.username %}
                     <li class="nav-item"><a href="{% url 'core:settings' %}">SETTINGS</a>
@@ -105,11 +105,20 @@
                 <!-- end timeline -->
             </div>
             <div class="tab-pane" id="bookmarks">
+                <!-- Label Filter -->
+                <div class="d-flex justify-content-center">
+                    <select id="labelFilter" onchange="filterPosts()" class="form-select" style="width: auto;">
+                        <option value="">All</option>
+                        {% for label in request.user.profile.available_labels %}
+                            <option value="{{ label }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <!-- begin timeline -->
                 <ul class="timeline">
                     {% if profile_owner_user.posts_bookmarked.all|length > 0 %}
                         {% for bookmark in profile_owner_user.posts_bookmarked.all %}
-                            <li>
+                            <li class="postItem" data-label="{{ bookmark.post.self_label }}">
                                 {% include "post_container.html" with post=bookmark.post %}
                             </li>
                         {% endfor %}
