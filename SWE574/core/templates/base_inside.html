@@ -44,6 +44,8 @@
             <div id="content" class="content content-full-width">
                 {% block content %}
                 {% endblock %}
+                {% include 'bookmark_modal.html' %}
+                {% include 'debookmark_modal.html' %}
             </div>
         </div>
     </div>
@@ -94,27 +96,21 @@
             alert("Please fill all fields");
             return false;
         } else {
-            console.log(document.forms.post_create_form.link.value)
             document.post_create_form.submit();
             document.post_create_form.reset();
         }
     }
-</script>
-{#Prevents posting empty post-update-form#}
-<script type='text/javascript'>
+
     function checkform_validity() {
         if (document.forms.post_update_form.link.value == "" & document.forms.post_update_form.caption.value == "") {
             alert("Please fill at least 1 field");
             return false;
         } else {
-            console.log(document.forms.post_update_form.link.value)
             document.post_update_form.submit();
             document.post_update_form.reset();
         }
     }
-</script>
-{#<!-- Prevents posting empty post-creating-form -->#}
-<script type='text/javascript'>
+
     function checkform_tags() {
         if (document.forms.tag_search_form.tag_name_to_be_searched.value == "") {
             alert("Please fill all fields");
@@ -124,8 +120,7 @@
             document.tag_search_form.reset();
         }
     }
-</script>
-<script type='text/javascript'>
+
     function checkform_spaces() {
         if (document.forms.space_search_form.space_name_to_be_searched.value == "") {
             alert("Please fill all fields");
@@ -135,8 +130,7 @@
             document.space_search_form.reset();
         }
     }
-</script>
-<script type='text/javascript'>
+
     function checkform_create_tags() {
         if (document.forms.tag_create_form.tag_name.value == "") {
             alert("Empty tag cannot be created!");
@@ -204,7 +198,6 @@
             }
         }).then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.disliked) {
                     document.getElementById(`isDisliked-${postId}`).classList.add('bi-hand-thumbs-down-fill');
                     document.getElementById(`isDisliked-${postId}`).classList.remove('bi-hand-thumbs-down');
@@ -216,16 +209,43 @@
             })
     }
 
-    function bookmarkPost(postId, el) {
-        fetch(`/post/bookmark/${postId}`, {
+    function bookmarkIdSet(postId) {
+        let hidden_in = document.querySelector('#bookmark-post-id');
+        hidden_in.value = postId;
+    }
+
+    function bookmarkPost() {
+        let postId = document.querySelector('#bookmark-post-id').value;
+        let labels = document.getElementsByName('bookmark-checkbox');
+        let name = document.querySelector('#bookmark_name').value;
+        let val = null;
+        if (name.length != 0) {
+            val = name;
+        } else {
+            for (let i = 0; i < labels.length; i++) {
+                if (labels[i].checked) {
+                    val = labels[i].value;
+                    break;
+                }
+            }
+        }
+        console.log(postId);
+        console.log(val);
+        const data = {
+            postId: postId,
+            labelName: val
+        };
+        fetch(`/post/bookmark_post`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
-            }
+            },
+            body: JSON.stringify(data)
         }).then(response => response.json())
             .then(data => {
                 console.log(data);
+                console.log("true called called");
                 if (data.bookmarked) {
                     document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark-fill');
                     document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark');
@@ -233,7 +253,24 @@
                     document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark');
                     document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark-fill');
                 }
-            })
+            }).catch(err => {
+            console.log(err);
+            console.log("catch called");
+        })
+    }
+
+
+    function handleCheckboxChange(checkbox) {
+        var checkboxes = document.querySelectorAll('#myForm input[type="checkbox"]');
+
+        // Uncheck other checkboxes if a checkbox is selected
+        if (checkbox.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== checkbox) {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
     }
 
     function updatePost() {
@@ -357,7 +394,6 @@
     })
 
     function join(space_name) {
-        console.log("join called")
         fetch(`/join?space_name=${space_name}`)
             .then(response => response.json())
             .then(data => {
@@ -373,6 +409,23 @@
 
             });
     }
+
+    function filterPosts() {
+        var select = document.getElementById('labelFilter');
+        var filter = select.value.toLowerCase();
+        var postItems = document.getElementsByClassName('postItem');
+
+        for (var i = 0; i < postItems.length; i++) {
+            var postLabel = postItems[i].getAttribute('data-label');
+            if (filter === "" || postLabel.toLowerCase() === filter) {
+                postItems[i].style.display = "";
+            } else {
+                postItems[i].style.display = "none";
+            }
+        }
+    }
+
+    document.getElementById('postsTab').click();
 </script>
 {% block js %}
 

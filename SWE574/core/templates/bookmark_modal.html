@@ -1,0 +1,37 @@
+<!-- Bookmark Modal -->
+<div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="bookmarkModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookmarkModalLabel">Bookmark Modal</h5>
+            </div>
+            <div class="modal-body">
+                <input type='hidden' id="bookmark-post-id">
+                <label for="bookmark_name" class="col-form-label"><strong>Create New Bookmark
+                    List</strong></label>
+                <input name="bookmark_name" type="text" class="form-control" id="bookmark_name"
+                       placeholder="Enter the Name">
+                <hr>
+                <label for="bookmark_name" class="col-form-label"><strong>Available
+                    Bookmarks</strong></label>
+                {% for label in request.user.profile.available_labels %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="bookmark-checkbox"
+                               value="{{ label }}">
+                        <label class="form-check-label">
+                            {{ label }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        onclick="return bookmarkPost()">
+                    Bookmark
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

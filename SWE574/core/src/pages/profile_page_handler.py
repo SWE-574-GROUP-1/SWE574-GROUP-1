@@ -31,10 +31,7 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     """
     # Get the profile owner user object and profile
     profile_owner_user_object = User.objects.get(username=profile_owner_username)
-    # Get the request owner user object and profile
-    request_owner_user_object = request.user
     context = {
-        'request_owner_user': request_owner_user_object,
         'profile_owner_user': profile_owner_user_object,
     }
     return render(request, "profile.html", context=context)
@@ -54,9 +51,6 @@ def profile_post_method_handler(request: object) -> HttpResponseRedirect:
     elif request.POST.get("form_name") == "post-update-form":
         print("post-update-form received")
         post_model_handler.update_post(request=request)
-    elif request.POST.get("form-name") == "settings-form":
-        # TODO - Dağlar: Fill here when you insert settings into profile
-        pass
     else:
         raise f"Invalid form-name: {request.POST.get('form-name')}"
     return HttpResponseRedirect(redirect_path)
