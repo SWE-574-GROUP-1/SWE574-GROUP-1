@@ -359,6 +359,7 @@ def fetch_og_tags(request):
     """ get url from request body, post request """
     data = json.loads(request.body.decode("utf-8"))
     url = data["url"]
+    is_valid = is_duplicate(request, url)
     # print(url)
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -369,7 +370,7 @@ def fetch_og_tags(request):
     # print(og_title['content'])
     # print(og_description['content'])
     return JsonResponse({'img': og_image['content'], 'title': og_title['content'],
-                         'description': og_description['content']})
+                         'description': og_description['content'], 'duplicate': is_valid})
 
 
 def all_tags(request):
@@ -402,20 +403,7 @@ def badges(request):
     )
 
 
-@csrf_exempt
-@login_required(login_url="core:signin")
-def check_link(request):
-    if request.method == 'POST' and request.is_ajax():
-        link = request.POST.get('link')
-        print(link)
-        user = request.user
-        exists = Post.objects.filter(owner=request.user, link=link).exists()
-        if (exists == False):
-            response_data = {'valid': True}
-            print("Uygun")
-        else:
-            response_data = {'valid': False}
-            print("deil")
-        return JsonResponse(response_data)
-
-    return JsonResponse({}, status=400)
+def is_duplicate(request, link):
+    user = request.user
+    exists = Post.objects.filter(owner=user, link=link).exists()
+    return exists
