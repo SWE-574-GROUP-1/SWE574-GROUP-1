@@ -15,6 +15,7 @@ from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def signup(request: object):
@@ -368,6 +369,7 @@ def fetch_og_tags(request):
     """ get url from request body, post request """
     data = json.loads(request.body.decode("utf-8"))
     url = data["url"]
+    is_valid = is_duplicate(request, url)
     # print(url)
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -378,7 +380,7 @@ def fetch_og_tags(request):
     # print(og_title['content'])
     # print(og_description['content'])
     return JsonResponse({'img': og_image['content'], 'title': og_title['content'],
-                         'description': og_description['content']})
+                         'description': og_description['content'], 'duplicate': is_valid})
 
 
 def all_tags(request):
@@ -409,3 +411,9 @@ def badges(request):
     return render(
         request, "badges.html"
     )
+
+
+def is_duplicate(request, link):
+    user = request.user
+    exists = Post.objects.filter(owner=user, link=link).exists()
+    return exists
