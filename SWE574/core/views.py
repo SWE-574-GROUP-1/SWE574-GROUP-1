@@ -6,6 +6,7 @@ from django.db.models import Count, Q, Prefetch
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
+from django.http import HttpResponseForbidden
 from .models import Profile, Tag, Space, Post, User, Comment, Bookmark
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__
