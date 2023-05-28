@@ -2,6 +2,7 @@
 <!-- https://www.bootdey.com/snippets/view/bs4-profile-with-timeline-posts -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,6 +17,10 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            white-space: normal !important;
+        }
     </style>
     {% block style %}
     {% endblock %}
@@ -29,7 +34,9 @@
       integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 <script type='text/javascript' src='{% static "core/js/bootstrap.bundle.min.js" %}'></script>
 {% include 'navbar.html' %}
-
+{% if is_space_posts %}
+    {% include 'sidebar.html' %}
+{% endif %}
 <div class="container-sm bd-gutter mt-3 my-md-4 bd-layout" style="padding-top:32px">
     <hr>
     <div class="row">
@@ -37,6 +44,8 @@
             <div id="content" class="content content-full-width">
                 {% block content %}
                 {% endblock %}
+                {% include 'bookmark_modal.html' %}
+                {% include 'debookmark_modal.html' %}
             </div>
         </div>
     </div>
@@ -87,27 +96,21 @@
             alert("Please fill all fields");
             return false;
         } else {
-            console.log(document.forms.post_create_form.link.value)
             document.post_create_form.submit();
             document.post_create_form.reset();
         }
     }
-</script>
-{#Prevents posting empty post-update-form#}
-<script type='text/javascript'>
+
     function checkform_validity() {
         if (document.forms.post_update_form.link.value == "" & document.forms.post_update_form.caption.value == "") {
             alert("Please fill at least 1 field");
             return false;
         } else {
-            console.log(document.forms.post_update_form.link.value)
             document.post_update_form.submit();
             document.post_update_form.reset();
         }
     }
-</script>
-{#<!-- Prevents posting empty post-creating-form -->#}
-<script type='text/javascript'>
+
     function checkform_tags() {
         if (document.forms.tag_search_form.tag_name_to_be_searched.value == "") {
             alert("Please fill all fields");
@@ -117,8 +120,17 @@
             document.tag_search_form.reset();
         }
     }
-</script>
-<script type='text/javascript'>
+
+    function checkform_spaces() {
+        if (document.forms.space_search_form.space_name_to_be_searched.value == "") {
+            alert("Please fill all fields");
+            return false;
+        } else {
+            document.space_search_form.submit();
+            document.space_search_form.reset();
+        }
+    }
+
     function checkform_create_tags() {
         if (document.forms.tag_create_form.tag_name.value == "") {
             alert("Empty tag cannot be created!");
@@ -130,7 +142,7 @@
     }
 </script>
 {#//Program to disable or enable a button using javascript https://flexiple.com/javascript/disable-button-javascript/#}
-<script>
+<script type='text/javascript'>
     let input = document.querySelector(".input");
     let button = document.querySelector(".button");
 
@@ -145,19 +157,17 @@
             button.disabled = false; //button is enabled
         }
     }
-</script>
-<script type='text/javascript'>
+
     function checkform_create_spaces() {
-        if (document.forms.space_create_form.space_name.value == "") {
-            alert("Empty tag cannot be created!");
+        if (document.forms.space_create_form.space_name.value === "" | document.forms.space_create_form.description.value === "") {
+            alert("Both Space Name and Description must be filled!");
             return false;
         } else {
             document.space_create_form.submit();
             document.space_create_form.reset();
         }
     }
-</script>
-<script type='text/javascript'>
+
     function likePost(postId, el) {
         fetch(`/post/like/${postId}`, {
             method: 'POST',
@@ -188,7 +198,6 @@
             }
         }).then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.disliked) {
                     document.getElementById(`isDisliked-${postId}`).classList.add('bi-hand-thumbs-down-fill');
                     document.getElementById(`isDisliked-${postId}`).classList.remove('bi-hand-thumbs-down');
@@ -200,16 +209,43 @@
             })
     }
 
-    function bookmarkPost(postId, el) {
-        fetch(`/post/bookmark/${postId}`, {
+    function bookmarkIdSet(postId) {
+        let hidden_in = document.querySelector('#bookmark-post-id');
+        hidden_in.value = postId;
+    }
+
+    function bookmarkPost() {
+        let postId = document.querySelector('#bookmark-post-id').value;
+        let labels = document.getElementsByName('bookmark-checkbox');
+        let name = document.querySelector('#bookmark_name').value;
+        let val = null;
+        if (name.length != 0) {
+            val = name;
+        } else {
+            for (let i = 0; i < labels.length; i++) {
+                if (labels[i].checked) {
+                    val = labels[i].value;
+                    break;
+                }
+            }
+        }
+        console.log(postId);
+        console.log(val);
+        const data = {
+            postId: postId,
+            labelName: val
+        };
+        fetch(`/post/bookmark_post`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
-            }
+            },
+            body: JSON.stringify(data)
         }).then(response => response.json())
             .then(data => {
                 console.log(data);
+                console.log("true called called");
                 if (data.bookmarked) {
                     document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark-fill');
                     document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark');
@@ -217,7 +253,24 @@
                     document.getElementById(`isBookmarked-${postId}`).classList.add('bi-bookmark');
                     document.getElementById(`isBookmarked-${postId}`).classList.remove('bi-bookmark-fill');
                 }
-            })
+            }).catch(err => {
+            console.log(err);
+            console.log("catch called");
+        })
+    }
+
+
+    function handleCheckboxChange(checkbox) {
+        var checkboxes = document.querySelectorAll('#myForm input[type="checkbox"]');
+
+        // Uncheck other checkboxes if a checkbox is selected
+        if (checkbox.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== checkbox) {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
     }
 
     function updatePost() {
@@ -247,6 +300,8 @@
             var title = button.getAttribute('data-title')
             var caption = button.getAttribute('data-description')
             var tags = button.getAttribute('data-tags')
+            var semantic_tags = button.getAttribute('data-semantic-tags')
+            var spaces = button.getAttribute('data-spaces')
             // replace ' with " to make it valid json
             tags = tags.replace(/'/g, '"')
             // parse json
@@ -254,13 +309,58 @@
             tags.forEach(function (tag) {
                 $('#postUpdateModalTags').append('<option value="' + tag.id + '" selected>' + tag.name + '</option>');
             })
-            
+
+            semantic_tags = semantic_tags.replace(/'/g, '"')
+            semantic_tags = JSON.parse(semantic_tags)
+            semantic_tags.forEach(function (tag) {
+                $('#semanticTags').append('<option value="' + tag.id + '" selected>' + tag.label + '</option>');
+                var newTag = document.createElement("div");
+                newTag.setAttribute("class", "badge bg-secondary");
+                newTag.setAttribute("id", "semanticTag_" + tag.id);
+                newTag.setAttribute("style", "margin: 5px;");
+                newTag.innerHTML = tag.label + "<i class='bi bi-x' onclick='removeSemanticTag(" + tag.id + ")'></i>";
+
+                var newTagContainer = document.createElement("div");
+                newTagContainer.setAttribute("id", "semanticTagContainer_" + tag.id);
+                newTagContainer.appendChild(newTag);
+
+                document.querySelector("#semanticTagLabels").appendChild(newTagContainer);
+                // create text input under
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagLabels[]");
+                newInput.setAttribute("class", "form-control");
+                newInput.setAttribute("value", tag.custom_label);
+                newTagContainer.appendChild(newInput);
+                // create hidden input for to keep semantic tag values
+                var newInput = document.createElement("input");
+                newInput.setAttribute("name", "semanticTagValues[]");
+                newInput.setAttribute("type", "hidden");
+                newInput.setAttribute("value", tag.wikidata_id + "|" + tag.label + "|" + tag.description);
+                newTagContainer.appendChild(newInput);
+            })
+
             var modalTitle = editModal.querySelector('.modal-title')
             var modalBodyInput = editModal.querySelector('.modal-body input[name="link"]')
             var modalBodyTextarea = editModal.querySelector('.modal-body textarea')
             var postIdInput = editModal.querySelector('.modal-body input[name="post_id"]')
             // set select2 value
             var tagsInput = editModal.querySelector('.modal-body input[name="selectedTags"]')
+
+            spaces = spaces.replace(/'/g, '"')
+            spaces = JSON.parse(spaces)
+            spaces.forEach(function (space) {
+                console.log(space);
+                let checkbox = document.getElementById('space_' + space.id);
+                checkbox.checked = true;
+            })
+            var spaceNames = spaces.map(function (space) {
+                return space.name;
+            }).join(', ');
+            if(spaceNames.length) {
+                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = spaceNames;   
+            } else {
+                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = 'Select Spaces';
+            }
 
             tagsInput.value = tags
             modalTitle.textContent = 'Edit Post'
@@ -270,8 +370,7 @@
             document.getElementById("post_update_form").action = "/post/update";
         })
     });
-</script>
-<script>
+
     function follow(id) {
         fetch(`/follow?profile_owner_user_id=${id}`)
             .then(response => response.json())
@@ -289,8 +388,47 @@
                 document.querySelector(`#following-${id}`).innerHTML = `${following_count} Following`;
             });
     }
+
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+
+    function join(space_name) {
+        fetch(`/join?space_name=${space_name}`)
+            .then(response => response.json())
+            .then(data => {
+                var joined = data.joined;
+                var subscribers_count = data.subscribers_count;
+                if (joined) {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Joined";
+                } else {
+                    document.querySelector(`#joinButton-${space_name}`).innerHTML = "Join";
+                }
+
+                document.querySelector(`#subscribers-${space_name}`).innerHTML = `${subscribers_count} Subscribers`;
+
+            });
+    }
+
+    function filterPosts() {
+        var select = document.getElementById('labelFilter');
+        var filter = select.value.toLowerCase();
+        var postItems = document.getElementsByClassName('postItem');
+
+        for (var i = 0; i < postItems.length; i++) {
+            var postLabel = postItems[i].getAttribute('data-label');
+            if (filter === "" || postLabel.toLowerCase() === filter) {
+                postItems[i].style.display = "";
+            } else {
+                postItems[i].style.display = "none";
+            }
+        }
+    }
+
+    document.getElementById('postsTab').click();
 </script>
 {% block js %}
 
 {% endblock %}
+
 </html>
