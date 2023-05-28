@@ -16,12 +16,6 @@ def create_post(request: object) -> None:
     # Get preview details
     preview = generate_preview_(url=request.POST.get('link'))
     # Creating new post
-    
-    # if Post.objects.filter(owner = request.user, link = request.POST.get("link")).exists():
-    #     message = 'You have already shared this link before.'
-    #     #messages.warning(request, 'This link has already been shared. Please enter a different link.')
-    #     return HttpResponseRedirect(request.META.get('HTTP_REFERER'),{'message': message})
-    
     if preview:
         new_post = Post.objects.create(owner=owner,
                                        link=request.POST.get("link"),

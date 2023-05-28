@@ -31,8 +31,6 @@ def profile_get_method_handler(request: object, profile_owner_username: str) -> 
     """
     # Get the profile owner user object and profile
     profile_owner_user_object = User.objects.get(username=profile_owner_username)
-    # Get the request owner user object and profile
-    request_owner_user_object = request.user
     context = {
         'profile_owner_user': profile_owner_user_object,
     }

@@ -158,7 +158,7 @@ class ProfileTestCase(TestCase):
     def test_background_image_default(self):
         """Assert default background image is 'background_images/bg-image-5.jpg'"""
         bg_img = self.profile.background_image
-        alts = [f'background_images/bg-image-{i}.jpg' for i in range(1,6)]
+        alts = [f'background_images/bg-image-{i}.jpg' for i in range(1, 6)]
         self.assertTrue(bg_img in alts)
 
     def test_background_image_dtype(self):
