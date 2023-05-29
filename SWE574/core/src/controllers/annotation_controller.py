@@ -1,4 +1,3 @@
-
 """ annotation controller """
 import requests
 from django.http import JsonResponse
@@ -44,7 +43,8 @@ def convert_image_annotation_to_ldp_format(request, annotation):
             "selector": {
                 "type": "FragmentSelector",
                 "conformsTo": "http://www.w3.org/TR/media-frags/",
-                "value": "xywh=percent:" + annotation['image_selection']['x'] + "," + annotation['image_selection']['y'] + "," + annotation['image_selection']['w'] + "," + annotation['image_selection']['h'],
+                "value": "xywh=percent:" + annotation['image_selection']['x'] + "," + annotation['image_selection'][
+                    'y'] + "," + annotation['image_selection']['w'] + "," + annotation['image_selection']['h'],
             },
         },
         "body": {
@@ -56,7 +56,7 @@ def convert_image_annotation_to_ldp_format(request, annotation):
     }
 
     """ send annotation_ldp to ldp server """
-    ANNOTATION_URL = env('ANNOTATION_SERVICE_URL')+"/annotations/"
+    ANNOTATION_URL = env('ANNOTATION_SERVICE_URL') + "/annotations/"
     requests.post(ANNOTATION_URL, json=annotation_ldp)
     return JsonResponse(annotation, safe=False)
 
@@ -96,7 +96,7 @@ def convert_text_annotation_to_ldp_format(request, annotation):
     }
 
     """ send annotation_ldp to ldp server """
-    ANNOTATION_URL = env('ANNOTATION_SERVICE_URL')+"/annotations/"
+    ANNOTATION_URL = env('ANNOTATION_SERVICE_URL') + "/annotations/"
     requests.post(ANNOTATION_URL, json=annotation_ldp)
     return JsonResponse(annotation, safe=False)
 
@@ -106,7 +106,7 @@ def get_annotations(request):
     if request.method == 'GET':
         q = request.GET.get('uri')
 
-        annotations = requests.get(env('ANNOTATION_SERVICE_URL')+"/annotations/search?query="+q).json()
+        annotations = requests.get(env('ANNOTATION_SERVICE_URL') + "/annotations/search?query=" + q).json()
         json = {
             "total": len(annotations),
             "rows": []
