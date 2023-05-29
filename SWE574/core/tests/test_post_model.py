@@ -1,4 +1,3 @@
-from audioop import reverse
 import uuid
 from unittest import TestCase
 from ..models import Post, User, Tag, Space, Comment
