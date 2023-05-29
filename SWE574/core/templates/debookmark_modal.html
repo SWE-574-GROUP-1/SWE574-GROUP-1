@@ -7,18 +7,12 @@
                 <h5 class="modal-title" id="debookmarkModalLabel">Bookmark Modal</h5>
             </div>
             <div class="modal-body">
-                <input type='hidden' id="bookmark-post-id">
-                <label for="bookmark_name" class="col-form-label"><strong>Create New Bookmark
-                    List</strong></label>
-                <input name="bookmark_name" type="text" class="form-control" id="bookmark_name"
-                       placeholder="Enter the Name">
-                <hr>
                 <label for="bookmark_name" class="col-form-label"><strong>Available
                     Bookmarks</strong></label>
                 {% for label in request.user.profile.available_labels %}
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="bookmark-checkbox"
-                               value="{{ label }}" >
+                               value="{{ label }}" id="bookmark-{{ label }}">
                         <label class="form-check-label">
                             {{ label }}
                         </label>
@@ -27,11 +21,11 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
-                        onclick="return bookmarkPost()">
+                        onclick="return bookmarkPost('update')">
                     Update
                 </button>
                 <button type="submit" class="btn btn-danger" data-bs-dismiss="modal"
-                        onclick="return bookmarkPost()">
+                        onclick="return bookmarkPost('delete')">
                     De-Bookmark
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -209,17 +209,19 @@
             })
     }
 
-    function bookmarkIdSet(postId) {
+    function bookmarkIdSet(postId, bookmarkLabelName) {
         let hidden_in = document.querySelector('#bookmark-post-id');
+        let hidden_label = document.querySelector('#bookmark-' + bookmarkLabelName);
         hidden_in.value = postId;
+        hidden_label.checked = true;
     }
 
-    function bookmarkPost() {
+    function bookmarkPost(op) {
         let postId = document.querySelector('#bookmark-post-id').value;
         let labels = document.getElementsByName('bookmark-checkbox');
         let name = document.querySelector('#bookmark_name').value;
         let val = null;
-        if (name.length != 0) {
+        if (name.length !== 0) {
             val = name;
         } else {
             for (let i = 0; i < labels.length; i++) {
@@ -233,7 +235,8 @@
         console.log(val);
         const data = {
             postId: postId,
-            labelName: val
+            labelName: val,
+            op: op
         };
         fetch(`/post/bookmark_post`, {
             method: 'POST',
@@ -356,8 +359,8 @@
             var spaceNames = spaces.map(function (space) {
                 return space.name;
             }).join(', ');
-            if(spaceNames.length) {
-                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = spaceNames;   
+            if (spaceNames.length) {
+                document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = spaceNames;
             } else {
                 document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = 'Select Spaces';
             }

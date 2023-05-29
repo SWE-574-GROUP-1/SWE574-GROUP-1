@@ -44,17 +44,27 @@
                             Select Spaces
                         </button>
                         <ul id="spaceCheckboxList" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% for space in request.user.profile.all_spaces %}
-                            <li>
-                                <div class="form-check">
-                                    <input class="form-check-input position-static" type="checkbox"
-                                        style="margin-left: -1rem; float: none;" id="space_{{ space.id }}"
-                                        name="spaces[]" value="{{ space.name }}"
-                                        onclick="onSpaceSelect('{{space.name}}')">
-                                    <label class="form-check-label ml-2" for="space{{ forloop.counter }}">{{ space.name }}</label>
-                                </div>
-                            </li>
-                            {% endfor %}
+                            {% if request.user.profile.all_spaces|length == 0 %}
+                                <li>
+                                    <ul>
+                                        <a>No Space found</a>
+                                    </ul>
+                                </li>
+                            {% else %}
+
+                                {% for space in request.user.profile.all_spaces %}
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input position-static" type="checkbox"
+                                                   style="margin-left: -1rem; float: none;" id="space_{{ space.id }}"
+                                                   name="spaces[]" value="{{ space.name }}"
+                                                   onclick="onSpaceSelect('{{ space.name }}')">
+                                            <label class="form-check-label ml-2"
+                                                   for="space{{ forloop.counter }}">{{ space.name }}</label>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
                     </div>
                 </form>
@@ -124,7 +134,7 @@
         var tagId = tag.id;
         var tagName = tag.text;
         var tagDescription = tag.text.split(" (")[1].split(")")[0];
-        
+
         var newTag = document.createElement("div");
         newTag.setAttribute("class", "badge bg-secondary");
         newTag.setAttribute("id", "semanticTag_" + tagId);
@@ -167,10 +177,10 @@
 
     function onSpaceSelect(spaceName) {
         let names = [];
-        $('#postUpdateModal #spaceCheckboxList input:checked').each(function() {
+        $('#postUpdateModal #spaceCheckboxList input:checked').each(function () {
             names.push(this.value);
         });
-        console.log('edit',names);
+        console.log('edit', names);
         if (names.length > 0) {
             document.querySelector('#postUpdateModal').querySelector('#dropdownMenuButton').innerHTML = names.join(",");
         } else {
