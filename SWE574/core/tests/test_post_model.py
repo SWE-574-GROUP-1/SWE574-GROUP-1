@@ -1,6 +1,6 @@
 import uuid
 from unittest import TestCase
-from ..models import Post, User, Tag, Space
+from ..models import Post, User, Tag, Space, Comment
 from django.db import models
 from model_utils.models import TimeStampedModel
 
@@ -513,6 +513,22 @@ class TestPost(TestCase):
         post = new_space.posts.get(owner=self.user)
         self.assertEqual(post, self.post)
         new_space.delete()
+
+    def test_add_comment_to_post(self):
+        """Assert that a comment can be added to the post"""
+        comment_text = "This is a comment"
+        comment = Comment.objects.create(post=self.post, user=self.user, content=comment_text)
+        self.assertEqual(comment.post, self.post)
+        self.assertEqual(comment.user, self.user)
+        self.assertEqual(comment.content, comment_text)
+
+    def test_delete_comment_from_post(self):
+        """Assert that a comment can be deleted from the post"""
+        comment_text = "This is a comment"
+        comment = Comment.objects.create(post=self.post, user=self.user, content=comment_text)
+        comment.delete()
+        with self.assertRaises(Comment.DoesNotExist):
+            Comment.objects.get(post=self.post, user=self.user, content=comment_text)
 
     def test_methods(self):
         """Assert that methods are working as expected"""
