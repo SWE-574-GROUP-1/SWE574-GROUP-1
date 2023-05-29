@@ -6,7 +6,8 @@ from django.db.models import Count, Q, Prefetch
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
-from .models import Profile, Tag, Space, Post, User, Bookmark
+from django.http import HttpResponseForbidden
+from .models import Profile, Tag, Space, Post, User, Comment, Bookmark
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__
 from .src.pages.profile_page_handler import profile_page_handler_main
@@ -14,6 +15,7 @@ from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
 import json
+from .forms import CommentForm
 
 
 def signup(request: object):
@@ -309,6 +311,37 @@ def post_detail(request, post_id):
         request, "post_detail.html",
         {"post": post, "request_owner_user_profile": request_owner_user_profile}
     )
+
+
+@login_required(login_url="core:signin")
+def add_comment(request, post_id):
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            post = Post.objects.get(post_id=post_id)
+            user = User.objects.get(username=request.user.username)
+            content = form.cleaned_data["content"]
+
+            comment = Comment.objects.create(post=post, user=user, content=content)
+
+            # Comment oluşturulduktan sonra, post detay sayfasına yönlendirme
+            return redirect('core:post_detail', post_id=post_id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'post_container.html', {'form': form, 'comment': comment})
+
+
+@login_required(login_url="core:signin")
+def delete_comment(request, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+
+    # Sadece comment'in sahibi comment'i silebilir
+    if comment.user == request.user:
+        comment.delete()
+        return redirect('core:post_detail', post_id=comment.post.post_id)
+    else:
+        return HttpResponseForbidden("You don't have permission to delete this comment.")
 
 
 @login_required(login_url="core:signin")

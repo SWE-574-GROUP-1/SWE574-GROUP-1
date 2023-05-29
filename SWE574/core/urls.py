@@ -40,4 +40,6 @@ urlpatterns = [
     path("annotations/create", annotation_controller.create_annotation, name="create_annotation"),
     path("annotations/search", annotation_controller.get_annotations, name="get_annotations"),
     path("badges", views.badges, name="badges"),
+    path('add-comment/<uuid:post_id>/', views.add_comment, name='add_comment'),
+    path('delete-comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
