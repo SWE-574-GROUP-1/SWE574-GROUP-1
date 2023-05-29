@@ -52,36 +52,37 @@
                 {% endif %}
                 &nbsp
             </span>
-        </a>
-        {% for space in post.spaces.all %}
-        <a style="padding-right: 15px; color: blue; margin: auto;"
-            href="{% url 'core:space_posts' space_name=space.name %}" class="m-r-15 text-inverse-lighter pull-right"><i
-                class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
-        <a>&nbsp;</a>
-        {% endfor %}
-
-    </div>
-    <div class="timeline-content">
-
-        <div class="container" style="padding: 0">
-            {% if post.title %}
-            <div class="card mb-3" style="padding: 0">
-                <div class="row no-gutters">
-                    <div class="col-sm-6" style="display: flex">
-                        <div style="display: flex;align-items: center;background: #f7f7f7;align-content: center;">
-                            <img src="{{ post.preview_image }}" class="img-fluid" alt="...">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ post.title }}</h5>
-                            <p class="card-text">{{ post.description }}</p>
-                            <div class="d-flex d-grid gap-3">
-                                <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go
-                                    To
-                                    Website</a>
-                                <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
-                                    class="btn btn-success">Go To Detail</a>
+            </a>
+            {% for space in post.spaces.all %}
+                <a style="padding-right: 15px; color: blue; margin: auto;" href="{% url 'core:space_posts' space_name=space.name %}"
+                   class="m-r-15 text-inverse-lighter pull-right"><i class="bi bi-rocket-takeoff-fill"></i>{{ space.name }}</a>
+                <a>&nbsp;</a>
+            {% endfor %}
+        </div>
+        <div class="timeline-content">
+            <div class="container" style="padding: 0">
+                {% if post.title %}
+                    <div class="card mb-3" style="padding: 0">
+                        <div class="row no-gutters">
+                            <div class="col-sm-6" style="display: flex">
+                                <div style="position:relative;left:0">
+                                    <div position="relative">
+                                        <img id="post_image" class="img-fluid" src="{{ post.preview_image }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ post.title }}</h5>
+                                    <p class="card-text">{{ post.description }}</p>
+                                    <div class="d-flex d-grid gap-3">
+                                        <a id="link_btn" href="{{ post.link }}" target="_blank" class="btn btn-primary">Go
+                                            To
+                                            Website</a>
+                                        <a id="link_btn" href="{% url 'core:post_detail' post_id=post.post_id %}"
+                                           class="btn btn-success">Go To Detail</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

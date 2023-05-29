@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .src.controllers import annotation_controller
 from .src.utils import generate_preview
 
 app_name = "core"
@@ -36,6 +37,8 @@ urlpatterns = [
     path("post/dislike/<str:post_id>", views.dislike_post, name="like_post"),
     path("post/bookmark_post", views.bookmark_post, name="bookmark_post"),
     path("fetch-og-tags", views.fetch_og_tags, name="fetch_og_tags"),
+    path("annotations/create", annotation_controller.create_annotation, name="create_annotation"),
+    path("annotations/search", annotation_controller.get_annotations, name="get_annotations"),
     path("badges", views.badges, name="badges"),
     path('add-comment/<uuid:post_id>/', views.add_comment, name='add_comment'),
     path('delete-comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),

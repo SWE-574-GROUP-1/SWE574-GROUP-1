@@ -86,6 +86,8 @@ def search(request: object):
                 username__icontains=keyword)
             search_result_user_profiles = list()
             for user in searched_user_objects:
+                if user.username == 'admin':
+                    continue
                 profile_object = Profile.objects.get(user=user)
                 search_result_user_profiles.append(profile_object)
                 print(profile_object.user.username)
