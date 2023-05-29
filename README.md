@@ -7,7 +7,7 @@ This Repository contains the Term Project of SWE574 class in Bogazici Univesity.
 ## Authors:
 
 - **Dağlar Berk Erdem**
-- **Hüseyin Aydın**
+- **Muhammet Hüseyin Nurullah Aydın**
 - **Kaan Can**
 - **Ertan Kaya**
 - **Gencay Polat**
