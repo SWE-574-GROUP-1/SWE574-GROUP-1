@@ -129,7 +129,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-#/SWE573_Term_Project/images/profile_images/
 profile_images/*
 !blank-profile-picture.png
 scripts/commands.txt
