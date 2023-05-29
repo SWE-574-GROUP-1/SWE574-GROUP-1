@@ -42,6 +42,9 @@ class Profile(TimeStampedModel):
         """Returns all posts of the profile in ascending order by edit date"""
         return self.user.posts.all().order_by("-modified")
 
+    def sorted_bookmarked_posts_all(self):
+        return self.user.posts_bookmarked.all().order_by("-modified")
+
 
 class Post(TimeStampedModel):
     # Fields that are automatically filled
@@ -117,6 +120,11 @@ class Post(TimeStampedModel):
     def get_comments(self):
         return Comment.objects.filter(post=self)
 
+    def self_label(self):
+        """Get the bookmark label for a specific user. If the user has not bookmarked this post, return None."""
+        bookmark = Bookmark.objects.filter(user=self.owner, post=self).first()
+        return bookmark.label_name if bookmark else None
+
 
 class Comment(TimeStampedModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='commented_by_users')
@@ -147,17 +155,6 @@ class Bookmark(TimeStampedModel):
 
     def __str__(self):
         return self.user.username
-
-    def save(self, *args, **kwargs):
-        created = not self.pk  # Check if the instance is being created
-
-        super().save(*args, **kwargs)
-
-        if created:
-            profile = self.user.profile
-            if self.label_name not in profile.available_labels:
-                profile.available_labels.append(self.label_name)
-                profile.save()
 
 
 class Dislike(TimeStampedModel):

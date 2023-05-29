@@ -218,6 +218,7 @@ def create_space(request):
     except Space.DoesNotExist:
         print("Space does not exist")
         name = request.POST.get('space_name')
+        name = name .replace(" ", "")
         print(f"{request.FILES.get('avatar')=}")
         space = Space.objects.create(
             name=name,
@@ -379,13 +380,22 @@ def bookmark_post(request):
     data = json.loads(request.body)
     post_id = data.get("postId")
     label_name = data.get("labelName")
+    op = data.get("op")
     post = Post.objects.get(post_id=post_id)
     user = User.objects.get(username=request.user.username)
     if post.bookmarks.filter(id=request.user.id).exists():
         bookmark = Bookmark.objects.get(post=post, user=user)
-        bookmark.delete()
-        bookmarked = False
-    else:
+        if op == 'update':
+            # Update Bookmark
+            bookmark.label_name = label_name
+            bookmark.label_name = label_name
+            bookmark.save()
+            bookmarked = True
+        elif op == 'delete':
+            # Delete Bookmark
+            bookmark.delete()
+            bookmarked = False
+    elif op == 'bookmark':
         bookmark = Bookmark.objects.create(
             post=post,
             user=user,
@@ -393,6 +403,10 @@ def bookmark_post(request):
         )
         bookmark.save()
         bookmarked = True
+        profile = user.profile
+        if label_name not in profile.available_labels:
+            profile.available_labels.append(label_name)
+            profile.save()
 
     return JsonResponse({'bookmarked': bookmarked})
 
