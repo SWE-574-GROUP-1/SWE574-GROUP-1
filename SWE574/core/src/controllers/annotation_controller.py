@@ -44,7 +44,8 @@ def convert_image_annotation_to_ldp_format(request, annotation):
             "selector": {
                 "type": "FragmentSelector",
                 "conformsTo": "http://www.w3.org/TR/media-frags/",
-                "value": "xywh=percent:" + annotation['image_selection']['x'] + "," + annotation['image_selection']['y'] + "," + annotation['image_selection']['w'] + "," + annotation['image_selection']['h'],
+                "value": "xywh=percent:" + annotation['image_selection']['x'] + "," + annotation['image_selection']['y'] +
+                "," + annotation['image_selection']['w'] + "," + annotation['image_selection']['h'],
             },
         },
         "body": {
