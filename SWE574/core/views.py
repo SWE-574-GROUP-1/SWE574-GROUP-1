@@ -412,8 +412,30 @@ def badges(request):
 
 
 @login_required(login_url="core:signin")
-def following_list(request):
-    user = request.user
+def following_list(request: object):
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
+    people = Profile.objects.all()
+    context = {
+        "request_owner_user": request_owner_user_object,
+        "request_owner_user_profile": request_owner_user_profile,
+        "search_result_user_profiles": people
+    }
+    return render(request, 'following_list.html', context=context)
 
-    people = Profile.followers.all
-    return render(request, 'following_list.html', {'people': people})
+
+@login_required(login_url="core:signin")
+def follower_list(request: object):
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
+    people = Profile.objects.all()
+    context = {
+        "request_owner_user": request_owner_user_object,
+        "request_owner_user_profile": request_owner_user_profile,
+        "search_result_user_profiles": people
+    }
+    return render(request, 'follower_list.html', context=context)
