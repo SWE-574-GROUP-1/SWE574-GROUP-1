@@ -6,18 +6,14 @@
 {% endblock %}
 
 {% block content %}
-
-
     <div class="container">
         <div class="row gutters-sm">
             <div class="tab-content mt-xxl-2" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div>
                         {% if search_result_user_profiles %}
-
                             {% for search_result_profile in search_result_user_profiles %}
-                            {% if request_owner_user_profile in search_result_profile.followers.all %}
-                            
+                            {% if request_owner_user_profile in search_result_profile.following.all %}                     
                             <section class="search-result-item w-50 mt-5 mb-5 mx-auto">
                                 <a class="image-link" href="#">
                                     <img class="image" src="{{ search_result_profile.profile_image.url }}">
@@ -66,76 +62,7 @@
 
                     </div>
                 </div>
-                <div class="tab-pane fade" id="post" role="tabpanel" aria-labelledby="pills-contact-tab">
-                    {% if post_results %}
-                        {% for post in post_results %}
-                            <section class="search-result-item">
-                                {% include "post_container.html" with post=post %}
-                            </section>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="space" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <div class="tab-content mt-xxl-2" id="pills-tabContent">
-                        {% if space_results %}
-                            {% for space in space_results %}
-                                <section class="search-result-item w-25 mt-5 mb-5 mx-auto">
-                                    <div class="mx-auto row text-center">
-                                        <a href="{% url 'core:space_posts' space_name=space.name %}">
-                                            {{ space.name }}
-                                        </a>
-                                    </div>
-                                </section>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="tag" role="tabpanel" aria-labelledby="pills-contact-tab">
-                    {% if tag_results %}
-                        {% for tag in tag_results %}
-                            <section class="search-result-item w-25 mt-5 mb-5 mx-auto text-center">
-                                <div class="tag-cloud">
-                                    <a href="{% url 'core:tag_posts' tag_name=tag.name %}"
-                                       class="badge bg-secondary rounded-pill tag-{{ tag.count }}"
-                                       style="font-size: {{ tag.font_size }}px">{{ tag.name }}</a>
-                                </div>
-                            </section>
-                        {% endfor %}
-                    {% endif %}</div>
-            </div>
         </div>
 
-    </div><!-- end profile-content -->
+    </div>
 {% endblock %}
-
-{% block js %}
-    <script>
-        let input = document.querySelector(".input");
-        let button = document.querySelector(".button");
-
-        button.disabled = true; //setting button state to disabled
-
-        input.addEventListener("change", stateHandle);
-
-        function stateHandle() {
-            if (document.querySelector(".input").value === "") {
-                button.disabled = true; //button remains disabled
-            } else {
-                button.disabled = false; //button is enabled
-            }
-        }
-    </script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag('js', new Date());
-
-        gtag('config', 'G-F1RTS0P1CD');</script>
-
-    </html>
-{% endblock %}
-
