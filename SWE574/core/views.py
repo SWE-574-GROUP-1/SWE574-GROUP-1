@@ -224,6 +224,9 @@ def create_space(request):
             name=name,
             description=request.POST.get('description'),
         )
+        # Addition of space creator to the subscriber
+        user = User.objects.get(username=request.user.username)
+        space.subscribers.add(user)
 
         img = request.FILES.get('avatar')
         if img:
