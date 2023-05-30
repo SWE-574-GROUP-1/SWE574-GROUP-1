@@ -1,6 +1,5 @@
-{% extends "base_inside.html" %}
-{% include custom_filters %}
-{% block content %}
+{% extends "base_inside.html" %} {% include custom_filters %} 
+{% block content%}
     <!-- begin profile -->
     <div class="profile" style="margin-top:-17px">
         <div class="profile-header">
@@ -67,81 +66,34 @@
         </div>
     </div>
     <!-- end profile -->
-    <!-- begin profile-content -->
-    <div class="profile-content">
-        <!-- begin tab-content -->
-        <div class="tab-content p-0">
-            <!-- begin #profile-post tab -->
-            <div class="tab-pane active" id="profile-post">
-                <!-- begin timeline -->
-                <ul class="timeline">
-                    {% if profile_owner_user.profile.sorted_posts_all|length > 0 %}
-                        {% for post in profile_owner_user.profile.sorted_posts_all %}
-                            <li>
-                                {% include "post_container.html" with post=post %}
-                            </li>
-                        {% endfor %}
-                        {% include "post_edit_modal.html" %}
-                        <li>
-                            <!-- begin timeline-icon -->
-                            <div class="timeline-icon">
-                                <a href="javascript:;">&nbsp;</a>
-                            </div>
-                            <!-- end timeline-icon -->
-                            <!-- begin timeline-body -->
-                            <div class="timeline-body">
-                                <b>END</b>
-                            </div>
-                        </li>
-                    {% else %}
-                        <li>
-                            <div class="timeline-icon">
-                                <a href="javascript:;"></a>
-                            </div>
-                            <div class="timeline-body">
-                                <strong>No posts found.</strong>
-                            </div>
-                        </li>
-                    {% endif %}
-                </ul>
-                <!-- end timeline -->
-            </div>
-            <div class="tab-pane" id="bookmarks">
-                <!-- begin timeline -->
-                <ul class="timeline">
-                    {% if profile_owner_user.posts_bookmarked.all|length > 0 %}
-                        {% for bookmark in profile_owner_user.posts_bookmarked.all %}
-                            <li>
-                                {% include "post_container.html" with post=bookmark.post %}
-                            </li>
-                        {% endfor %}
-                        <li>
-                            <!-- begin timeline-icon -->
-                            <div class="timeline-icon">
-                                <a href="javascript:;">&nbsp;</a>
-                            </div>
-                            <!-- end timeline-icon -->
-                            <!-- begin timeline-body -->
-                            <div class="timeline-body">
-                                End
-                            </div>
-                        </li>
-                    {% else %}
-                        <li>
-                            <div class="timeline-icon">
-                                <a href="javascript:;"></a>
-                            </div>
-                            <div class="timeline-body">
-                                <strong>No bookmarks found.</strong>
-                            </div>
-                        </li>
-                    {% endif %}
-                </ul>
-                <!-- end timeline -->
-            </div>
-            <!-- end #profile-post tab -->
-        </div>
-        <!-- end tab-content -->
-    </div>
-    <!-- end profile-content -->
+
+{% if people %} {% for person in people %}
+<div class="person">
+  <h3>{{ person.user.username }}</h3>
+  <p>{{ person.bio }}</p>
+  <button class="unfollow-button" data-profile-id="{{ person.id }}">
+    Unfollow
+  </button>
+</div>
+{% endfor %} {% else %}
+<p>No people being followed. Please add people.</p>
+{% endif %} 
 {% endblock %}
+
+<script>
+    $(document).ready(function() {
+        $('.unfollow-button').click(function() {
+            var profileId = $(this).data('profile-id');
+            
+            // Perform an AJAX request to unfollow the person
+            $.post('/unfollow/', {profile_id: profileId}, function(response) {
+                if (response.success) {
+                    // Remove the person from the UI
+                    $('.person[data-profile-id="' + profileId + '"]').remove();
+                } else {
+                    alert('Failed to unfollow the person. Please try again.');
+                }
+            });
+        });
+    });
+</script>

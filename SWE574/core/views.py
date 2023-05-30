@@ -409,3 +409,11 @@ def badges(request):
     return render(
         request, "badges.html"
     )
+
+
+@login_required(login_url="core:signin")
+def following_list(request):
+    user = request.user
+
+    people = Profile.followers.all
+    return render(request, 'following_list.html', {'people': people})

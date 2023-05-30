@@ -37,5 +37,6 @@ urlpatterns = [
     path("post/dislike/<str:post_id>", views.dislike_post, name="like_post"),
     path("post/bookmark/<str:post_id>", views.bookmark_post, name="bookmark_post"),
     path("fetch-og-tags", views.fetch_og_tags, name="fetch_og_tags"),
+    path("following_list", views.following_list, name="following_list"),
     path("badges", views.badges, name="badges"),
 ]
