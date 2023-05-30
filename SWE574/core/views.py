@@ -465,3 +465,33 @@ def is_duplicate(request, link):
     user = request.user
     exists = Post.objects.filter(owner=user, link=link).exists()
     return exists
+
+
+@login_required(login_url="core:signin")
+def following_list(request: object):
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
+    people = Profile.objects.all()
+    context = {
+        "request_owner_user": request_owner_user_object,
+        "request_owner_user_profile": request_owner_user_profile,
+        "search_result_user_profiles": people
+    }
+    return render(request, 'following_list.html', context=context)
+
+
+@login_required(login_url="core:signin")
+def follower_list(request: object):
+    request_owner_user_object = User.objects.get(
+        username=request.user.username)
+    request_owner_user_profile = Profile.objects.get(
+        user=request_owner_user_object)
+    people = Profile.objects.all()
+    context = {
+        "request_owner_user": request_owner_user_object,
+        "request_owner_user_profile": request_owner_user_profile,
+        "search_result_user_profiles": people
+    }
+    return render(request, 'follower_list.html', context=context)

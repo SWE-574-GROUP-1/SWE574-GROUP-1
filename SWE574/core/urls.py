@@ -42,4 +42,6 @@ urlpatterns = [
     path("badges", views.badges, name="badges"),
     path('add-comment/<uuid:post_id>/', views.add_comment, name='add_comment'),
     path('delete-comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path("following_list", views.following_list, name="following_list"),
+    path("follower_list", views.follower_list, name="follower_list"),
 ]
