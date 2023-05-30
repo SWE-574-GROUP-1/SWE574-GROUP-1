@@ -35,17 +35,41 @@
                                class="btn btn-sm btn-info mb-2">Follow</a>
                         {% endif %}
                     {% endif %}
+
+
                     <p class="m-b-5 pull-right">
                         {{ profile_owner_user.posts.all|length }} Posts
                     </p>
+                    {% if profile_owner_user.username == user.username %}
                     <p class="m-b-5 pull-right" style="margin-right: 0.5em"
-                       id="following-{{ profile_owner_user.id }}">
-                        {{ profile_owner_user.profile.following.all|length }} Following
+                    id="following-{{ profile_owner_user.id }}">
+                     {{ profile_owner_user.profile.following.all|length }} 
+                     <a href="{% url 'core:following_list' %}" style="color:white">
+                     Following
                     </p>
+                    {% else %}
                     <p class="m-b-5 pull-right" style="margin-right: 0.5em"
-                       id="followers-{{ profile_owner_user.id }}">
-                        {{ profile_owner_user.profile.followers.all|length }} Follower
+                    id="following-{{ profile_owner_user.id }}">
+                     {{ profile_owner_user.profile.following.all|length }} 
+                     Following
                     </p>
+                    {% endif %}
+                    {% if profile_owner_user.username == user.username %}
+                    <p class="m-b-5 pull-right" style="margin-right: 0.5em"
+                    id="followers-{{ profile_owner_user.id }}">
+                     {{ profile_owner_user.profile.followers.all|length }}
+                     <a href="{% url 'core:follower_list' %}" style="color:white">                      
+                     Follower
+                    </p>
+                    {%else%}
+                    <p class="m-b-5 pull-right" style="margin-right: 0.5em"
+                    id="followers-{{ profile_owner_user.id }}">
+                     {{ profile_owner_user.profile.followers.all|length }}                   
+                     Follower
+                    </p>
+
+                    {%endif%}
+
                 </div>
                 <!-- END profile-header-info -->
             </div>

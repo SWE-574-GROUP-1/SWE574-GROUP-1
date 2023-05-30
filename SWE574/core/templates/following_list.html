@@ -1,0 +1,73 @@
+{% extends "base_inside.html" %}
+{% load static %}
+
+{% block style %}
+    <link href="{% static 'core/css/search.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+        <div class="row gutters-sm">
+            <div class="tab-content mt-xxl-2" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div>
+                        {% if search_result_user_profiles %}
+                            {% for search_result_profile in search_result_user_profiles %}
+                            {% if request_owner_user_profile in search_result_profile.followers.all %}
+                            <section class="search-result-item w-50 mt-5 mb-5 mx-auto">
+                                <a class="image-link" href="#">
+                                    <img class="image" src="{{ search_result_profile.profile_image.url }}">
+                                </a>
+                                <div class="search-result-item-body">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <h4 class="search-result-item-heading"><a
+                                                     href="{% url 'core:profile' profile_owner_username=search_result_profile.user.username %}">@{{ search_result_profile.user.username }}</a>
+                                            </h4>
+                                            <p class="info">Joined at {{ search_result_profile.created }}</p>
+                                            <p class="description">{{ search_result_profile.bio }}</p>
+                                        </div>
+                                        <div class="col-sm-3 text-align-center">
+                                            <p class="fs-mini text-muted"
+                                               id="followers-{{ search_result_profile.user.id }}"
+                                            >{{ search_result_profile.followers.all|length }}
+                                                Follower</p>
+                                            <p class="fs-mini text-muted"
+                                               id="following-{{ search_result_profile.user.id }}"
+                                            >{{ search_result_profile.following.all|length }}
+                                                Following</p>
+                                            {% if search_result_profile.user.username == request_owner_user.username %}
+                                                <a href="#" class="btn btn-sm btn-info mb-2"
+                                                   style="visibility: hidden;">Follow</a>
+                                            {% else %}
+                                                {% if request_owner_user_profile in search_result_profile.followers.all %}
+                                                    <a style="cursor: pointer;"
+                                                       onclick="follow({{ search_result_profile.user.id }})"
+                                                       id="followButton-{{ search_result_profile.user.id }}"
+                                                       class="btn btn-primary btn-info btn-sm">Unfollow</a>
+                                                {% else %}
+                                                    <a style="cursor: pointer;"
+                                                       onclick="follow({{ search_result_profile.user.id }})"
+                                                       id="followButton-{{ search_result_profile.user.id }}"
+                                                       class="btn btn-primary btn-info btn-sm">Follow</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            {% endif %}
+                            {% endfor %}
+                            {% else%}
+ 
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end profile-content -->
+{% endblock %}
