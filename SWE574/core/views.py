@@ -466,6 +466,7 @@ def is_duplicate(request, link):
     exists = Post.objects.filter(owner=user, link=link).exists()
     return exists
 
+
 @login_required(login_url="core:signin")
 def following_list(request: object):
     request_owner_user_object = User.objects.get(
