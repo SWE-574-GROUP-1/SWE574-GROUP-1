@@ -217,22 +217,25 @@ def create_space(request):
         return HttpResponseRedirect(path)
     except Space.DoesNotExist:
         print("Space does not exist")
-        name = request.POST.get('space_name')
-        name = name.replace(" ", "")
-        print(f"{request.FILES.get('avatar')=}")
-        space = Space.objects.create(
-            name=name,
-            description=request.POST.get('description'),
-        )
-        # Addition of space creator to the subscriber
-        user = User.objects.get(username=request.user.username)
-        space.subscribers.add(user)
+        try:
+            name = request.POST.get('space_name')
+            name = name.replace(" ", "")
+            print(f"{request.FILES.get('avatar')=}")
+            space = Space.objects.create(
+                name=name,
+                description=request.POST.get('description'),
+            )
+            # Addition of space creator to the subscriber
+            user = User.objects.get(username=request.user.username)
+            space.subscribers.add(user)
 
-        img = request.FILES.get('avatar')
-        if img:
-            space.avatar = img
-        space.save()
-        return space_posts(request, name)
+            img = request.FILES.get('avatar')
+            if img:
+                space.avatar = img
+            space.save()
+            return redirect('core:space_posts', space_name=name)
+        except Exception:
+            return redirect("core:spaces_index")
 
 
 @login_required(login_url="core:signin")
