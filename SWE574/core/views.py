@@ -218,7 +218,7 @@ def create_space(request):
     except Space.DoesNotExist:
         print("Space does not exist")
         name = request.POST.get('space_name')
-        name = name .replace(" ", "")
+        name = name.replace(" ", "")
         print(f"{request.FILES.get('avatar')=}")
         space = Space.objects.create(
             name=name,
@@ -320,7 +320,7 @@ def post_detail(request, post_id):
 @login_required(login_url="core:signin")
 def add_comment(request, post_id):
     comment = None
-    
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
