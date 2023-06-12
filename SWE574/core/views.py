@@ -322,6 +322,8 @@ def post_detail(request, post_id):
 
 @login_required(login_url="core:signin")
 def add_comment(request, post_id):
+    comment = None
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
