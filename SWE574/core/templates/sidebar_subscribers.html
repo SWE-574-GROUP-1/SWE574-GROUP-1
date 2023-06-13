@@ -1,0 +1,84 @@
+<div class="container-subscribers">
+    <nav class="navbar navbar-dark"
+         style="background: #ecf2eb; border-top-right-radius: 30px; border-bottom-left-radius: 30px;">
+        <div class="sidebar-header  flex-column " style="padding-top: 50px;">
+            <h2> Subscribers </h2>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for people..">
+            <ul id="myUL"  >
+
+                 {% for subscriber_user in space.subscribers.all %}
+                <li>
+                    <a href="{% url 'core:profile' profile_owner_username=subscriber_user.username %}">{{ subscriber_user.username }}</a>
+                </li>
+                 {% endfor %}
+                 
+            </ul>
+        </div>
+    </nav> 
+
+</div>
+
+<script>
+    function myFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+    </script>
+
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    #myInput {
+      background-position: 10px 12px;
+      background-repeat: no-repeat;
+      width: 100%;
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    
+    #myUL {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      max-height:250px; 
+    }
+    
+    #myUL li a {
+      border: 1px solid #ddd;
+      margin-top: -1px; /* Prevent double borders */
+      background-color: #f6f6f6;
+      padding-left: 60px;
+      padding-right: 60px;
+      text-decoration: none;
+      font-size: 16px;
+      color: black;
+      border-radius: 10px;
+      display: block;   
+    }
+    
+    #myUL li a:hover:not(.header) {
+      background-color: #eee;
+    }
+    </style>
+
+{% comment %} 
+{% for subscriber_user in space.subscribers.all %}
+<a href="{% url 'core:profile' profile_owner_username=subscriber_user.username %}">{{ subscriber_user.username }}</a>
+{% endfor %} {% endcomment %}
