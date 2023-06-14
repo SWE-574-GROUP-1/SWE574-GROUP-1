@@ -1,21 +1,23 @@
+import json
 import random
+
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import auth
 from django.db.models import Count, Q, Prefetch
+from django.http import HttpResponseForbidden
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import auth
-from django.http import HttpResponseForbidden
-from .models import Profile, Tag, Space, Post, User, Comment, Bookmark
+
+from .forms import CommentForm
+from .models import Profile, Tag, Space, Post, User, Comment, Bookmark, SemanticTag
 from .src.models import post_model_handler, tag_model_handler, space_model_handler
 from .src.models.post_model_handler import __delete_post__
 from .src.pages.profile_page_handler import profile_page_handler_main
 from .src.pages.settings_page_handler import settings_page_handler_main
 from .src.pages.signin_page_handler import signin_page_handler_main
 from .src.pages.signup_page_handler import signup_page_handler_main
-import json
-from .forms import CommentForm
 
 
 def signup(request: object):
@@ -101,6 +103,10 @@ def search(request: object):
 
             space_results = Space.objects.filter(name__icontains=keyword)
             context["space_results"] = space_results
+
+            semantic_tag_results = SemanticTag.objects.filter(
+                Q(label__icontains=keyword) | Q(description__icontains=keyword) | Q(label__icontains=keyword))
+            context["semantic_tag_results"] = semantic_tag_results
     return render(request, "search.html", context=context)
 
 
